@@ -260,7 +260,7 @@ section('intro',`
   </figure>
 
   <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах</b></h1>
-  <p class="hint lead-sub">&hellip;а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!</p>
+  <p class="hint lead-sub"><b>&hellip;а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!</b></p>
 
   <div class="grid">
     <div>
@@ -416,7 +416,6 @@ section('intro',`
     <div class="deal"><div class="deal-row" style="justify-content:flex-end"><span class="deal-timer" id="inlineTimer">15:00</span><span class="deal-badge">Предложение ограничено</span></div></div>
     <div class="actions" style="margin-top:10px"><button class="btn primary" id="toPrograms">Посмотреть программу</button></div>
   </div>
-
   <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
   <div class="actions sticky"><button class="btn ghost" data-prev>Назад</button><button class="btn primary" id="toCTA">Перейти к предложению!</button></div>
 `)
@@ -514,8 +513,7 @@ selectList($('#healthChips'),'health',false);
 selectList($('#bad'),'bad',false);
 selectList($('#good'),'good',false);
 selectList($('#nutriOpts'),'nutri',true);
-
-/* habits meter */
+  /* habits meter */
 function nutrPreview(){const b=(A.bad||[]).length,g=(A.good||[]).length;let f=1;f+=g*.02;f-=b*.03;return Math.max(.7,Math.min(1.35,f))}
 function updMeter(){
   const b=(A.bad||[]).length,g=(A.good||[]).length, any=b+g>0;
@@ -527,10 +525,10 @@ function updMeter(){
   track.style.setProperty('--p',p+'%');ptr.style.left=p+'%';
   score.textContent=(acc>0?'+':'')+acc+'%';
   let cls='hm-ok',txt='нейтрально',border='#FFBA08';
-  if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border:'#E85D04'}
-  else if(acc<-5){cls='hm-bад';txt='тормозит';border:'#E85D04'}
-  else if(acc>15){cls='hm-good';txt='суперускорение';border:'#12A06A'}
-  else if(acc>5){cls='hm-good';txt='ускоряет';border:'#12A06A'}
+  if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border="#E85D04";}
+  else if(acc<-5){cls='hm-bad';txt='тормозит';border="#E85D04";}
+  else if(acc>15){cls='hm-good';txt='суперускорение';border="#12A06A";}
+  else if(acc>5){cls='hm-good';txt='ускоряет';border="#12A06A";}
   badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
 }
 updMeter();
@@ -578,8 +576,7 @@ function fSteps(){const now=+A.steps||4000,add=2000,t=now+add;let boost=1+add/10
 function fNutri(){let f=1;if(A.nutri==='menu')f+=.22;else if(A.nutri==='plate')f+=.12;else f-=.12;f-=((A.bad||[]).length)*.03;f+=Math.min(((A.good||[]).length)*.02,.10);return Math.max(.7,Math.min(1.35,f))}
 function fHealth(){const h=new Set(A.health||[]);let f=1;if(h.has('Диабет')||h.has('Проблемы со щитовидкой')||h.has('Гипертония'))f-=.06;if(h.has('Боль в суставах'))f-=.04;return Math.max(.8,f)}
 function fPain(){switch(A.hardKey){case 'walk':return .94;case 'stairs':return .93;case 'games':return .96;case 'jumps':return .95;case 'none':return 1.02;default:return 1.00}}
-
-/* Rate + duration */
+  /* Rate + duration */
 function rate(){const w=+A.w||0;if(w>=100)return 1.0;let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-=.08;r*=fAge()*fLife()*fExp()*fBody()*fSteps().f*fNutri()*fHealth()*fPain();return Math.max(.25,Math.min(.9,+r.toFixed(2)))}
 function fmtDuration(wks){if(wks<=10){return{start:12,value:wks,unitText:'недель',label:`${wks} недель`}}const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:`${months} мес.`}}
 function goalKg(){if(A.goalKg!=null)return Math.max(0,Math.min(20,+A.goalKg));const g=A.goal||'';if(g.includes('3–5'))return 4;if(g.includes('5–10'))return 8;if(g.includes('10+'))return 12;return 3}
@@ -649,7 +646,7 @@ setTimeout(hideS,1500);
 const __oldCalc=(typeof calculate==='function')?calculate:null;
 if(__oldCalc){window.calculate=function(){__oldCalc.apply(this,arguments);startTimers()}}
 
-/* remove inline "Посмотреть программу" (как просили локально) */
+/* remove inline "Посмотреть программу" локально */
 document.getElementById('toPrograms')?.closest('.actions')?.remove();
 </script>
 </body>
