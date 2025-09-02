@@ -263,10 +263,25 @@ section('intro',`
       <img src="logo.png" alt="ШАГАЙ ДОМА"/>
     </video>
   </figure>
-  <h1>Узнайте, за сколько недель шагательные тренировки помогут вам похудеть</h1>
-  <p class="hint"><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах, получить бесплатную пробную тренировку и скидку 70% на наши абонементы в клуб!</b></p>
-  <div class="grid"><div><div class="hint">Как к вам обращаться?</div><input id="name" class="text" placeholder="Например: Ирина"></div></div>
-  <div class="actions sticky"><button class="btn primary" data-next>Поехали →</button></div>
+
+  <!-- Жирный заголовок -->
+  <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах</b></h1>
+
+  <div class="grid">
+    <div>
+      <div class="hint">Как к вам обращаться?</div>
+      <input id="name" class="text" placeholder="Например: Ирина">
+    </div>
+  </div>
+
+  <!-- Нижняя строка под вводом -->
+  <p class="hint" style="margin-top:8px">
+    &hellip;а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!
+  </p>
+
+  <div class="actions sticky">
+    <button class="btn primary" data-next type="button">Поехали →</button>
+  </div>
 `)
 +section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',AGE)}${actions()}`)
 
@@ -538,16 +553,18 @@ function updateDiscount(){
   const el=$('#discVal'); if(el) el.textContent=pct+'%';
 }
 
-/* navigation */
-addEventListener('click',e=>{
-  const next=e.target.closest('[data-next]');
-  const prev=e.target.closest('[data-prev]');
-  if(next){
-    if(next.closest('section[data-id="intro"]')) return;
-    vibrate(); goNext();
+/* navigation (унифицировано, стартовая обрабатывается здесь) */
+addEventListener('click', e => {
+  const next = e.target.closest('[data-next]');
+  const prev = e.target.closest('[data-prev]');
+  if (next) {
+    vibrate();
+    if (next.closest('section[data-id="intro"]')) { show(1); return; }
+    goNext();
   }
-  if(prev){vibrate(); show(idx-1)}
+  if (prev) { vibrate(); show(idx-1); }
 });
+
 function shake(){S[idx].animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});vibrate(25)}
 const need=k=>!A[k];
 function goNext(){
@@ -561,11 +578,6 @@ function goNext(){
   if(id==='perweek'&&need('perweek'))return shake();
   show(idx+1)
 }
-/* старт со вступления */
-document.querySelector('section[data-id="intro"] [data-next]')?.addEventListener('click',(e)=>{
-  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-  vibrate(); show(1);
-});
 
 /* inputs */
 $('#name').oninput=e=>{A.name=e.target.value.trim();save()};
@@ -574,7 +586,7 @@ if(steps){updRange();steps.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.
 
 /* BMI calc + label */
 ['h','w'].forEach(id=>{$('#'+id)?.addEventListener('input',()=>{updBMI();updateGoalPreview()})});
-function bmiCat(b){if(b<18.5)return{label:'Дефицит массы',cls:'bmi-warn',note:'ниже нормы (18,5–24,9)'};if(b<25)return{label:'Норма',cls:'bmi-ok',note:'в пределах нормы'};if(b<30)return{label:'Избыточная масса',cls:'bmi-warn',note:'выше нормы'};if(b<35)return{label:'Ожирение I ст.',cls:'bmi-bad',note:'выше нормы'};if(b<40)return{label:'Ожирение II ст.',cls:'bmi-bад',note:'значительно выше нормы'};return{label:'Ожирение III ст.',cls:'bmi-bad',note:'значительно выше нормы'}}
+function bmiCat(b){if(b<18.5)return{label:'Дефицит массы',cls:'bmi-warn',note:'ниже нормы (18,5–24,9)'};if(b<25)return{label:'Норма',cls:'bmi-ok',note:'в пределах нормы'};if(b<30)return{label:'Избыточная масса',cls:'bmi-warn',note:'выше нормы'};if(b<35)return{label:'Ожирение I ст.',cls:'bmi-bad',note:'выше нормы'};if(b<40)return{label:'Ожирение II ст.',cls:'bmi-bad',note:'значительно выше нормы'};return{label:'Ожирение III ст.',cls:'bmi-bad',note:'значительно выше нормы'}}
 function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML=`Ваш ИМТ: <b>${A.bmi}</b> <span class="bmi-tag ${c.cls}">${c.label}</span><br><span class="hint bmi-line">ИМТ помогает ориентироваться в массе тела; норма — 18,5–24,9. Учитывайте особенности телосложения, беременность и мышечную массу.</span>`}else{$('#bmiI').textContent=''}}
 
 /* селекторы */
@@ -602,7 +614,7 @@ function updMeter(){
   track.style.setProperty('--p',p+'%');ptr.style.left=p+'%';
   score.textContent=(acc>0?'+':'')+acc+'%';
   let cls='hm-ok',txt='нейтрально',border='#FFBA08';
-  if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border='#E85D04'}
+  if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border:'#E85D04'}
   else if(acc<-5){cls='hm-bad';txt='тормозит';border:'#E85D04'}
   else if(acc>15){cls='hm-good';txt='суперускорение';border:'#12A06A'}
   else if(acc>5){cls='hm-good';txt='ускоряет';border:'#12A06A'}
