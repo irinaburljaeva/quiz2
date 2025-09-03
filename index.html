@@ -60,6 +60,8 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .primary{background:linear-gradient(135deg,var(--r),var(--o));color:#fff;box-shadow:0 10px 18px rgba(207,44,2,.25)}
 .ghost{background:#fff;border:2px solid var(--g)}
 .sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 70%,rgba(255,255,255,0));padding-top:8px;z-index:20}
+/* усиление кликов по блоку действий */
+.actions.sticky{pointer-events:auto;z-index:30}
 
 /* Progress header + logo + discount */
 #progress{position:relative;height:auto;margin:0 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -233,6 +235,29 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
   </div>
 
 <script>
+/* === Полифиллы для старых WebView/Chrome (нужны для .closest/.matches) === */
+(function(){
+  if (!Element.prototype.matches) {
+    Element.prototype.matches =
+      Element.prototype.msMatchesSelector ||
+      Element.prototype.webkitMatchesSelector ||
+      function(s){
+        const m=(this.document||this.ownerDocument).querySelectorAll(s);
+        let i=m.length; while(--i>=0 && m.item(i)!==this){} return i>-1;
+      };
+  }
+  if (!Element.prototype.closest) {
+    Element.prototype.closest = function(s){
+      let el=this;
+      do{
+        if (el && el.matches && el.matches(s)) return el;
+        el = el.parentElement || el.parentNode;
+      } while (el && el.nodeType===1);
+      return null;
+    };
+  }
+})();
+
 /* ===== Helpers ===== */
 const $=s=>document.querySelector(s),$$=(s,r=document)=>Array.from((r||document).querySelectorAll(s));
 const vibrate=n=>{try{navigator.vibrate&&navigator.vibrate(n||12)}catch(e){}};
@@ -280,7 +305,7 @@ section('intro',`
   </div>
 
   <div class="actions sticky">
-    <button class="btn primary" data-next type="button" id="startBtn">Поехали →</button>
+    <button class="btn primary" data-next type="button" id="startBtn" onclick="startQuiz(event)">Поехали →</button>
   </div>
 `)
 +section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',AGE)}${actions()}`)
@@ -299,7 +324,7 @@ section('intro',`
   </div>${actions()}
 `)
 +section('steps',`
-    <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
+  <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
   <input id="steps" type="range" min="0" max="25000" step="250" value="4000">
   <div class="hint">Сейчас: <b><span id="sv">4000</span> шагов</b></div>
   <p class="hint"><b>Подсказка:</b> данные можно посмотреть в приложении телефона/браслета</p>
@@ -426,7 +451,8 @@ section('intro',`
     <div class="deal"><div class="deal-row" style="justify-content:flex-end"><span class="deal-timer" id="inlineTimer">15:00</span><span class="deal-badge">Предложение ограничено</span></div></div>
     <div class="actions" style="margin-top:10px"><button class="btn primary" id="toPrograms">Посмотреть программу</button></div>
   </div>
-    <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
+
+  <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
   <div class="actions sticky"><button class="btn ghost" data-prev>Назад</button><button class="btn primary" id="toCTA">Перейти к предложению!</button></div>
 `)
 +section('program',`
@@ -476,7 +502,9 @@ function updateDiscount(){
   const el=$('#discVal'); if(el) el.textContent=pct+'%';
 }
 
-/* Navigation */
+/* Navigation + резервная функция для стартовой кнопки */
+function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} try{ show(1); }catch(err){} }
+
 addEventListener('click', e => {
   const next = e.target.closest('[data-next]');
   const prev = e.target.closest('[data-prev]');
@@ -542,7 +570,8 @@ function updMeter(){
   badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
 }
 updMeter();
-  /* hard cards */
+
+/* hard cards */
 (function setupHard(){const w=$('#hardCards');if(!w)return;const cs=$$('.hcard',w);if(A.hardKey){cs.find(c=>c.dataset.k===A.hardKey)?.classList.add('is')}w.addEventListener('click',e=>{const c=e.target.closest('.hcard');if(!c)return;cs.forEach(x=>x.classList.toggle('is',x===c));A.hardKey=c.dataset.k;A.hard={'walk':'Долгая прогулка утомляет','stairs':'Каждый пролёт по лестнице — испытание','games':'Стыдно включаться в активные игры','jumps':'Прыжки','none':'Ничего из этого'}[A.hardKey];save();vibrate(8)})})();
 
 /* Goal preview */
@@ -639,6 +668,7 @@ const lightbox=$('#lightbox'),lbImg=$('#lbImg'),lbCap=$('#lbCap'),lbClose=$('#lb
 function openLightbox(src,caption){if(!src)return;lbImg.src=src;lbCap.textContent=caption||'';lightbox.classList.add('show');lightbox.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function closeLightbox(){lightbox.classList.remove('show');lightbox.setAttribute('aria-hidden','true');lbImg.src='';lbCap.textContent='';document.body.style.overflow=''}
 lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
+
 /* Programs */
 function chooseProgram(){const w=+A.w||0,age=A.age||'',life=A.life||'',exp=A.exp||'',steps=+A.steps||0,bmi=+A.bmi||0;
   if(w>=100)return{key:'p100',title:'Тренировки для 100+',lead:'Бережные шагательные тренировки с акцентом на безопасность и суставы.',meta:{workouts:'7 тренировок',duration:'15–20 минут',tempo:'Темп низкий',steps:'2–2,5 тыс шагов'}};
@@ -707,4 +737,3 @@ document.getElementById('toPrograms')?.closest('.actions')?.remove();
 </script>
 </body>
 </html>
-
