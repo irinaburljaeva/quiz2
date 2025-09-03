@@ -16,11 +16,21 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,R
 .app{width:min(960px,100%);margin:0 auto;padding:16px}
 .card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;overflow:hidden;position:relative}
 
-/* HERO */
-.hero-wrap{position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08)}
-.hero-media{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% var(--hero-pos-y);border-radius:20px}
+/* HERO (фикс высоты на всех браузерах) */
+.hero-wrap{
+  position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;
+  box-shadow:0 10px 18px rgba(0,0,0,.08);aspect-ratio:16/9;
+}
+.hero-wrap::before{content:"";display:block;padding-top:56.25%}
+.hero-media,.hero-skel{
+  position:absolute;inset:0;width:100%;height:100%;border-radius:20px;
+}
+.hero-media{display:block;object-fit:cover;object-position:50% var(--hero-pos-y)}
 @media (max-width:480px){.hero-media{object-position:50% var(--hero-pos-y-m)}}
-.hero-skel{position:absolute;inset:0;border-radius:20px;background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none}
+.hero-skel{
+  background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);
+  background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none
+}
 @keyframes heroShimmer{to{background-position-x:-200%}}
 .hero-skel.hide{opacity:0;pointer-events:none;transition:opacity .25s ease}
 
@@ -199,6 +209,12 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .promo-hero{margin:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
 .promo-hero img,.promo-hero video{width:100%;display:block;border-radius:16px;object-fit:cover}
 .promo h2{margin-top:2px}
+
+/* Goal badge styles */
+.goal-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem}
+.goal-soft{background:#e9f9f0;color:#0f7a42}
+.goal-mid{background:#fff3cc;color:#9a6b00}
+.goal-hard{background:#ffe9e6;color:#a11000}
 </style>
 </head>
 <body>
@@ -222,22 +238,16 @@ const $=s=>document.querySelector(s),$$=(s,r=document)=>Array.from((r||document)
 const vibrate=n=>{try{navigator.vibrate&&navigator.vibrate(n||12)}catch(e){}};
 const A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
 
-/* важно: idxBy объявлен РАНЬШЕ любых вызовов */
 function idxBy(id){ return $$('#screens .screen').findIndex(s=>s.dataset.id===id); }
 
 /* dicts */
 const AGE=['18–29','30–39','40–49','50+'];
-const BODY=[{label:'Худощавое',key:'slim',img:'skinny.png',alt:'Худощавое телосложение'},{label:'Среднее',key:'avg',img:'slim.png',alt:'Среднее телосложение'},{label:'Крупное',key:'large',img:'medium.png',alt:'Крупное телосложение'},{label:'Избыточный вес',key:'obese',img:'xl.png',alt:'Избыточный вес'}];
 const LIFE=['Сидячая работа','Умеренно активная','Активная'];
 const EXP=['Никогда не занималась','Иногда дома / по видео','Регулярно'];
 const MOT=['Для здоровья','Для внешности','Для энергии и лёгкости','Для уверенности в себе'];
 const HEALTH=['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'];
-
-/* habits dicts */
 const BAD=['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'];
 const GOOD=['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'];
-
-/* кейсы */
 const CASES=[{kg:14,name:'Ольги',months:4,img:'olga.png'},{kg:10,name:'Александры',months:4,img:'alexandra.png'},{kg:14,name:'Екатерины',months:6,img:'ekaterina.jpg'},{kg:8,name:'Юлии',months:4,img:'yulia.jpg'},{kg:17.5,name:'Светланы',months:2,img:'svetlana.jpg'},{kg:7,name:'Резеды',months:2,img:'rezeda.jpg'},{kg:17.5,name:'Инны',months:5,img:'inna.jpg'},{kg:16,name:'Шагательницы',months:3,img:'noname.jpg'}];
 function pickCase(targetKg){let best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
 
@@ -254,7 +264,7 @@ section('intro',`
   <figure class="hero-wrap">
     <div class="hero-skel" id="heroSkel"></div>
     <video class="hero-media" autoplay muted playsinline loop preload="metadata" poster="logo.png">
-      <source src="intro.mp4" type="video/mp4"/>
+      <source src="intro.mp4#t=0.1" type="video/mp4"/>
       <img src="logo.png" alt="ШАГАЙ ДОМА"/>
     </video>
   </figure>
@@ -289,7 +299,7 @@ section('intro',`
   </div>${actions()}
 `)
 +section('steps',`
-  <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
+    <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
   <input id="steps" type="range" min="0" max="25000" step="250" value="4000">
   <div class="hint">Сейчас: <b><span id="sv">4000</span> шагов</b></div>
   <p class="hint"><b>Подсказка:</b> данные можно посмотреть в приложении телефона/браслета</p>
@@ -410,13 +420,13 @@ section('intro',`
   <div class="counter" id="nums">0 кг за 0 недель</div>
   <p class="hint" id="rSub"></p>
   <div id="caseBox" class="case hide"></div>
-    <div id="offerInline" class="offer-inline" style="display:none">
+
+  <div id="offerInline" class="offer-inline" style="display:none">
     <p class="hint" style="margin:0 0 8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
     <div class="deal"><div class="deal-row" style="justify-content:flex-end"><span class="deal-timer" id="inlineTimer">15:00</span><span class="deal-badge">Предложение ограничено</span></div></div>
     <div class="actions" style="margin-top:10px"><button class="btn primary" id="toPrograms">Посмотреть программу</button></div>
   </div>
-
-  <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
+    <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
   <div class="actions sticky"><button class="btn ghost" data-prev>Назад</button><button class="btn primary" id="toCTA">Перейти к предложению!</button></div>
 `)
 +section('program',`
@@ -473,7 +483,6 @@ addEventListener('click', e => {
   if (next) { vibrate(); if (next.closest('section[data-id="intro"]')) { show(1); return; } goNext(); }
   if (prev) { vibrate(); show(idx-1); }
 });
-/* Прямой обработчик для «Поехали» */
 $('#startBtn')?.addEventListener('click', e=>{e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});
 
 /* Validate before next */
@@ -490,10 +499,11 @@ function goNext(){
   if(id==='perweek'&&need('perweek'))return shake();
   show(idx+1)
 }
+
 /* Inputs */
 $('#name').oninput=e=>{A.name=e.target.value.trim();save()};
-const steps=$('#steps'),sv=$('#sv');function updRange(){const min=+steps.min||0,max=+steps.max||100,val=+steps.value||0,p=((val-min)/(max-min))*100;steps.style.setProperty('--pct',p+'%')}
-if(steps){updRange();steps.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updRange();save();updateAha()}}
+const stepsEl=$('#steps'),sv=$('#sv');function updRange(){const min=+stepsEl.min||0,max=+stepsEl.max||100,val=+stepsEl.value||0,p=((val-min)/(max-min))*100;stepsEl.style.setProperty('--pct',p+'%')}
+if(stepsEl){updRange();stepsEl.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updRange();save();updateAha()}}
 
 /* BMI calc + label */
 ['h','w'].forEach(id=>{$('#'+id)?.addEventListener('input',()=>{updBMI();updateGoalPreview()})});
@@ -532,8 +542,7 @@ function updMeter(){
   badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
 }
 updMeter();
-
-/* hard cards */
+  /* hard cards */
 (function setupHard(){const w=$('#hardCards');if(!w)return;const cs=$$('.hcard',w);if(A.hardKey){cs.find(c=>c.dataset.k===A.hardKey)?.classList.add('is')}w.addEventListener('click',e=>{const c=e.target.closest('.hcard');if(!c)return;cs.forEach(x=>x.classList.toggle('is',x===c));A.hardKey=c.dataset.k;A.hard={'walk':'Долгая прогулка утомляет','stairs':'Каждый пролёт по лестнице — испытание','games':'Стыдно включаться в активные игры','jumps':'Прыжки','none':'Ничего из этого'}[A.hardKey];save();vibrate(8)})})();
 
 /* Goal preview */
@@ -565,7 +574,15 @@ updateAha();
 /* Loading + result */
 function runLoading(done){const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';const D=1500,t0=performance.now();function tick(n){const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}if(p<1)requestAnimationFrame(tick);else setTimeout(()=>{try{done()}catch(err){console.error(err);fallbackResult()}},200)}requestAnimationFrame(tick)}
 $('#calc').onclick=()=>{show(idx+1);runLoading(()=>{try{calculate()}catch(e){console.error(e);fallbackResult()}})};
-function fallbackResult(){const name=A.name?.trim()||'Друзья';$('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;$('#nums').textContent=`≈ −${goalKg()} кг за 8 недель`;$('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';show(idxBy('result'))}
+function fallbackResult(){
+  const name=A.name?.trim()||'Друзья';
+  const kg=goalKg();
+  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
+  if (kg===0) $('#nums').textContent=`Чтобы прийти к цели за 8 недель`;
+  else $('#nums').textContent=`≈ −${kg} кг за 8 недель`;
+  $('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';
+  show(idxBy('result'));
+}
 
 /* Tempo factors */
 function fAge(){const a=A.age||'';if(/50/.test(a))return 0.88;if(/40/.test(a))return 0.94;if(/30/.test(a))return 0.98;return 1.06}
@@ -588,19 +605,28 @@ function calculate(){
   const wks=Math.max(4,Math.min(16,Math.ceil(kg/rt))),t=fSteps().t;
   const dur=fmtDuration(wks);
   $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
-  animNum(dur.start,dur.value,1400,v=>{$('#nums').textContent=`−${kg} кг за ${v} ${dur.unitText}`});
+
+  if (kg===0) {
+    $('#nums').textContent=`Чтобы прийти к цели за ${dur.label}`;
+  } else {
+    animNum(dur.start,dur.value,1400,v=>{$('#nums').textContent=`−${kg} кг за ${v} ${dur.unitText}`});
+  }
+
   const rtText=rt.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
   $('#rSub').innerHTML=`С тренировками ШАГАЙ ДОМА ⚡️ вы будете проходить <b>${t.toLocaleString('ru-RU')}</b> шагов каждый день!<br><span class="hint">Ориентировочный темп: <b>~${rtText} кг/неделю</b>.</span>`;
   const caseObj=pickCase(Math.round(kg)); renderCaseBox(caseObj);
+
   const durLabel=dur.label;
   const leadSale=kg>0?`Чтобы прийти к цели <b>−${kg} кг</b> за <b>${durLabel}</b> — подключите готовые планы и поддержку.`:`Чтобы прийти к цели за <b>${durLabel}</b> — подключите готовые планы и поддержку.`;
   $('#sTitle').textContent=`${name}, присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡`;
   $('#sLead').innerHTML=leadSale;
+
   $('#offerInline').style.display='block';
   show(idxBy('result'))
 }
 function animNum(a,b,d,cb){const s=performance.now(),ease=t=>1-Math.pow(1-t,3);function fr(n){const p=Math.min(1,(n-s)/d);cb(Math.round(a+(b-a)*ease(p)));if(p<1)requestAnimationFrame(fr)}requestAnimationFrame(fr)}
-      /* Case + lightbox */
+
+/* Case + lightbox */
 function renderCaseBox(c){
   const box=document.getElementById('caseBox'); if(!box) return;
   if(!c){box.classList.add('hide');return}
@@ -613,23 +639,53 @@ const lightbox=$('#lightbox'),lbImg=$('#lbImg'),lbCap=$('#lbCap'),lbClose=$('#lb
 function openLightbox(src,caption){if(!src)return;lbImg.src=src;lbCap.textContent=caption||'';lightbox.classList.add('show');lightbox.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function closeLightbox(){lightbox.classList.remove('show');lightbox.setAttribute('aria-hidden','true');lbImg.src='';lbCap.textContent='';document.body.style.overflow=''}
 lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
-
 /* Programs */
-function chooseProgram(){const w=+A.w||0,age=A.age||'',life=A.life||'',exp=A.exp||'',steps=+A.steps||0,bmi=+A.bmi||0;if(w>=100)return{key:'p100',title:'Тренировки для 100+',lead:'Бережные шагательные тренировки с акцентом на безопасность и суставы.',meta:{workouts:'7 тренировок',duration:'15–20 минут',tempo:'Темп низкий',steps:'2–2,5 тыс шагов'}};if(/50\+/.test(age))return{key:'p50',title:'Тренировки для 50+',lead:'Мягкая координация, баланс и гибкость — без перегрузки.',meta:{workouts:'7 тренировок',duration:'15–20 минут',tempo:'Темп средний'}};const isActive=/Активная/.test(life)||steps>=8000||/Регулярно/.test(exp)||(bmi&&bmi<25);if(isActive)return{key:'active',title:'Шагай дома. Активно',lead:'Больше шагов и кардио-нагрузки для более быстрого результата.',meta:{workouts:'7 тренировок',duration:'15–40 минут',tempo:'Темп высокий',steps:'2–6 тыс шагов'}};return{key:'base',title:'Шагай дома. База',lead:'Комфортный старт, чтобы втянуться без стресса.',meta:{workouts:'8 тренировок',duration:'15–20 минут',tempo:'Темп низкий'}}}
-function buildProgramBullets(p){const B=[];const name=A.name?.trim();if(name)B.push(`${name}, начнём с темпа, который будет комфортен именно вам.`);if(/50\+/.test(A.age||''))B.push('Движения подобраны бережно: баланс, гибкость, координация.');const bmi=A.bmi||0;if(bmi){if(bmi>=30)B.push('Щадим колени и спину, работаем на результат.');else if(bmi<23)B.push('Больше тонуса и выносливости — поддержим форму.')}if(A.body==='obese'||A.body==='large')B.push('Постепенно повышаем нагрузку, чтобы прогресс был устойчивым.');if(/Сидячая/.test(A.life||''))B.push('Короткие сессии 15–20 минут — легко вписать даже если вы много работаете.');const st=+A.steps||0;if(st&&st<5000)B.push(`План увеличит ваш шагомер с ~${st.toLocaleString('ru-RU')} до +2 000 шагов/день без перегруза.`);if(/Никогда/.test(A.exp||''))B.push('Покажем технику в простых шагах.');if(/Регулярно/.test(A.exp||''))B.push('Добавим интервалы и прогрессию нагрузки.');const h=new Set(A.health||[]);if(h.has('Боль в суставах'))B.push('Безударные варианты и мобилизация суставов.');if(h.has('Диабет')||h.has('Гипертония')||h.has('Проблемы со щитовидкой'))B.push('Равномерный темп, следим за самочувствием.');switch(A.hardKey){case'walk':B.push('Укрепим выносливость постепенным увеличением длительности.');break;case'stairs':B.push('Силовые шаги для ног — лестница перестанет быть испытанием.');break;case'jumps':B.push('Без прыжков: только мягкие шагательные связки.');break;}const mot=(A.mot||[]);if(mot.includes('Для внешности'))B.push('Работаем с объёмами талии и бёдер.');if(mot.includes('Для энергии и лёгкости'))B.push('Больше энергии уже через 1–2 недели.');if(mot.includes('Для здоровья'))B.push('Бережная аэробика — поддержка сердца и сосудов.');if(mot.includes('Для уверенности в себе'))B.push('План и поддержка сообщества — мотивация не пропадёт.');const kg=(A.goalKg!=null)?+A.goalKg:0;if(kg>0)B.push(`Двигаемся к цели −${kg} кг безопасным темпом.`);else B.push('Поддержим форму, тонус и выносливость.');return B.slice(0,7)}
-function renderProgram(){const p=chooseProgram();const title=`У нас 28 программ, но вам лучше начать с «${p.title}». Входит в любой абонемент!`;const leadParts=[p.lead];if(/Активная/.test(A.life||'')||/Регулярно/.test(A.exp||''))leadParts.push('Подойдёт, если вы любите более высокий темп.');if(/Сидячая/.test(A.life||''))leadParts.push('Подойдёт, если вы много сидите.');const chips=[];if(p.meta?.workouts)chips.push(p.meta.workouts);if(p.meta?.duration)chips.push(p.meta.duration);if(p.meta?.steps)chips.push(p.meta.steps);if(p.meta?.tempo)chips.push(p.meta.tempo);const chipsHtml=chips.map(t=>`<span class="p-chip${/высокий/i.test(t)?' emph':''}">${t}</span>`).join('');$('#progTitle').textContent=title;$('#progLead').textContent=leadParts.join(' ');$('#progChips').innerHTML=chipsHtml;const ul=$('#progList');ul.innerHTML='';buildProgramBullets(p).forEach(b=>{const li=document.createElement('li');li.textContent=b;ul.appendChild(li)})}
+function chooseProgram(){const w=+A.w||0,age=A.age||'',life=A.life||'',exp=A.exp||'',steps=+A.steps||0,bmi=+A.bmi||0;
+  if(w>=100)return{key:'p100',title:'Тренировки для 100+',lead:'Бережные шагательные тренировки с акцентом на безопасность и суставы.',meta:{workouts:'7 тренировок',duration:'15–20 минут',tempo:'Темп низкий',steps:'2–2,5 тыс шагов'}};
+  if(/50\+/.test(age))return{key:'p50',title:'Тренировки для 50+',lead:'Мягкая координация, баланс и гибкость — без перегрузки.',meta:{workouts:'7 тренировок',duration:'15–20 минут',tempo:'Темп средний'}};
+  const isActive=/Активная/.test(life)||steps>=8000||/Регулярно/.test(exp)||(bmi&&bmi<25);
+  if(isActive)return{key:'active',title:'Шагай дома. Активно',lead:'Больше шагов и кардио-нагрузки для более быстрого результата.',meta:{workouts:'7 тренировок',duration:'15–40 минут',tempo:'Темп высокий',steps:'2–6 тыс шагов'}};
+  return{key:'base',title:'Шагай дома. База',lead:'Комфортный старт, чтобы втянуться без стресса.',meta:{workouts:'8 тренировок',duration:'15–20 минут',tempo:'Темп низкий'}}
+}
+function buildProgramBullets(p){const B=[];const name=A.name?.trim();if(name)B.push(`${name}, начнём с темпа, который будет комфортен именно вам.`);
+  if(/50\+/.test(A.age||''))B.push('Движения подобраны бережно: баланс, гибкость, координация.');
+  const bmi=A.bmi||0;if(bmi){if(bmi>=30)B.push('Щадим колени и спину, работаем на результат.');else if(bmi<23)B.push('Больше тонуса и выносливости — поддержим форму.')}
+  if(A.body==='obese'||A.body==='large')B.push('Постепенно повышаем нагрузку, чтобы прогресс был устойчивым.');
+  if(/Сидячая/.test(A.life||''))B.push('Короткие сессии 15–20 минут — легко вписать даже если вы много работаете.');
+  const st=+A.steps||0;if(st&&st<5000)B.push(`План увеличит ваш шагомер с ~${st.toLocaleString('ru-RU')} до +2 000 шагов/день без перегруза.`);
+  if(/Никогда/.test(A.exp||''))B.push('Покажем технику в простых шагах.');
+  if(/Регулярно/.test(A.exp||''))B.push('Добавим интервалы и прогрессию нагрузки.');
+  const h=new Set(A.health||[]);if(h.has('Боль в суставах'))B.push('Безударные варианты и мобилизация суставов.');
+  if(h.has('Диабет')||h.has('Гипертония')||h.has('Проблемы со щитовидкой'))B.push('Равномерный темп, следим за самочувствием.');
+  switch(A.hardKey){case'walk':B.push('Укрепим выносливость постепенным увеличением длительности.');break;case'stairs':B.push('Силовые шаги для ног — лестница перестанет быть испытанием.');break;case'jumps':B.push('Без прыжков: только мягкие шагательные связки.');break;}
+  const mot=(A.mot||[]);if(mot.includes('Для внешности'))B.push('Работаем с объёмами талии и бёдер.');
+  if(mot.includes('Для энергии и лёгкости'))B.push('Больше энергии уже через 1–2 недели.');
+  if(mot.includes('Для здоровья'))B.push('Бережная аэробика — поддержка сердца и сосудов.');
+  if(mot.includes('Для уверенности в себе'))B.push('План и поддержка сообщества — мотивация не пропадёт.');
+  const kg=(A.goalKg!=null)?+A.goalKg:0;if(kg>0)B.push(`Двигаемся к цели −${kg} кг безопасным темпом.`);else B.push('Поддержим форму, тонус и выносливость.');
+  return B.slice(0,7)
+}
+function renderProgram(){const p=chooseProgram();
+  const title=`У нас 28 программ, но вам лучше начать с «${p.title}». Входит в любой абонемент!`;
+  const leadParts=[p.lead];
+  if(/Активная/.test(A.life||'')||/Регулярно/.test(A.exp||''))leadParts.push('Подойдёт, если вы любите более высокий темп.');
+  if(/Сидячая/.test(A.life||''))leadParts.push('Подойдёт, если вы много сидите.');
+  const chips=[];if(p.meta?.workouts)chips.push(p.meta.workouts);if(p.meta?.duration)chips.push(p.meta.duration);if(p.meta?.steps)chips.push(p.meta.steps);if(p.meta?.tempo)chips.push(p.meta.tempo);
+  const chipsHtml=chips.map(t=>`<span class="p-chip${/высокий/i.test(t)?' emph':''}">${t}</span>`).join('');
+  $('#progTitle').textContent=title;$('#progLead').textContent=leadParts.join(' ');$('#progChips').innerHTML=chipsHtml;
+  const ul=$('#progList');ul.innerHTML='';buildProgramBullets(p).forEach(b=>{const li=document.createElement('li');li.textContent=b;ul.appendChild(li)})
+}
 
 /* Timers */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline_15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline_15',String(t))}return t}
 function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
 let __sdqTimerInt=null;
 function startTimers(){if(__sdqTimerInt){clearInterval(__sdqTimerInt);__sdqTimerInt=null}const deadline=getDeadline();const saleTimer=$('#saleTimer');const inlineTimer=$('#inlineTimer');const tick=()=>{const rem=deadline-Date.now();const str=fmtHMS(rem);saleTimer&&(saleTimer.textContent=str);inlineTimer&&(inlineTimer.textContent=str);if(rem<=0){clearInterval(__sdqTimerInt);__sdqTimerInt=null}};tick();__sdqTimerInt=setInterval(tick,1000)}
-function layoutSaleOffer(){const saleSection=$('section[data-id="sale"]');if(!saleSection)return;const deal=saleSection.querySelector('.deal');const specialP=Array.from(saleSection.querySelectorAll('p.hint')).find(p=>/Только для вас у нас действует специальное предложение/i.test(p.textContent||''));if(deal&&specialP&&!(deal.compareDocumentPosition(specialP)&Node.DOCUMENT_POSITION_FOLLOWING)){specialP.insertAdjacentElement('afterend',deal)}}
+function layoutSaleOffer(){const saleSection=$('section[data-id="sale"]');if(!saleSection)return;const deal=saleSection.querySelector('.deal');const specialP=Array.from(saleSection.querySelectorAll('p.hint')).find(p=>/Только для вас у нас действует специальное предложение/i.test(p.textContent||''));if(deal&&specialP){specialP.after(deal)}}
 
 /* Transitions */
 $('#toCTA')?.addEventListener('click',()=>{renderProgram();show(idxBy('program'))});
 $('#toSale')?.addEventListener('click',()=>{show(idxBy('sale'))});
-document.addEventListener('click',e=>{const b=e.target.closest('#toPrograms');if(b){renderProgram();show(idxBy('program'))}});
 
 /* hero skeleton hide / fallback */
 const hv=document.querySelector('video.hero-media'),hs=document.getElementById('heroSkel');
@@ -646,7 +702,7 @@ setTimeout(hideS,1500);
 const __oldCalc=(typeof calculate==='function')?calculate:null;
 if(__oldCalc){window.calculate=function(){__oldCalc.apply(this,arguments);startTimers()}}
 
-/* remove inline "Посмотреть программу" локально */
+/* убрать кнопку «Посмотреть программу» на экране результата локально */
 document.getElementById('toPrograms')?.closest('.actions')?.remove();
 </script>
 </body>
