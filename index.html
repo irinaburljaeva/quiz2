@@ -17,20 +17,12 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,R
 .card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;overflow:hidden;position:relative}
 
 /* HERO (фикс высоты на всех браузерах) */
-.hero-wrap{
-  position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;
-  box-shadow:0 10px 18px rgba(0,0,0,.08);aspect-ratio:16/9;
-}
+.hero-wrap{position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08);aspect-ratio:16/9}
 .hero-wrap::before{content:"";display:block;padding-top:56.25%}
-.hero-media,.hero-skel{
-  position:absolute;inset:0;width:100%;height:100%;border-radius:20px;
-}
+.hero-media,.hero-skel{position:absolute;inset:0;width:100%;height:100%;border-radius:20px}
 .hero-media{display:block;object-fit:cover;object-position:50% var(--hero-pos-y)}
 @media (max-width:480px){.hero-media{object-position:50% var(--hero-pos-y-m)}}
-.hero-skel{
-  background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);
-  background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none
-}
+.hero-skel{background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none}
 @keyframes heroShimmer{to{background-position-x:-200%}}
 .hero-skel.hide{opacity:0;pointer-events:none;transition:opacity .25s ease}
 
@@ -59,21 +51,20 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
 .primary{background:linear-gradient(135deg,var(--r),var(--o));color:#fff;box-shadow:0 10px 18px rgba(207,44,2,.25)}
 .ghost{background:#fff;border:2px solid var(--g)}
-.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 70%,rgba(255,255,255,0));padding-top:8px;z-index:20}
-/* усиление кликов по блоку действий */
-.actions.sticky{pointer-events:auto;z-index:30}
+.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 70%,rgba(255,255,255,0));padding-top:8px;z-index:30}
 
-/* Progress header + logo + discount */
-#progress{position:relative;height:auto;margin:0 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-#progress.hide{display:none!important}
-#progress .pcirc{--p:0%;width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--o) var(--p),#eee 0);position:relative;display:inline-grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.08);transition:background .15s linear;flex:0 0 56px}
-#progress .pcirc::after{content:"";width:44px;height:44px;border-radius:50%;background:#fff;position:absolute}
-#progress .pct{position:relative;z-index:1;font-size:.9rem;font-weight:800;letter-spacing:-.02em}
-#progress .plogo{margin-left:auto;display:flex;align-items:center;flex:0 0 auto}
-#progress .plogo img{height:32px;width:auto;display:block;object-fit:contain}
-.pdisc{border:2px solid #ffd5c2;background:#fff7ef;border-radius:999px;padding:6px 10px;font-weight:800;display:flex;gap:8px;align-items:center}
-.pdisc b{font-size:1.05rem}
-@media (max-width:480px){#progress .plogo img{height:28px}.pdisc span{display:none}}
+/* ===== Discount header (вместо прогресс-бара) ===== */
+#progress{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.discbox{display:flex;align-items:center;gap:10px;border:2px solid #ffd5c2;background:#fff7ef;border-radius:14px;padding:8px 12px}
+.discbox .title{font-weight:800}
+.discbox .value{font-weight:900;font-size:1.2rem;letter-spacing:-.02em}
+.disc-tip{position:relative;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#FFBA08;color:#000;font-weight:800;font-size:.8rem;cursor:help}
+.disc-tip .tt{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translate(-50%,0);background:#222;color:#fff;padding:6px 8px;border-radius:8px;font-size:.85rem;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s}
+.disc-tip .tt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#222}
+.disc-tip:hover .tt,.disc-tip:focus .tt{opacity:1;transform:translate(-50%,-4px)}
+.plogo{margin-left:auto;display:flex;align-items:center}
+.plogo img{height:32px;width:auto;display:block;object-fit:contain}
+@media (max-width:480px){.plogo img{height:28px}}
 
 /* Steps slider */
 #steps{--pct:0%;--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o);width:100%;height:40px;background:transparent;accent-color:var(--o)}
@@ -168,29 +159,21 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 
 /* Program slide */
 .prog-wrap{display:grid;gap:12px}
-.prog-head{
-  position:relative;border:2px solid var(--g);border-radius:16px;padding:14px 12px;
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(255,240,230,.9), transparent 50%),
-    radial-gradient(120% 80% at 100% 100%, rgba(255,247,236,.9), transparent 55%),
-    linear-gradient(180deg,#fff,#fff);
-  overflow:hidden;
-}
-.prog-head::after{
-  content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
-  background:conic-gradient(from 0deg, #FFBA08, #E85D04); opacity:.15; border-radius:50%;
-  filter:blur(6px);
-}
-.p-title{margin:.2rem 0 6px; font-size:clamp(20px,5vw,28px); font-weight:800; letter-spacing:-.02em}
-.p-sub{margin:0; color:#555}
-.p-chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-.p-chip{border:2px solid #ffd5c2; background:#fff7ef; border-radius:999px; padding:6px 10px; font-weight:700; font-size:.88rem}
-.p-chip.emph{border-color:#cfeede; background:#e9f9f0}
-.prog-hero{margin:0 0 6px; border-radius:16px; overflow:hidden}
-.prog-hero img{width:100%; display:block; border-radius:16px; object-fit:cover; box-shadow:0 12px 28px rgba(0,0,0,.08)}
-.prog-card{border:0; border-radius:0; padding:0; background:transparent; box-shadow:none}
+.prog-head{position:relative;border:2px solid var(--g);border-radius:16px;padding:14px 12px;background:
+  radial-gradient(120% 80% at 0% 0%, rgba(255,240,230,.9), transparent 50%),
+  radial-gradient(120% 80% at 100% 100%, rgba(255,247,236,.9), transparent 55%),
+  linear-gradient(180deg,#fff,#fff)}
+.prog-head::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:conic-gradient(from 0deg,#FFBA08,#E85D04);opacity:.15;border-radius:50%;filter:blur(6px)}
+.p-title{margin:.2rem 0 6px;font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-.02em}
+.p-sub{margin:0;color:#555}
+.p-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.p-chip{border:2px solid #ffd5c2;background:#fff7ef;border-radius:999px;padding:6px 10px;font-weight:700;font-size:.88rem}
+.p-chip.emph{border-color:#cfeede;background:#e9f9f0}
+.prog-hero{margin:0 0 6px;border-radius:16px;overflow:hidden}
+.prog-hero img{width:100%;display:block;border-radius:16px;object-fit:cover;box-shadow:0 12px 28px rgba(0,0,0,.08)}
+.prog-card{border:0;border-radius:0;padding:0;background:transparent;box-shadow:none}
 .prog-card h3{margin:.2rem 0 .6rem}
-.prog-list{padding-left:18px; margin:.2rem 0}
+.prog-list{padding-left:18px;margin:.2rem 0}
 
 /* Aha moment */
 .aha{margin-top:8px;border-radius:16px;padding:12px;background:linear-gradient(180deg,#fff8f2,#fff);box-shadow:0 6px 20px rgba(232,93,4,.08)}
@@ -221,7 +204,16 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 </head>
 <body>
   <div class="app"><div class="card">
-    <div id="progress"></div>
+    <!-- Header with discount -->
+    <div id="progress">
+      <div class="discbox" id="discBox">
+        <span class="title">Ваша скидка</span>
+        <span class="value" id="discVal">0%</span>
+        <span class="disc-tip" tabindex="0">i<span class="tt">Растёт с каждым вопросом!</span></span>
+      </div>
+      <div class="plogo"><img src="logo.png" alt="ШАГАЙ ДОМА"></div>
+    </div>
+
     <div id="screens"></div>
   </div></div>
 
@@ -235,26 +227,16 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
   </div>
 
 <script>
-/* === Полифиллы для старых WebView/Chrome (нужны для .closest/.matches) === */
+/* === Полифиллы для старых WebView/Chrome === */
 (function(){
   if (!Element.prototype.matches) {
     Element.prototype.matches =
       Element.prototype.msMatchesSelector ||
       Element.prototype.webkitMatchesSelector ||
-      function(s){
-        const m=(this.document||this.ownerDocument).querySelectorAll(s);
-        let i=m.length; while(--i>=0 && m.item(i)!==this){} return i>-1;
-      };
+      function(s){const m=(this.document||this.ownerDocument).querySelectorAll(s);let i=m.length;while(--i>=0&&m.item(i)!==this){}return i>-1;};
   }
   if (!Element.prototype.closest) {
-    Element.prototype.closest = function(s){
-      let el=this;
-      do{
-        if (el && el.matches && el.matches(s)) return el;
-        el = el.parentElement || el.parentNode;
-      } while (el && el.nodeType===1);
-      return null;
-    };
+    Element.prototype.closest=function(s){let el=this;do{if(el&&el.matches&&el.matches(s))return el;el=el.parentElement||el.parentNode;}while(el&&el.nodeType===1);return null;};
   }
 })();
 
@@ -262,7 +244,6 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 const $=s=>document.querySelector(s),$$=(s,r=document)=>Array.from((r||document).querySelectorAll(s));
 const vibrate=n=>{try{navigator.vibrate&&navigator.vibrate(n||12)}catch(e){}};
 const A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
-
 function idxBy(id){ return $$('#screens .screen').findIndex(s=>s.dataset.id===id); }
 
 /* dicts */
@@ -479,19 +460,9 @@ section('intro',`
 `);
 screensRoot.innerHTML=html;
 
-/* ===== Progress header ===== */
-const progress=$('#progress');
-progress.innerHTML=`<div class="pcirc"><div class="pct">0%</div></div><div class="pdisc"><span>Ваша скидка</span> <b id="discVal">0%</b></div><div class="plogo"><img src="logo.png" alt="ШАГАЙ ДОМА"></div>`;
-const pcirc=()=>$('#progress .pcirc'),pcText=()=>$('#progress .pct');let pctNow=0,rafId=0;
-function animProg(to){cancelAnimationFrame(rafId);const k=.08,d=.75;let v=0;function f(){const x=pctNow-to,a=-k*x;v=(v+a)*d;pctNow+=v;if(Math.abs(pctNow-to)<.3&&Math.abs(v)<.3)pctNow=to;pcirc().style.setProperty('--p',pctNow.toFixed(1)+'%');pcText().textContent=Math.round(pctNow)+'%';if(pctNow!==to)rafId=requestAnimationFrame(f)}rafId=requestAnimationFrame(f)}
-let idx=0;const S=$$('#screens .screen');
-function setP(i){progress.classList.toggle('hide',i===0);const p=Math.round(i/(S.length-1)*100);animProg(p);updateDiscount()}
-function show(n){S[idx].classList.remove('is');idx=Math.max(0,Math.min(S.length-1,n));S[idx].classList.add('is');setP(idx);scrollTo({top:0,behavior:'smooth'})}
-setP(0);
-
-/* Discount grows with each question */
-const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','motivation','perweek','hard','health','nutrition','food'];
+/* ===== Header (discount only) ===== */
 function updateDiscount(){
+  const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','motivation','perweek','hard','health','nutrition','food'];
   const total=QUESTION_IDS.length;
   let seen=0;
   for(const id of QUESTION_IDS){
@@ -501,31 +472,36 @@ function updateDiscount(){
   const pct=Math.min(70, Math.round((seen/total)*70));
   const el=$('#discVal'); if(el) el.textContent=pct+'%';
 }
+let idx=0;const S=$$('#screens .screen');
+function show(n){S[idx].classList.remove('is');idx=Math.max(0,Math.min(S.length-1,n));S[idx].classList.add('is');updateDiscount();scrollTo({top:0,behavior:'smooth'})}
+updateDiscount();
 
 /* Navigation + резервная функция для стартовой кнопки */
-function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} try{ show(1); }catch(err){} }
+function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} show(1); }
 
 addEventListener('click', e => {
   const next = e.target.closest('[data-next]');
   const prev = e.target.closest('[data-prev]');
-  if (next) { vibrate(); if (next.closest('section[data-id="intro"]')) { show(1); return; } goNext(); }
+  if (next) { vibrate(); goNext(); }
   if (prev) { vibrate(); show(idx-1); }
 });
 $('#startBtn')?.addEventListener('click', e=>{e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});
 
-/* Validate before next */
+/* Relaxed validation: не блокируем переход, только подсвечиваем */
 function shake(){S[idx].animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});vibrate(25)}
 const need=k=>!A[k];
 function goNext(){
   const id=S[idx].dataset.id;
-  if(id==='age'&&need('age'))return shake();
-  if(id==='body'&&need('body'))return shake();
-  if(id==='bmi'&&(!A.h||!A.w))return shake();
-  if(id==='life'&&need('life'))return shake();
-  if(id==='exp'&&need('exp'))return shake();
-  if(id==='goal'&&(A.goalKg==null))return shake();
-  if(id==='perweek'&&need('perweek'))return shake();
-  show(idx+1)
+  let warn=false;
+  if(id==='age'&&need('age'))warn=true;
+  if(id==='body'&&need('body'))warn=true;
+  if(id==='bmi'&&(!A.h||!A.w))warn=true;
+  if(id==='life'&&need('life'))warn=true;
+  if(id==='exp'&&need('exp'))warn=true;
+  if(id==='goal'&&(A.goalKg==null))warn=true;
+  if(id==='perweek'&&need('perweek'))warn=true;
+  if(warn) shake();
+  show(idx+1);
 }
 
 /* Inputs */
@@ -564,7 +540,7 @@ function updMeter(){
   score.textContent=(acc>0?'+':'')+acc+'%';
   let cls='hm-ok',txt='нейтрально',border='#FFBA08';
   if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border="#E85D04";}
-  else if(acc<-5){cls='hm-bad';txt='тормозит';border="#E85D04";}
+  else if(acc<-5){cls='hm-bад';txt='тормозит';border="#E85D04";}
   else if(acc>15){cls='hm-good';txt='суперускорение';border="#12A06A";}
   else if(acc>5){cls='hm-good';txt='ускоряет';border="#12A06A";}
   badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
