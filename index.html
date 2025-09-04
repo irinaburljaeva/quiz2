@@ -476,7 +476,7 @@ function calculate(){
     $('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;
   }
   renderCase(kg,keep);
-  startTimers();
+  startTimers(); // запускаем 15-мин отсчёт на результатах/финале
   A.recKeys = chooseProgramKeys(); save();
   $('#sLead').innerHTML = keep? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.' : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
   show(idxBy('result'));
@@ -576,7 +576,7 @@ function renderProgram(){
   }).join('');
 }
 
-/* ========= Trial mount ========= */
+/* ========= Mount trial once we reach it ========= */
 function mountTrial(){
   const tabs=$('#trialTabs'), frame=$('#trialFrame');
   tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
@@ -585,34 +585,6 @@ function mountTrial(){
   sel('vk');
   $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
 }
-
-/* ========= Loading & Calculate ========= */
-function runLoading(done){
-  const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
-  const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
-  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
-}
-function calculate(){
-  const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
-  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
-  if(keep||kg===0){$('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;$('#rSub').innerHTML=`Сфокусируемся на <b>тонусе и выносливости</b>.`;}
-  else{$('#nums').textContent=`−${kg} кг за ${d.v} ${d.u}`;$('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;}
-  renderCase(kg,keep);
-  startTimers();
-  A.recKeys = chooseProgramKeys(); save();
-  $('#sLead').innerHTML = keep? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.' : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
-  show(idxBy('result'));
-}
-
-/* ========= Timers ========= */
-function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
-function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
-
-/* ========= Init ========= */
-$('#start').onclick=()=>show(1);
-$('#start').focus();
-startTimers();
 </script>
 </body>
 </html>
