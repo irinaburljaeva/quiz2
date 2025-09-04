@@ -3,613 +3,885 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Квиз • ШАГАЙ ДОМА ⚡</title>
+<title>Калькулятор от ШАГАЙ ДОМА⚡</title>
+<meta name="description" content="Узнайте, за сколько недель шагательные тренировки помогут вам похудеть."/>
 <meta name="color-scheme" content="light only"/>
+<link rel="preload" as="image" href="superfit.png">
+<link rel="preload" as="image" href="m.png">
+<link rel="preload" as="image" href="xxl.png">
 <style>
-:root{--r:#cf2c02;--o:#e85d04;--y:#ffba08;--g:#e6e6e6;--txt:#111}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);background:#fff}
-.hidden{display:none!important}
-.app{max-width:960px;margin:0 auto;padding:16px}
-.card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px}
+:root{
+  --r:#CF2C02;--y:#FFBA08;--o:#E85D04;--g:#D9D9D9;--txt:#1a1a1a;
+  --hero-pos-y:28%;--hero-pos-y-m:22%;
+  --disc-bg:#fff7ef; --disc-fg:#a04000; --disc-win:#e9f9f0; --disc-win-fg:#0f7a42;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);background:#fff;overflow-x:hidden}
+.app{width:min(960px,100%);margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;overflow:hidden;position:relative}
 
-/* screens */
-.screen{display:none;animation:.28s fadeUp ease both}
+/* HERO */
+.hero-wrap{position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08)}
+.hero-media{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% var(--hero-pos-y);border-radius:20px}
+@media (max-width:480px){.hero-media{object-position:50% var(--hero-pos-y-m)}}
+.hero-skel{position:absolute;inset:0;border-radius:20px;background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none}
+@keyframes heroShimmer{to{background-position-x:-200%}}
+.hero-skel.hide{opacity:0;pointer-events:none;transition:opacity .25s ease}
+
+/* Screens */
+.screen{display:none;animation:.35s fs ease both;padding-bottom:90px}
 .screen.is{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:clamp(22px,5vw,36px);line-height:1.15;margin:8px 0 10px}
-h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
-.hint{color:#666}
+@keyframes fs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:clamp(22px,5.6vw,38px);line-height:1.15;margin:8px 0 10px}
+h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
+.hint{color:#6b6b6b;font-size:.95rem}
 .grid{display:grid;gap:10px}.cols2{grid-template-columns:1fr 1fr}
-@media(max-width:620px){.cols2{grid-template-columns:1fr}}
+@media (max-width:620px){.cols2{grid-template-columns:1fr}}
 
-/* inputs */
-.text{width:100%;border:2px solid var(--g);border-radius:12px;padding:12px 14px;font-size:1rem}
-.opt{border:2px solid var(--g);border-radius:14px;padding:12px;cursor:pointer;background:#fff;transition:.2s}
-.opt.is{border-color:var(--o);box-shadow:0 8px 18px rgba(232,93,4,.14)}
-.opt--img{display:flex;flex-direction:column;align-items:center;text-align:center}
+.opt{border:2px solid var(--g);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;background:#fff;cursor:pointer;transition:.2s}
+.opt.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
+.opt--img{flex-direction:column;align-items:center;text-align:center;padding:10px}
 .opt--img img{width:100%;height:180px;object-fit:contain;background:#fafafa;border-radius:12px}
-.opt--img span{margin-top:8px;font-weight:700}
+.opt--img span{margin-top:8px;font-weight:600}
+
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:2px solid var(--g);border-radius:999px;padding:9px 12px;background:#fff;cursor:pointer;transition:.2s}
+.chip{border:2px solid var(--g);border-radius:999px;padding:8px 12px;background:#fff;cursor:pointer}
 .chip.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
-.actions{display:flex;gap:8px;margin-top:12px}
-.btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
+.text{width:100%;border:2px solid var(--g);border-radius:12px;padding:10px 12px;font-size:1rem}
+
+.actions{display:flex;gap:8px;margin-top:14px}
+.btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
 .primary{background:linear-gradient(135deg,var(--r),var(--o));color:#fff;box-shadow:0 10px 18px rgba(207,44,2,.25)}
 .ghost{background:#fff;border:2px solid var(--g)}
-.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 60%, rgba(255,255,255,0));padding-top:8px;z-index:5}
+.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 70%,rgba(255,255,255,0));padding-top:8px;z-index:20}
 
-/* discount header */
-#progress{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+/* Top bar: progress + logo + discount */
+#progress{position:relative;height:auto;margin:0 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #progress.hide{display:none!important}
-.discbox{display:flex;align-items:center;gap:10px;border:2px solid #ffd7c7;background:#fff7ef;border-radius:14px;padding:8px 12px;transition:.25s}
-.discbox .title{font-weight:800}
-.discbox .value{font-weight:900;font-size:1.15rem}
-.disc-tip{position:relative;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--y);font-weight:800}
-.disc-tip .tt{position:absolute;left:50%;bottom:140%;transform:translateX(-50%);background:#111;color:#fff;padding:6px 8px;border-radius:8px;font-size:.84rem;white-space:nowrap;opacity:0;pointer-events:none}
-.disc-tip:hover .tt{opacity:1}
-/* max discount -> green look */
-.discbox.max{border-color:#bfe8d2;background:#ecfff5}
+#progress .pcirc{--p:0%;width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--o) var(--p),#eee 0);position:relative;display:inline-grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.08);transition:background .15s linear;flex:0 0 56px}
+#progress .pcirc::after{content:"";width:44px;height:44px;border-radius:50%;background:#fff;position:absolute}
+#progress .pct{position:relative;z-index:1;font-size:.9rem;font-weight:800;letter-spacing:-.02em}
+#progress .plogo{margin-left:auto;display:flex;align-items:center;flex:0 0 auto}
+#progress .plogo img{height:32px;width:auto;display:block;object-fit:contain}
+@media (max-width:480px){#progress .plogo img{height:28px}}
 
-/* slider steps */
-#steps{--pct:0%;width:100%;height:40px;background:transparent}
-#steps::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--o) 0 var(--pct),#eee var(--pct))}
-#steps::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border:3px solid var(--o);background:#fff;border-radius:50%;margin-top:-8px}
+#disc{display:none;align-items:center;gap:8px;border:2px solid #ffd5c2;background:var(--disc-bg);color:var(--disc-fg);border-radius:12px;padding:8px 12px;font-weight:800}
+#disc.win{background:var(--disc-win);color:var(--disc-win-fg);border-color:#cfeede}
+#disc .tooltip{font-weight:600;color:#555;font-size:.9rem}
+#disc .i{font-weight:900}
 
-/* goal */
-.goal-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem}
-.goal-soft{background:#e8f7ee;color:#0d7d46}
-.goal-mid{background:#fff3cc;color:#9a6b00}
-.goal-hard{background:#ffe9e6;color:#a11000}
-.goal-figure{display:block;max-width:420px;width:100%;border-radius:14px}
+/* Steps slider */
+#steps{--pct:0%;--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o);width:100%;height:40px;background:transparent;accent-color:var(--o)}
+#steps:focus{outline:none}
+#steps::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--fill-start) 0 var(--pct),var(--track) var(--pct) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
+#steps::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 10px rgba(232,93,4,.25);margin-top:-8px;transition:transform .12s ease}
+#steps:active::-webkit-slider-thumb{transform:scale(1.06)}
+#steps::-moz-range-track{height:12px;border-radius:999px;background:#e9e9e9}
+#steps::-moz-range-progress{height:12px;border-radius:999px;background:linear-gradient(135deg,var(--fill-start),var(--end))}
+#steps::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 10px rgba(232,93,4,.25)}
 
-/* habits meter */
-.habit-meter{border:2px solid var(--g);border-radius:14px;padding:12px}
-.hm-track{--p:50%;position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,#ffe2db 0,#fff8e5 50%,#e6f7ef 100%)}
-.hm-pointer{position:absolute;top:50%;left:var(--p);transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--o)}
-.hm-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.85rem;font-weight:700}
+/* BMI */
+.bmi-line{margin-top:6px}
+.bmi-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.9rem;vertical-align:baseline}
+.bmi-ok{background:#e8f7ee;color:#0f7a42}.bmi-warn{background:#fff4e6;color:#a04b00}.bmi-bad{background:#ffe9e6;color:#a11000}
 
-/* HARD cards */
-.hcard{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff;cursor:pointer;transition:.2s}
-.hcard.is{border-color:var(--o);box-shadow:0 8px 18px rgba(232,93,4,.14)}
-.hhead{display:flex;align-items:center;gap:10px;font-weight:700}
-.hicon{width:28px;height:28px;display:grid;place-items:center;background:#fff2ec;border:1px solid #ffd5c2;border-radius:999px}
+/* Habits */
+.habit{display:grid;gap:14px}
+.habit-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media (max-width:720px){.habit-grid{grid-template-columns:1fr}}
+.habit h3{margin:.2rem 0 .6rem;font-size:1.02rem}
+.habit .col{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff}
+.chips--pills{gap:8px}
+.chips--pills .chip{border-radius:999px;padding:9px 12px;font-weight:600;border:2px solid var(--g);background:#fff;transition:.15s}
+.chips--pills .chip.is{border-color:var(--o);background:#fffaf5}
 
-/* deal + timer */
-.deal-row{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
-.deal-badge{display:inline-block;padding:6px 10px;border-radius:999px;border:2px solid #ffd7c7;background:#fff7ef;font-weight:800}
-.deal-timer{font-weight:900;border:2px solid #ddd;border-radius:10px;padding:6px 10px;min-width:72px;text-align:center}
+.habit-meter{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff}
+.habit-meter.hidden{display:none}
+.hm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#hmScore{font-weight:800}
+.hm-track{--p:50%;position:relative;height:12px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#ffe1db 0%,#fff7e8 50%,#e7f7ef 100%)}
+.hm-pointer{position:absolute;top:50%;left:var(--p);transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 3px 10px rgba(0,0,0,.12);transition:left .25s ease}
+.hm-scale{display:flex;justify-content:space-between;font-size:.82rem;color:#666;margin-top:6px}
+.hm-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem;margin-left:8px}
+.hm-bad{background:#ffe9e6;color:#a11000}.hm-ok{background:#fff3cc;color:#9a6b00}.hm-good{background:#e7f7ef;color:#0f7a42}
 
-/* player tabs */
-.p-tabs{display:flex;gap:8px;margin:6px 0 8px}
-.p-btn{border:2px solid #ddd;border-radius:999px;background:#fff;padding:6px 10px;font-weight:700;cursor:pointer}
-.p-btn.is{border-color:#ffd7c7;background:#fff7ef}
-.player{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000}
-.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Hard cards */
+.hardw{display:grid;gap:14px}
+.hard-cards{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media (max-width:760px){.hard-cards{grid-template-columns:1fr}}
+.hcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px;cursor:pointer;transform-style:preserve-3d;transition:transform .15s ease,box-shadow .2s ease,border-color .2s;box-shadow:0 8px 18px rgba(0,0,0,.05);overflow:hidden}
+.hcard:hover{box-shadow:0 12px 26px rgba(0,0,0,.08)}
+.hcard.is{border-color:var(--o);background:linear-gradient(180deg,#fff 0,#fff9f3 100%);box-shadow:0 12px 26px rgba(232,93,4,.18)}
+.hhead{display:flex;gap:10px;align-items:center;letter-spacing:-.02em}
+.hicon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#fff6f1;border:2px solid #ffd5c2}
+.hhead,.hhead *{font-weight:500 !important}
 
-/* Program select */
-.pgrid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media(max-width:760px){.pgrid{grid-template-columns:1fr}}
-.pcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px}
-.pcard.is{border-color:var(--o);box-shadow:0 10px 24px rgba(232,93,4,.18);background:linear-gradient(180deg,#fff,#fff9f3)}
-.pcard h3{margin:0 0 4px}
-.pcard .tag{display:inline-block;border:1px solid #ffd7c7;background:#fff7ef;border-radius:999px;padding:4px 8px;font-weight:700;margin-right:6px}
-.pcard .meta{color:#555;font-size:.92rem}
-.pcard .rec{position:absolute;top:10px;right:10px;background:#12a06a;color:#fff;border-radius:999px;padding:4px 8px;font-weight:800;font-size:.82rem}
-.pcard details{margin-top:8px}
+/* Goal UI (из вашей рабочей версии) */
+.goalw{display:grid;gap:12px}
+.goal-top{display:grid;gap:8px;grid-template-columns:1.05fr .95fr}
+@media (max-width:780px){.goal-top{grid-template-columns:1fr}}
+.goal-card{border:2px solid var(--g);border-radius:16px;padding:10px;background:#fff;overflow:hidden}
+.goal-fig{position:relative;height:260px;border:2px solid var(--g);border-radius:16px;padding:8px;background:#fff;overflow:hidden}
+@media (max-width:480px){.goal-fig{height:220px}}
+.goal-range .val{display:flex;align-items:baseline;gap:8px;font-size:clamp(18px,4.6vw,28px);font-weight:800;letter-spacing:-.03em;white-space:nowrap}
+.goal-range .sub{color:#666;margin-top:2px}
+#goalRange{width:100%;height:38px;background:transparent;accent-color:var(--o);--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o)}
+#goalRange:focus{outline:none}
+#goalRange::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--fill-start) 0 var(--pct),var(--track) var(--pct) 100%)}
+#goalRange::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 12px rgba(232,93,4,.25);margin-top:-7px;transition:transform .12s ease}
+#goalRange::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--o)}
+.goal-stack{position:relative;width:100%;height:100%}
+.goal-stack img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(1);transition:opacity .28s ease,transform .28s ease;filter:drop-shadow(0 8px 22px rgba(0,0,0,.08))}
+.goal-stack .tape{display:none!important}
 
-/* week */
-.week-grid{display:grid;gap:10px;grid-template-columns:repeat(7,1fr)}
-@media(max-width:840px){.week-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:540px){.week-grid{grid-template-columns:repeat(2,1fr)}}
-.day{border:2px solid var(--g);border-radius:14px;padding:10px;background:#fff}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.8rem;font-weight:700}
-.badge-tr{background:#fff2ec;color:#b34009;border:1px solid #ffd5c2}
-.badge-rest{background:#eef8f3;color:#0f7a42;border:1px solid #cfeee0}
+/* Loading/result/sale */
+.loader2{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 8px 12px}
+.loader2 .ring{--p:0%;width:88px;height:88px;border-radius:50%;background:conic-gradient(var(--o) var(--p),#eee 0);position:relative;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.loader2 .ring::after{content:"";position:absolute;inset:10px;background:#fff;border-radius:50%}
+.loader2 .pct{position:absolute;inset:0;display:grid;place-items:center;font-weight:800}
+.loader2 .lmsg{margin-top:14px;font-weight:700;font-size:1.05rem}
+.counter{font-size:clamp(26px,6vw,48px);line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+.sale-hero{margin:0 0 12px;border-radius:16px;overflow:hidden}
+.sale-hero img{width:100%;display:block;border-radius:16px;object-fit:cover}
 
-/* hero / images */
-.hero{margin:0 0 12px;border-radius:18px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08)}
-.hero video,.hero img{display:block;width:100%;height:auto}
+/* кейс-виджет */
+.case{border:2px solid var(--g);border-radius:16px;padding:12px;background:#fff;display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;margin:10px 0}
+.case img{width:96px;height:96px;object-fit:cover;border-radius:12px;background:#f6f6f6;cursor:zoom-in}
+.case h3{margin:0 0 4px;font-size:1.05rem}
+.case p{margin:0;color:#555}
+.case.hide{display:none}
+
+/* лайтбокс */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+#lightbox.show{display:flex}
+#lightbox img{max-width:96vw;max-height:90vh;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#lightbox .cap{color:#fff;margin-top:10px;text-align:center;font-size:1rem;opacity:.9}
+#lightbox .x{position:absolute;top:10px;right:14px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff;font-size:26px;cursor:pointer}
+#lightbox .x:active{transform:scale(.96)}
+
+/* Program slide */
+.prog-wrap{display:grid;gap:12px}
+.prog-head{
+  position:relative;border:2px solid var(--g);border-radius:16px;padding:14px 12px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(255,240,230,.9), transparent 50%),
+    radial-gradient(120% 80% at 100% 100%, rgba(255,247,236,.9), transparent 55%),
+    linear-gradient(180deg,#fff,#fff);
+  overflow:hidden;
+}
+.prog-head::after{
+  content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
+  background:conic-gradient(from 0deg, #FFBA08, #E85D04); opacity:.15; border-radius:50%;
+  filter:blur(6px);
+}
+.p-title{margin:.2rem 0 6px; font-size:clamp(20px,5vw,28px); font-weight:800; letter-spacing:-.02em}
+.p-sub{margin:0; color:#555}
+.p-chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.p-chip{border:2px solid #ffd5c2; background:#fff7ef; border-radius:999px; padding:6px 10px; font-weight:700; font-size:.88rem}
+.p-chip.emph{border-color:#cfeede; background:#e9f9f0}
+.prog-hero{margin:0 0 6px; border-radius:16px; overflow:hidden}
+.prog-hero img{width:100%; display:block; border-radius:16px; object-fit:cover; box-shadow:0 12px 28px rgba(0,0,0,.08)}
+.prog-card{border:0; border-radius:0; padding:0; background:transparent; box-shadow:none}
+.prog-card h3{margin:.2rem 0 .6rem}
+.prog-list{padding-left:18px; margin:.2rem 0}
+
+/* Aha moment (переключается после выбора в perweek) */
+.aha{margin-top:8px;border-radius:16px;padding:12px;background:linear-gradient(180deg,#fff8f2,#fff);box-shadow:0 6px 20px rgba(232,93,4,.08)}
+.aha.hidden{display:none}
+.aha strong{font-weight:800}
+.aha small{color:#666}
+.aha img{width:100%;display:block;border-radius:12px;margin-top:8px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+
+/* Limited-time deal styles */
+.deal{margin:8px 0 12px}
+.deal-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.deal-badge{border:2px solid #ffd5c2;background:#fff7ef;border-radius:999px;padding:6px 10px;font-weight:800}
+.deal-timer{margin-left:auto;font-weight:800;font-size:1.1rem;letter-spacing:.02em}
+.offer-inline{border:2px solid var(--g);border-radius:16px;padding:12px;background:#fff;margin:10px 0}
+
+/* Promo interstitials */
+.promo{display:grid;gap:10px}
 .promo-hero{margin:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
-.promo-hero img{display:block;width:100%;height:auto}
+.promo-hero img,.promo-hero video{width:100%;display:block;border-radius:16px;object-fit:cover}
+.promo h2{margin-top:2px}
 
-/* responsive chart */
-#chartFig img{max-width:min(520px,100%);height:auto;display:block;margin:0 auto}
+/* Скрыть кнопку "Посмотреть программу" в инлайн-оффере экрана результата */
+section[data-id="result"] #offerInline .actions { display:none !important; }
+
+/* Trial tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tab{border:2px solid var(--g);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700}
+.tab.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
+.player{margin-top:10px}
+.player iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;box-shadow:0 10px 26px rgba(0,0,0,.08)}
 </style>
 </head>
 <body>
-<div class="app"><div class="card">
-  <!-- Скидка в шапке (со 2-го вопроса: age) -->
-  <div id="progress" class="hide">
-    <div class="discbox" id="discBox">
-      <span class="title">Ваша скидка</span>
-      <span class="value" id="discVal">0%</span>
-      <span class="disc-tip">i<span class="tt">Растёт с каждым вопросом!</span></span>
+  <div class="app"><div class="card">
+    <div id="progress"></div>
+    <div id="screens"></div>
+  </div></div>
+
+  <!-- Лайтбокс -->
+  <div id="lightbox" aria-hidden="true">
+    <div class="x" id="lbClose" aria-label="Закрыть">×</div>
+    <div style="text-align:center">
+      <img id="lbImg" alt=""/>
+      <div class="cap" id="lbCap"></div>
     </div>
-    <div style="margin-left:auto"><img src="logo.png" alt="ШАГАЙ ДОМА" style="height:32px"></div>
   </div>
 
-  <div id="screens"></div>
-</div></div>
-
 <script>
-/* ========= Helpers & State ========= */
-const $=s=>document.querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
-const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-let A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
+/* ====== Helpers ====== */
+const $=s=>document.querySelector(s),$$=(s,r=document)=>Array.from((r||document).querySelectorAll(s));
+const vibrate=n=>{try{navigator.vibrate&&navigator.vibrate(n||12)}catch(e){}};
+const A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
 
-/* ========= Screens Builder ========= */
-const S=$("#screens");
+/* dicts */
+const AGE=['18–29','30–39','40–49','50+'];
+const BODY=[{label:'Худощавое',key:'slim',img:'skinny.png',alt:'Худощавое телосложение'},{label:'Среднее',key:'avg',img:'slim.png',alt:'Среднее телосложение'},{label:'Крупное',key:'large',img:'medium.png',alt:'Крупное телосложение'},{label:'Избыточный вес',key:'obese',img:'xl.png',alt:'Избыточный вес'}];
+const LIFE=['Сидячая работа','Умеренно активная','Активная'];
+const EXP=['Никогда не занималась','Иногда дома / по видео','Регулярно'];
+const MOT=['Для здоровья','Для внешности','Для энергии и лёгкости','Для уверенности в себе'];
+const HEALTH=['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'];
+
+/* Привычки (как в вашей версии) */
+const BAD=['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'];
+const GOOD=['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'];
+
+/* кейсы примеров */
+const CASES = [
+  { kg:14,   name:'Ольги',         months:4, img:'olga.png' },
+  { kg:10,   name:'Александры',    months:4, img:'alexandra.png' },
+  { kg:14,   name:'Екатерины',     months:6, img:'ekaterina.jpg' },
+  { kg:8,    name:'Юлии',          months:4, img:'yulia.jpg' },
+  { kg:17.5, name:'Светланы',      months:2, img:'svetlana.jpg' },
+  { kg:7,    name:'Резеды',        months:2, img:'rezeda.jpg' },
+  { kg:17.5, name:'Инны',          months:5, img:'inna.jpg' },
+  { kg:16,   name:'Шагательницы',  months:3, img:'noname.jpg' }
+];
+function pickCase(targetKg){let best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
+
+/* scaffolding */
+const screensRoot=$('#screens');
 const section=(id,html)=>`<section class="screen${id==='intro'?' is':''}" data-id="${id}">${html}</section>`;
-const opts=(id,arr)=>`<div class="grid cols2" id="${id}">${arr.map(v=>`<label class="opt" data-v="${v}">${v}</label>`).join('')}</div>`;
-const chips=(id,arr)=>`<div class="chips" id="${id}">${arr.map(v=>`<button type="button" class="chip" data-v="${v}">${v}</button>`).join('')}</div>`;
-const actions=()=>`<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>`;
+const chips=(id,arr)=>`<div class="chips" id="${id}">`+arr.map(t=>`<button type="button" class="chip" data-v="${t}">${t}</button>`).join('')+`</div>`;
+const opts=(id,arr)=>`<div class="grid cols2" id="${id}">`+arr.map(t=>{
+  let label,key;
+  if(typeof t==='string'){label=t;key=t}
+  else if(Array.isArray(t)){label=t[0];key=t[1]??t[0]}
+  else if(t&&typeof t==='object'){label=t.label??t.value??t.key??'';key=t.key??t.value??t.label??''}
+  else{label=String(t);key=String(t)}
+  return `<label class="opt" data-v="${String(key)}"><span>${String(label)}</span></label>`;
+}).join('')+`</div>`;
+const actions=()=>`<div class="actions sticky"><button class="btn ghost" data-prev>Назад</button><button class="btn primary" data-next>Далее</button></div>`;
 
-/* ========= Flow HTML ========= */
-const html =
+/* ====== Screens HTML ====== */
+const html=
 section('intro',`
-  <figure class="hero"><video autoplay muted playsinline loop preload="metadata" poster="logo.png"><source src="intro.mp4#t=0.1" type="video/mp4"></video></figure>
-  <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах</b></h1>
+  <figure class="hero-wrap">
+    <div class="hero-skel" id="heroSkel"></div>
+    <video class="hero-media" autoplay muted playsinline loop preload="metadata" poster="logo.png">
+      <source src="intro.mp4" type="video/mp4"/>
+      <img src="logo.png" alt="ШАГАЙ ДОМА"/>
+    </video>
+  </figure>
+  <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах…</b></h1>
   <p class="hint"><b>…а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!</b></p>
-  <div class="grid"><div><div class="hint">Как к вам обращаться?</div><input id="name" class="text" placeholder="Например: Ирина"></div></div>
-  <div class="actions sticky"><button class="btn primary" id="start" type="button">Поехали →</button></div>
+  <div class="grid">
+    <div>
+      <div class="hint">Как к вам обращаться?</div>
+      <input id="name" class="text" placeholder="Например: Ирина" autocomplete="name">
+    </div>
+  </div>
+  <div class="actions sticky"><button class="btn primary" data-next id="startBtn">Поехали →</button></div>
 `)
-+section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',['18–29','30–39','40–49','50+'])}${actions()}`)
++section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',AGE)}${actions()}`)
+
+/* PROMO 1: 1 млн подписчиков — 2.jpg */
 +section('promo1',`
-  <figure class="promo-hero"><img src="2.jpg" alt="Больше 1 млн подписчиков"></figure>
-  <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчика во всех соцсетях!</h2>
-  <p class="hint">Присоединяйтесь к самому дружелюбному фитнес-сообществу.</p>
-  ${actions()}
+  <div class="promo">
+    <figure class="promo-hero">
+      <img src="2.jpg" alt="ШАГАЙ ДОМА⚡ — больше 1 млн подписчиков" loading="lazy" decoding="async">
+    </figure>
+    <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчиков во всех соцсетях!</h2>
+    <p class="hint"> Мы — одно из самых дружелюбных фитнес-сообществ.</p>
+    ${actions()}
+  </div>
 `)
+
 +section('body',`
   <h2>Телосложение сейчас</h2>
   <div class="grid cols2" id="bodyOpts">
-    ${[{k:'slim',t:'Худощавое',img:'skinny.png'},{k:'avg',t:'Среднее',img:'slim.png'},{k:'large',t:'Крупное',img:'medium.png'},{k:'obese',t:'Избыточный вес',img:'xl.png'}].map(o=>`<label class="opt opt--img" data-v="${o.k}"><img src="${o.img}" alt=""><span>${o.t}</span></label>`).join('')}
-  </div>
-  ${actions()}
-`)
-+section('promo2',`
-  <figure class="promo-hero"><img src="otzyv.jpg" alt="Уже больше 10 000 людей в клубе"></figure>
-  <h2>Уже больше <b>10&nbsp;000</b> людей в клубе ШАГАЙ ДОМА ⚡</h2>
-  <p class="hint">Каждый на своём уровне, но вместе — сильнее.</p>
-  ${actions()}
+    ${BODY.map(o=>`<label class="opt opt--img" data-v="${o.key}"><img src="${o.img}" alt="${o.alt}"><span>${o.label}</span></label>`).join('')}
+  </div>${actions()}
 `)
 +section('steps',`
-  <h2>Сколько шагов вы проходите сейчас в день?</h2>
+  <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
   <input id="steps" type="range" min="0" max="25000" step="250" value="4000">
   <div class="hint">Сейчас: <b><span id="sv">4000</span> шагов</b></div>
+  <p class="hint"><b>Подсказка:</b> найти шаги можно в приложении вашего телефона/браслета</p>
   ${actions()}
 `)
+
+/* PROMO 2: 10 000 в клубе — otzyv.jpg */
++section('promo2',`
+  <div class="promo">
+    <figure class="promo-hero">
+      <img src="otzyv.jpg" alt="Уже больше 10 000 людей в клубе" loading="lazy" decoding="async">
+    </figure>
+    <h2>Уже больше <b>10&nbsp;000</b> людей в онлайн-клубе ШАГАЙ ДОМА ⚡</h2>
+    <p class="hint">Каждый на своём уровне, но вместе мы — сильнее.</p>
+    ${actions()}
+  </div>
+`)
+
 +section('bmi',`
   <h2>Давайте посчитаем ваш ИМТ</h2>
+  <p class="hint">Укажите ваш рост и вес — можно приблизительно. Мы покажем, что такое ИМТ и в какой зоне вы находитесь.</p>
   <div class="grid cols2">
-    <div><div class="hint">Рост, см</div><input id="h" type="number" class="text" inputmode="numeric"></div>
-    <div><div class="hint">Вес, кг</div><input id="w" type="number" class="text" inputmode="numeric"></div>
+    <div><div class="hint">Рост, см</div><input id="h" type="number" class="text" placeholder="Например: 165"></div>
+    <div><div class="hint">Вес, кг</div><input id="w" type="number" class="text" placeholder="Например: 72"></div>
   </div>
-  <div id="bmiI" class="hint" style="margin-top:8px"></div>
-  <details style="margin-top:8px"><summary>Что такое ИМТ?</summary><div class="hint">Индекс массы тела — показатель соответствия массы и роста. Норма: 18.5–24.9, избыточная масса: 25–29.9, ожирение: 30+.</div></details>
+  <div id="bmiI" class="hint"></div>
   ${actions()}
 `)
-+section('life',`<h2>Образ жизни</h2>${opts('lifeOpts',['Сидячая работа','Умеренно активная','Активная'])}${actions()}`)
-+section('exp',`<h2>Опыт тренировок</h2>${opts('expOpts',['Никогда не занималась','Иногда дома / по видео','Регулярно'])}${actions()}`)
++section('life',`<h2>Образ жизни</h2>${opts('lifeOpts',LIFE)}${actions()}`)
++section('exp',`<h2>Опыт тренировок</h2>${opts('expOpts',EXP)}${actions()}`)
+
+/* PROMO 3: 20 млн шагов — walkwalk.jpg */
 +section('promo3',`
-  <figure class="promo-hero"><img src="walkwalk.jpg" alt="20 млн шагов в день"></figure>
-  <h2><b>20&nbsp;миллионов</b> шагов каждый день набирают участницы клуба 😍</h2>
-  <p class="hint">Короткие шагательные тренировки легко вписать в день.</p>
-  ${actions()}
+  <div class="promo">
+    <figure class="promo-hero">
+      <img src="walkwalk.jpg" alt="20 миллионов шагов каждый день" loading="lazy" decoding="async">
+    </figure>
+    <h2><b>20&nbsp;миллионов</b> шагов каждый день набирают участницы клуба 😍</h2>
+    <p class="hint">Короткие шагательные тренировки — легко вписать в день.</p>
+    ${actions()}
+  </div>
 `)
+
+/* ====== ВАША ЦЕЛЬ (как в вашей рабочей версии) ====== */
 +section('goal',`
   <h2>Ваша цель</h2>
-  <div class="grid cols2">
-    <div>
-      <label><input id="goalKeep" type="checkbox"> <b>Накачать мышцы / поддерживать форму</b></label>
-      <div class="hint" style="margin:6px 0">Если цель — не худеть, отметьте этот пункт.</div>
-      <div style="margin:10px 0"><span>Скинуть (кг): </span><input id="goalRange" type="range" min="0" max="20" step="0.5" value="5"><b> <span id="goalVal">5.0</span> кг</b></div>
-      <div class="hint">Сложность цели: <span id="goalBadge" class="goal-badge goal-mid">умеренно</span></div>
+  <div class="goalw">
+    <div class="goal-top">
+      <div class="goal-card">
+        <div class="goal-range">
+          <div class="val"><span class="minus">−</span><span id="goalVal">5.0</span> кг</div>
+          <div class="sub"><span id="goalBadge" class="goal-badge goal-mid">умеренно</span></div>
+        </div>
+        <input id="goalRange" type="range" min="0" max="20" step="0.5" value="5">
+        <div class="hint">Потяните ползунок: 0 — поддерживать форму · 20 — амбициозная цель</div>
+        <label class="goal-switch" style="margin-top:10px"><input id="goalKeep" type="checkbox"><span>Накачать мышцы</span></label>
+      </div>
+      <div class="goal-fig">
+        <div class="goal-stack" id="goalStack">
+          <img src="superfit.png" data-i="0" alt="superfit" loading="lazy" decoding="async">
+          <img src="fit.png"      data-i="1" alt="fit"      loading="lazy" decoding="async">
+          <img src="skinny.png"   data-i="2" alt="skinny"   loading="lazy" decoding="async">
+          <img src="slim.png"     data-i="3" alt="slim"     loading="lazy" decoding="async">
+          <img src="s.png"        data-i="4" alt="s"        loading="lazy" decoding="async">
+          <img src="m.png"        data-i="5" alt="m"        loading="lazy" decoding="async">
+          <img src="l.png"        data-i="6" alt="l"        loading="lazy" decoding="async">
+          <img src="xl.png"       data-i="7" alt="xl"       loading="lazy" decoding="async">
+          <img src="xxl.png"      data-i="8" alt="xxl"      loading="lazy" decoding="async">
+          <div class="tape" id="goalTape"></div>
+        </div>
+      </div>
     </div>
-    <div>
-      <!-- Динамическая серия изображений по цели -->
-      <img class="goal-figure" id="goalImg" src="slim.png" alt="Визуал цели" onerror="this.onerror=null;this.src='medium.png'">
-    </div>
+    <p class="goal-note">Цель можно уточнить позже — расчёт адаптируется под ваш темп и самочувствие.</p>
+    ${actions()}
   </div>
-  ${actions()}
 `)
++section('motivation',`<h2>Почему вы хотите заниматься спортом?</h2>${chips('motChips',MOT)}${actions()}`)
 +section('perweek',`
   <h2>Сколько готовы тренироваться в неделю?</h2>
   ${chips('pwChips',['2 раза','3 раза','4–5 раз','Каждый день 20–30 мин'])}
-  <div id="aha" class="hidden" style="margin-top:8px"></div>
-  <figure id="chartFig" class="hidden" style="margin:6px 0 0">
-    <picture>
-      <source srcset="chart.webp" type="image/webp">
-      <source srcset="chart.png" type="image/png">
-      <img src="chart.jpg" alt="Пример прогресса">
-    </picture>
-  </figure>
+  <div id="aha" class="aha hidden"></div>
   ${actions()}
 `)
+
+/* PROMO 4: 85% похудели — doposle.jpg */
 +section('promo4',`
-  <figure class="promo-hero"><img src="doposle.jpg" alt="85% похудели на 1–2 кг"></figure>
-  <h2><b>85%</b> клубников похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
-  <p class="hint">Результат мотивирует продолжать.</p>
-  ${actions()}
+  <div class="promo">
+    <figure class="promo-hero">
+      <img src="doposle.jpg" alt="85% женщин в клубе похудели на 1–2 кг за первую неделю" loading="lazy" decoding="async">
+    </figure>
+    <h2><b>85%</b> женщин в клубе похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
+    <p class="hint">Стартовать легко, а результаты мотивируют продолжать.</p>
+    ${actions()}
+  </div>
 `)
+
+/* ====== ЧТО ДАЁТСЯ ТЯЖЕЛЕЕ (ваша версия) ====== */
 +section('hard',`
   <h2>Что сейчас даётся тяжелее всего?</h2>
-  <div class="grid cols2" id="hardCards">
-    <div class="hcard" data-k="walk"><div class="hhead"><div class="hicon">🚶‍♀️</div><div>Долгая прогулка утомляет</div></div></div>
-    <div class="hcard" data-k="stairs"><div class="hhead"><div class="hicon">🪜</div><div>Лестницы — испытание</div></div></div>
-    <div class="hcard" data-k="games"><div class="hhead"><div class="hicon">🎯</div><div>Активные игры</div></div></div>
-    <div class="hcard" data-k="jumps"><div class="hhead"><div class="hicon">🦘</div><div>Прыжки</div></div></div>
-    <div class="hcard" data-k="none"><div class="hhead"><div class="hicon">✅</div><div>Ничего из этого</div></div></div>
+  <div class="hardw">
+    <div class="hard-cards" id="hardCards">
+      <div class="hcard" data-k="walk"><div class="hhead"><div class="hicon">🚶‍♀️</div><div>Долгая прогулка утомляет</div></div></div>
+      <div class="hcard" data-k="stairs"><div class="hhead"><div class="hicon">🪜</div><div>Каждый пролёт по лестнице — испытание</div></div></div>
+      <div class="hcard" data-k="games"><div class="hhead"><div class="hicon">🎯</div><div>Стыдно включаться в активные игры</div></div></div>
+      <div class="hcard" data-k="jumps"><div class="hhead"><div class="hicon">🦘</div><div>Прыжки</div></div></div>
+      <div class="hcard" data-k="none"><div class="hhead"><div class="hicon">✅</div><div>Ничего из этого</div></div></div>
+    </div>
+    ${actions()}
   </div>
-  ${actions()}
 `)
-+section('health',`<h2>Есть ли состояния, которые важно учитывать?</h2>${chips('healthChips',['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'])}${actions()}`)
-+section('nutrition',`<h2>Питание</h2>${opts('nutriOpts',['Буду питаться по меню-конструктору в клубе','Хочу научиться правильно составлять тарелку','Нет, пока без питания'])}${actions()}`)
++section('health',`<h2>Есть ли состояния, которые важно учитывать?</h2>${chips('healthChips',HEALTH)}<p class="hint">Если есть сомнения — проконсультируйтесь с врачом.</p>${actions()}`)
++section('nutrition',`<h2>Питание</h2>${opts('nutriOpts',[{label:'Буду питаться по меню-конструктору в клубе',key:'menu'},{label:'Хочу научиться правильно составлять тарелку',key:'plate'},{label:'Нет, пока без питания',key:'no'}])}${actions()}`)
+
+/* ====== ВАШИ ПРИВЫЧКИ (ваша версия) ====== */
 +section('food',`
-  <h2>Ваши привычки</h2>
-  <div class="hint"><b>Плохие привычки</b></div>
-  <div class="chips" id="bad">${['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'].map(x=>`<button class="chip" data-kind="bad" data-v="${x}">${x}</button>`).join('')}</div>
-  <div class="hint" style="margin-top:10px"><b>Хорошие привычки</b></div>
-  <div class="chips" id="good" style="margin-top:8px">${['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'].map(x=>`<button class="chip" data-kind="good" data-v="${x}">${x}</button>`).join('')}</div>
-  <div class="habit-meter hidden" id="hmWrap" style="margin-top:10px">
-    <div style="display:flex;justify-content:space-between"><div>Индекс прогресса <span id="hmBadge" class="hm-badge">нейтрально</span></div><b id="hmScore">0%</b></div>
-    <div class="hm-track" id="hmTrack"><div class="hm-pointer" id="hmPtr"></div></div>
+  <h2>Расскажите нам о ваших текущих привычках</h2>
+  <div class="habit">
+    <div class="habit-grid">
+      <div class="col">
+        <h3>Плохие привычки</h3>
+        <div class="chips chips--pills" id="bad">
+          ${BAD.map(x=>`<button type="button" class="chip" data-kind="bad" data-v="${x}">${x}</button>`).join('')}
+        </div>
+      </div>
+      <div class="col">
+        <h3>Хорошие привычки</h3>
+        <div class="chips chips--pills" id="good">
+          ${GOOD.map(x=>`<button type="button" class="chip" data-kind="good" data-v="${x}">${x}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="habit-meter hidden" id="hmWrap">
+      <div class="hm-top"><div><span id="hmLabel">Индекс прогресса</span><span class="hm-badge hm-ok" id="hmBadge">нейтрально</span></div><span id="hmScore">0%</span></div>
+      <div class="hm-track" id="hmTrack"><div class="hm-pointer" id="hmPtr"></div></div>
+      <div class="hm-scale"><span>тормозит</span><span>нейтрально</span><span>ускоряет</span></div>
+    </div>
+
+    <p class="hint">Отметьте только то, что про вас — индикатор появится автоматически ✨</p>
+    <div class="actions sticky"><button class="btn ghost" data-prev>Назад</button><button class="btn primary" id="calc">Рассчитать результат →</button></div>
   </div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toTrial" type="button">Далее →</button></div>
 `)
+
+/* ====== Пробная тренировка (вставлена ПЕРЕД прогнозом) ====== */
 +section('trial',`
   <h2>Ура! Вы ответили на все вопросы 🎉</h2>
-  <p class="hint"><b>Теперь вам доступна пробная тренировка.</b></p>
-  <div class="p-tabs" id="trialTabs"></div>
-  <figure style="aspect-ratio:16/9;border-radius:16px;overflow:hidden"><div id="trialFrame" class="player"></div></figure>
-  <p class="hint"><b id="trialCtaText">Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам 3 раза в неделю.</b></p>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="calc" type="button">Узнать мой прогноз →</button></div>
+  <p class="hint">Теперь вам доступна пробная тренировка. Если видео не грузится — попробуйте другой источник ниже.</p>
+  <div class="tabs">
+    <button class="tab is" data-tab="vk">VK Видео</button>
+    <button class="tab" data-tab="yt">YouTube</button>
+    <button class="tab" data-tab="rt">Rutube</button>
+  </div>
+  <div class="player">
+    <div data-pane="vk">
+      <iframe src="https://vkvideo.ru/video-222534261_456239990?list=ln-vcO6bQouZ1Apz53Rfh"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div data-pane="yt" style="display:none">
+      <iframe src="https://www.youtube.com/embed/TFltKZJoV2g"
+              title="Пробная тренировка" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div data-pane="rt" style="display:none">
+      <iframe src="https://rutube.ru/video/private/fbad797705787d6048d2344b7aa55a90/?r=a&p=93p6xGkyvbtXxF38SzuoSw"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev>Назад</button>
+    <button class="btn primary" id="goForecast">Узнать мой прогноз →</button>
+  </div>
 `)
+
+/* LOADING */
 +section('loading',`
-  <div style="text-align:center;padding:34px 0"><div id="lp" style="display:inline-grid;place-items:center;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--o) 0deg,#eee 0deg)"><div style="width:70px;height:70px;background:#fff;border-radius:50%;display:grid;place-items:center"><b id="lpct">0%</b></div></div><div style="margin-top:12px" id="lmsg">Собираем данные…</div></div>
+  <div class="loader2"><div class="ring" id="lring"><div class="pct" id="lpct">0%</div></div>
+  <div class="lmsg" id="lmsg">Собираем данные…</div><p class="hint" id="lsub">Возраст • ИМТ • Активность • Цель</p></div>
 `)
+
+/* ====== RESULT (ваш формат) ====== */
 +section('result',`
   <h2 id="rTitle">Готово!</h2>
-  <div style="font-size:clamp(24px,6vw,44px);font-weight:900;margin:6px 0" id="nums">0 кг за 0 недель</div>
+  <div class="counter" id="nums">0 кг за 0 недель</div>
   <p class="hint" id="rSub"></p>
+  <div id="caseBox" class="case hide"></div>
 
-  <!-- Пример из клуба (конкретная участница) -->
-  <div id="caseBox" class="hidden" style="display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;margin:12px 0">
-    <img id="caseImg" src="otzyv.jpg" alt="Пример из клуба" style="width:120px;height:120px;object-fit:cover;border-radius:12px">
-    <div><div style="font-weight:800;margin-bottom:4px">Пример из клуба</div><div class="hint" id="caseTxt"></div></div>
+  <div id="offerInline" class="offer-inline" style="display:none">
+    <p class="hint" style="margin:0 0 8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
+    <div class="deal"><div class="deal-row" style="justify-content:flex-end">
+      <span class="deal-timer" id="inlineTimer">15:00</span><span class="deal-badge">Предложение ограничено</span>
+    </div></div>
+    <div class="actions" style="margin-top:10px"><button class="btn primary" id="toPrograms">Посмотреть программу</button></div>
   </div>
 
-  <!-- Спец-предложение без CTA (CTA только в финале) -->
-  <div style="margin:10px 0">
-    <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-    <div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="inlineTimer">15:00</span></div>
+  <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev>Назад</button>
+    <button class="btn primary" id="toCTA">Перейти к предложению!</button>
   </div>
+`)
 
-  <div class="actions"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="seeProgram" type="button">Посмотреть программу</button></div>
-`)
-+section('progSelect',`
-  <h2>Подберём программу под вас</h2>
-  <p class="hint">Мы учли ваш возраст, ИМТ, активность, опыт и цель. Можно выбрать другой вариант.</p>
-  <div class="pgrid" id="progGrid"></div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="goProgram" type="button">Смотреть неделю →</button></div>
-`)
+/* Программы */
 +section('program',`
-  <h2 id="progTitle">Пример вашей недели в клубе</h2>
-  <p class="hint" id="progLead"></p>
-  <div class="week-grid" id="weekGrid"></div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toSale" type="button">Перейти к предложению!</button></div>
+  <div class="prog-wrap">
+    <div class="prog-head">
+      <div class="p-title" id="progTitle">Мы рекомендуем вам…</div>
+      <p class="p-sub" id="progLead"></p>
+      <div class="p-chips" id="progChips"></div>
+    </div>
+
+    <figure class="prog-hero">
+      <img src="program.png" alt="Рекомендуемая программа">
+    </figure>
+
+    <div class="prog-card">
+      <h3>Почему это подойдёт именно вам</h3>
+      <ul class="prog-list" id="progList"></ul>
+    </div>
+
+    <div class="actions sticky">
+      <button class="btn ghost" data-prev>Назад</button>
+      <button class="btn primary" id="toSale">К программе →</button>
+    </div>
+  </div>
 `)
+
+/* SALE (финальный экран) */
 +section('sale',`
-  <figure class="promo-hero"><img src="2.jpg" alt="Клуб ШАГАЙ ДОМА"></figure>
-  <h2>Присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡</h2>
-  <p class="hint" id="sLead"></p>
-  <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-  <div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="saleTimer">15:00</span></div>
-  <div class="actions" style="margin-top:10px"><a class="btn primary" id="cta" target="_blank" rel="noopener" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=looseweight">Хочу абонемент со скидкой 70%!</a></div>
+  <figure class="sale-hero"><img src="final.jpg" alt="Онлайн-клуб ШАГАЙ ДОМА ⚡"></figure>
+  <h2 id="sTitle">Добро пожаловать в клуб «ШАГАЙ ДОМА» ⚡</h2>
+  <p id="sLead" class="hint"></p>
+  <div class="deal">
+    <div class="deal-row">
+      <span class="deal-badge">−70% только сейчас</span>
+      <span class="deal-timer" id="saleTimer">15:00</span>
+    </div>
+  </div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev>Назад</button>
+    <a class="btn primary" id="buyBtn" href="#" target="_blank" rel="noopener">Хочу абонемент со скидкой 70%!</a>
+  </div>
 `);
 
-S.innerHTML = html;
+/* Mount HTML */
+screensRoot.innerHTML=html;
 
-/* ========= Progress & Navigation ========= */
-let idx=0, SECTIONS=$$('.screen');
-const progress=$('#progress'), discVal=$('#discVal'), discBox=$('#discBox');
-const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','perweek','hard','health','nutrition','food'];
-const idxBy=id=>SECTIONS.findIndex(s=>s.dataset.id===id);
+/* ====== Top progress + discount ====== */
+const progressRoot=$('#progress');
+progressRoot.innerHTML=`
+  <div class="pcirc"><div class="pct" id="pct">0%</div></div>
+  <div id="disc" role="status" aria-live="polite">
+    <span class="i">Ваша скидка:</span> <span id="discPct">0%</span>
+    <span class="tooltip" title="Растёт с каждым вопросом!">ⓘ</span>
+  </div>
+  <div class="plogo"><img src="logo.png" alt="ШАГАЙ ДОМА"></div>
+`;
 
-function updateDiscount(){
-  let seen=0;
-  for(const id of QUESTION_IDS){
-    const qi=idxBy(id); if(qi>=0 && idx>=qi) seen++;
-  }
-  const pct=Math.min(70,Math.round(seen/QUESTION_IDS.length*70));
-  discVal.textContent=pct+'%';
-  discBox.classList.toggle('max', pct>=70);
+/* ====== State & Navigation ====== */
+let idx=0;
+const screens=$$('#screens .screen');
+function show(i){
+  if(i<0||i>=screens.length)return;
+  screens[idx].classList.remove('is'); idx=i; screens[idx].classList.add('is');
+  updateProgress();
+  updateDiscountVisibility();
+  handleScreenEnter(screens[idx].dataset.id);
 }
-function show(n){
-  SECTIONS[idx].classList.remove('is');
-  idx=clamp(n,0,SECTIONS.length-1);
-  SECTIONS[idx].classList.add('is');
-  // Показ скидки со второго вопроса (age)
-  progress.classList.toggle('hide', idx < idxBy('age'));
-  updateDiscount();
-  window.scrollTo({top:0,behavior:'smooth'});
-  const id=SECTIONS[idx].dataset.id;
-  if(id==='trial') mountTrial();
-  if(id==='progSelect') renderProgSelect();
-  if(id==='program') renderProgram();
-}
-
-$('#start').onclick=()=>show(1);
-window.addEventListener('click',e=>{
-  if(e.target.closest('[data-next]')) show(idx+1);
-  if(e.target.closest('[data-prev]')) show(idx-1);
-});
-document.addEventListener('click',e=>{
-  const id=e.target?.id;
-  if(id==='toTrial') show(idxBy('trial'));
-  if(id==='calc'){ show(idxBy('loading')); runLoading(calculate); }
-  if(id==='seeProgram') show(idxBy('progSelect'));
-  if(id==='goProgram') show(idxBy('program'));
-  if(id==='toSale') show(idxBy('sale'));
+function next(){ show(idx+1) }
+function prev(){ show(idx-1) }
+screensRoot.addEventListener('click',e=>{
+  const t=e.target;
+  if(t.matches('[data-next]')){ e.preventDefault(); next(); }
+  if(t.matches('[data-prev]')){ e.preventDefault(); prev(); }
 });
 
-/* ========= Inputs ========= */
-$('#name').oninput=e=>{A.name=e.target.value.trim();save()};
-
-const stepsRange=$('#steps'), sv=$('#sv');
-const updR=()=>{const min=+stepsRange.min,max=+stepsRange.max,val=+stepsRange.value;stepsRange.style.setProperty('--pct',((val-min)/(max-min))*100+'%')};
-stepsRange.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updR();save();updateAha()};
-updR();
-
-['h','w'].forEach(id=>{$('#'+id).addEventListener('input',updBMI)});
-function bmiCat(b){if(b<18.5)return['Дефицит массы','goal-soft'];if(b<25)return['Норма','goal-soft'];if(b<30)return['Избыточная масса','goal-mid'];if(b<35)return['Ожирение I ст.','goal-hard'];if(b<40)return['Ожирение II ст.','goal-hard'];return['Ожирение III ст.','goal-hard']}
-function updBMI(){
-  const h=+$('#h').value,w=+$('#w').value;
-  if(h>0&&w>0){
-    A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();
-    const [lbl,cls]=bmiCat(A.bmi);
-    $('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> — <span class="goal-badge '+cls+'">'+lbl+'</span>';
-  }else{$('#bmiI').textContent=''}
-}
-
-/* Generic chooser */
-function choose(root,key,single){root.addEventListener('click',e=>{const el=e.target.closest(single?'.opt':'.chip');if(!el)return;
-  if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));el.classList.add('is');A[key]=el.dataset.v||el.textContent}
-  else{el.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v)}
-  save(); if(key==='perweek') updateAha();
-});}
-choose($('#ageOpts'),'age',true);
-choose($('#bodyOpts'),'body',true);
-choose($('#lifeOpts'),'life',true);
-choose($('#expOpts'),'exp',true);
-choose($('#pwChips'),'perweek',false);
-choose($('#healthChips'),'health',false);
-choose($('#nutriOpts'),'nutri',true);
-
-/* ========= HARD question ========= */
-(function(){
-  const wrap=$('#hardCards'); const map={walk:'Долгая прогулка утомляет',stairs:'Лестницы — испытание',games:'Активные игры',jumps:'Прыжки',none:'Ничего из этого'};
-  if(A.hardKey){const sel=wrap.querySelector(`[data-k="${A.hardKey}"]`); if(sel) sel.classList.add('is')}
+/* выбор опций */
+function bindChips(id,key,single=true){
+  const wrap=$('#'+id); if(!wrap) return;
   wrap.addEventListener('click',e=>{
-    const c=e.target.closest('.hcard'); if(!c) return;
-    $$('.hcard',wrap).forEach(x=>x.classList.remove('is'));
-    c.classList.add('is'); A.hardKey=c.dataset.k; A.hard=map[A.hardKey]; save();
+    const b=e.target.closest('.chip'); if(!b) return;
+    if(single){ $$('.chip',wrap).forEach(x=>x.classList.remove('is')); b.classList.add('is'); A[key]=b.dataset.v; }
+    else{ b.classList.toggle('is');
+      const set=new Set(A[key]||[]); b.classList.contains('is')?set.add(b.dataset.v):set.delete(b.dataset.v); A[key]=[...set];
+    }
+    save(); vibrate(8);
+    if(id==='pwChips') revealAha();
   });
-})();
-
-/* ========= Goal ========= */
-const goalR=$('#goalRange'), goalV=$('#goalVal'), goalB=$('#goalBadge'), goalKeep=$('#goalKeep'), goalImg=$('#goalImg');
-function pickGoalImg(v,keep){
-  if(keep||v===0) return 'skinny.png';
-  if(v<=5) return 'slim.png';
-  if(v<=10) return 'medium.png';
-  // если xxl.png отсутствует — пусть браузер заменит fallbackом из onerror, либо используем xl.png
-  return 'xl.png';
 }
-function setGoal(v){v=clamp(+v||0,0,20);A.goalKg=v;goalV.textContent=v.toFixed(1);const cls=v===0?'goal-soft':v<=10?'goal-mid':'goal-hard';const txt=v===0?'поддержание':v<=10?'умеренно':'интенсивно';goalB.className='goal-badge '+cls;goalB.textContent=txt;goalImg.src=pickGoalImg(v,!!A.keep);save()}
-goalR.oninput=e=>setGoal(e.target.value);
-goalKeep.onchange=e=>{A.keep=!!e.target.checked;save();goalR.disabled=!!A.keep;setGoal(A.keep?0:(A.goalKg||5))};
-(function(){const kg=(A.goalKg!=null)?A.goalKg:5;goalR.value=kg;goalKeep.checked=!!A.keep;goalR.disabled=!!A.keep;setGoal(kg)})();
-
-/* ========= Per week & Chart reveal ========= */
-function freqFromPerweek(){const s=A.perweek||[];let n=0;if(s.some(v=>/Каждый день/.test(v)))n=7;else if(s.some(v=>/4–5/.test(v)))n=5;else if(s.some(v=>/3/.test(v)))n=3;else if(s.some(v=>/2/.test(v)))n=2;return n}
-function perweekLabel(){const s=freqFromPerweek();return s===7?'каждый день':s===5?'4–5 раз в неделю':s===3?'3 раза в неделю':s===2?'2 раза в неделю':'3 раза в неделю'}
-function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'); if(!n){box.classList.add('hidden');box.innerHTML='';fig.classList.add('hidden');return}
- const add=n*3000, base=(+A.steps||4000)*7, k=base?Math.min(2.5,Math.max(1.1,(base+add)/base)):1.3;
- box.innerHTML='<b>Отлично!</b> С тренировками '+(n===7?'каждый день':'~'+n+' раза в неделю')+' активность вырастет примерно в <b>'+k.toFixed(1)+' раза</b> (ещё ~'+add.toLocaleString('ru-RU')+' шагов/нед).';
- box.classList.remove('hidden'); fig.classList.remove('hidden');
+function bindOpts(id,key){
+  const wrap=$('#'+id); if(!wrap) return;
+  wrap.addEventListener('click',e=>{
+    const o=e.target.closest('.opt'); if(!o) return;
+    $$('.opt',wrap).forEach(x=>x.classList.remove('is')); o.classList.add('is'); A[key]=o.dataset.v; save(); vibrate(8);
+  });
 }
 
-/* ========= Habits Index ========= */
-(function habits(){
-  const wrapBad=$('#bad'), wrapGood=$('#good'), hmWrap=$('#hmWrap'), ptr=$('#hmPtr'), scoreEl=$('#hmScore'), badge=$('#hmBadge');
-  function recompute(){
-    const bad=$$('.chip.is',wrapBad).length, good=$$('.chip.is',wrapGood).length;
-    A.badHabits=$$('.chip.is',wrapBad).map(x=>x.dataset.v);
-    A.goodHabits=$$('.chip.is',wrapGood).map(x=>x.dataset.v);
-    save();
-    let score = clamp(Math.round(50 + good*12 - bad*12),0,100);
-    scoreEl.textContent=score+'%';
-    ptr.style.left = score+'%';
-    hmWrap.classList.toggle('hidden', (bad+good)===0);
-    badge.textContent = score<40?'старт':(score>=60?'молодец!':'нейтрально');
-  }
-  function toggle(e){const b=e.target.closest('.chip'); if(!b) return; b.classList.toggle('is'); recompute();}
-  wrapBad.addEventListener('click',toggle);
-  wrapGood.addEventListener('click',toggle);
-  (A.badHabits||[]).forEach(v=>{const el=wrapBad.querySelector(`[data-v="${v}"]`); el&&el.classList.add('is')});
-  (A.goodHabits||[]).forEach(v=>{const el=wrapGood.querySelector(`[data-v="${v}"]`); el&&el.classList.add('is')});
-  recompute();
-})();
+/* inputs */
+$('#name').addEventListener('input',e=>{A.name=e.target.value;save()});
+const sv=$('#sv'); const stepsInput=$('#steps');
+if(stepsInput){ const upd=()=>{sv.textContent=+stepsInput.value; stepsInput.style.setProperty('--pct', (stepsInput.value/25000*100)+'%'); A.steps=+stepsInput.value; save()}; stepsInput.addEventListener('input',upd); upd(); }
 
-/* ========= Trial Player ========= */
-const EMBEDS={
-  vk:'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',
-  yt:'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',
-  rt:'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'
-};
-function mountTrial(){
-  const tabs=$('#trialTabs'), frame=$('#trialFrame');
-  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
-  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
-  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
-  sel('vk');
-  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
+/* BMI */
+function updateBMI(){
+  const h=+$('#h').value||0, w=+$('#w').value||0; A.h=h; A.w=w; save();
+  const out=$('#bmiI'); if(!(h&&w)){ out.innerHTML=''; return; }
+  const m=h/100, bmi=(w/(m*m)); A.bmi=+bmi.toFixed(1);
+  let tag='bmi-ok', text='норма'; if(bmi>=30){tag='bmi-bad';text='ожирение';} else if(bmi>=25){tag='bmi-warn';text='избыточная масса';} else if(bmi<18.5){tag='bmi-warn';text='ниже нормы';}
+  out.innerHTML=`Ваш ИМТ: <b>${bmi.toFixed(1)}</b> — <span class="bmi-tag ${tag}">${text}</span><div class="bmi-line">Индекс массы тела помогает оценить диапазон веса относительно роста.</div>`;
+}
+$('#h')?.addEventListener('input',updateBMI);
+$('#w')?.addEventListener('input',updateBMI);
+
+/* Goal slider + silhouettes */
+const goalRange=$('#goalRange'), goalVal=$('#goalVal'), goalBadge=$('#goalBadge');
+function updGoalUI(){
+  const v=+goalRange.value; goalVal.textContent=v.toFixed(1);
+  const b=v<4?'поддерживать':(v<8?'умеренно':'амбициозно');
+  goalBadge.textContent=b;
+  A.goalKg=v; save();
+  const idxImg = v>=16?8 : v>=13?7 : v>=10?6 : v>=8?5 : v>=6?4 : v>=4?3 : v>=2?2 : v>0?1 : 0;
+  $$('#goalStack img').forEach((img,j)=>{img.style.opacity = (j===idxImg)?1:0; img.style.transform = (j===idxImg)?'scale(1)':'scale(1)';});
+}
+goalRange?.addEventListener('input',updGoalUI);
+$('#goalKeep')?.addEventListener('change',e=>{A.keep=!!e.target.checked; save()});
+
+/* Hard cards */
+$('#hardCards')?.addEventListener('click',e=>{
+  const c=e.target.closest('.hcard'); if(!c) return;
+  $$('.hcard').forEach(x=>x.classList.remove('is')); c.classList.add('is'); A.hardKey=c.dataset.k; save(); vibrate(8);
+});
+
+/* Habits meter */
+function updateHabitMeter(){
+  const bad=new Set(A.bad||[]), good=new Set(A.good||[]);
+  const wrap=$('#hmWrap'); if(!wrap) return;
+  const delta = Math.min(100, Math.max(-100, good.size*12 - bad.size*15));
+  const pct = Math.round(50 + delta/2); // 0..100
+  $('#hmPtr').style.left=pct+'%';
+  $('#hmScore').textContent = (delta>0?'+':'') + delta + '%';
+  let badge='hm-ok', text='нейтрально'; if(delta<=-20){badge='hm-bad';text='тормозит'} else if(delta>=20){badge='hm-good';text='ускоряет'}
+  $('#hmBadge').className='hm-badge '+badge; $('#hmBadge').textContent=text;
+  wrap.classList.remove('hidden');
+}
+$('#bad')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  chip.classList.toggle('is');
+  const set=new Set(A.bad||[]); chip.classList.contains('is')?set.add(chip.dataset.v):set.delete(chip.dataset.v); A.bad=[...set]; save(); updateHabitMeter();
+});
+$('#good')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  chip.classList.toggle('is');
+  const set=new Set(A.good||[]); chip.classList.contains('is')?set.add(chip.dataset.v):set.delete(chip.dataset.v); A.good=[...set]; save(); updateHabitMeter();
+});
+
+/* Chips bindings (single-select) */
+bindChips('ageOpts','age');
+bindOpts('bodyOpts','body');
+bindChips('lifeOpts','life');
+bindChips('expOpts','exp');
+bindChips('motChips','mot');
+bindChips('pwChips','perweek');
+bindChips('healthChips','health',false);
+bindChips('nutriOpts','nutri');
+
+/* Aha for perweek (chart appears only after choice) */
+function revealAha(){
+  const aha=$('#aha'); if(!A.perweek){aha.classList.add('hidden'); aha.innerHTML=''; return;}
+  const map={
+    '2 раза':'Стартовый режим: 2 тренировки в неделю — мягкий, но стабильный прогресс.',
+    '3 раза':'Золотая середина: 3 тренировки в неделю ускорят результат.',
+    '4–5 раз':'Ускоренный прогресс: 4–5 тренировок быстрее приведут к цели.',
+    'Каждый день 20–30 мин':'Ежедневные короткие — топ для привычки и шаго-объёма.'
+  };
+  aha.classList.remove('hidden');
+  aha.innerHTML=`<strong>${map[A.perweek]||''}</strong><br><small>Ниже — ориентир вашего объёма активности</small><img src="chart.png" alt="Рекомендованный объём" style="max-height:240px;object-fit:contain">`;
 }
 
-/* ========= Loading Ring ========= */
+/* Tabs for trial video */
+$$('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    $$('.tab').forEach(x=>x.classList.remove('is')); tab.classList.add('is');
+    const k=tab.dataset.tab;
+    $$('[data-pane]').forEach(p=>p.style.display = (p.getAttribute('data-pane')===k)?'block':'none');
+  });
+});
+
+/* ====== Progress + Discount ====== */
+const FLOW_ORDER=[
+  'age','promo1','body','steps','promo2','bmi','life','exp','promo3',
+  'goal','motivation','perweek','promo4','hard','health','nutrition','food','trial','loading','result','program','sale'
+];
+const DISCOUNT_STEPS=['age','body','steps','bmi','life','exp','goal','motivation','perweek','hard','health','nutrition','food'];
+const discEl=$('#disc'), discPct=$('#discPct');
+function answeredCount(){
+  let n=0;
+  if(A.age) n++;
+  if(A.body) n++;
+  if(A.steps) n++;
+  if(A.h&&A.w) n++;
+  if(A.life) n++;
+  if(A.exp) n++;
+  if(A.goalKg!=null) n++;
+  if(A.mot) n++;
+  if(A.perweek) n++;
+  if(A.hardKey) n++;
+  if(A.health && A.health.length) n++;
+  if(A.nutri) n++;
+  if((A.bad&&A.bad.length)||(A.good&&A.good.length)) n++;
+  return n;
+}
+function updateDiscountVisibility(){
+  // Появляется со второго экрана (после имени)
+  const id=screens[idx].dataset.id;
+  const visible = FLOW_ORDER.indexOf(id) >= FLOW_ORDER.indexOf('age');
+  discEl.style.display = visible ? 'inline-flex' : 'none';
+}
+function updateDiscount(){
+  const total=DISCOUNT_STEPS.length;
+  const got=answeredCount();
+  let pct=Math.min(70, Math.round(got/total*70));
+  discPct.textContent=pct+'%';
+  discEl.classList.toggle('win',pct>=70);
+}
+function updateProgress(){
+  const current=idx+1, total=screens.length;
+  const p=Math.round((current/total)*100);
+  $('#pct').textContent=p+'%';
+  updateDiscount();
+}
+
+/* ====== Loading & Result calculation (ваша логика) ====== */
 function runLoading(done){
-  const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
-  const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
-  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
-}
-
-/* ========= Calculation Helpers ========= */
-function fLife(){return /Активная/.test(A.life||'')?1.08:/Сидячая/.test(A.life||'')?0.9:1.0}
-function fExp(){return /Регулярно/.test(A.exp||'')?1.08:/Никогда/.test(A.exp||'')?0.95:1.0}
-function fBody(){return {slim:.92,avg:1,large:.96,obese:.92}[A.body||'avg']||1}
-function fSteps(){const now=+A.steps||4000;let b=1+2000/10000;if(now<3000)b+=.08;if(now>9000)b-=.06;return clamp(b,.95,1.28)}
-function rate(){let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-=.08;r*=fLife()*fExp()*fBody()*fSteps();return clamp(+r.toFixed(2),.25,.9)}
-function fmtDur(w){return w<=10?{v:w,u:'недель'}:{v:Math.ceil(w/4),u:'мес.'}}
-function goalKg(){if(A.keep)return 0;return A.goalKg!=null?+A.goalKg:5}
-
-/* ========= Case block ========= */
-function renderCase(kg,keep){
-  const box=$('#caseBox'), txt=$('#caseTxt'), img=$('#caseImg');
-  if(keep){txt.innerHTML='Елена, 41 год: «Через 6 недель стала выносливее, ушли отёки, объёмы −4 см по талии.»'; img.src='otzyv.jpg'; box.classList.remove('hidden'); return;}
-  if(kg>=8){txt.innerHTML='Марина, 34 года: −9.2 кг за 12 недель на шагах и простом питании из клуба.'; img.src='doposle.jpg'}
-  else if(kg>=4){txt.innerHTML='Алёна, 29 лет: −5.1 кг за 8 недель, тренировки 3 раза в неделю.'; img.src='otzyv.jpg'}
-  else{txt.innerHTML='Наталья, 47 лет: −2.3 кг за 4 недели, сон и вода по плану + шагательные.'; img.src='otzyv.jpg'}
-  box.classList.remove('hidden');
-}
-
-/* ========= Calculate & Show Result ========= */
-function calculate(){
-  const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
-  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
-  if(keep||kg===0){
-    $('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;
-    $('#rSub').innerHTML=`Сфокусируемся на <b>тонусе и выносливости</b>.`;
-  }else{
-    $('#nums').textContent=`−${kg} кг за ${d.v} ${d.u}`;
-    $('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;
+  const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');
+  const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];
+  let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
+  const D=1500,t0=performance.now();
+  function tick(n){
+    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);
+    ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
+    const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
+    if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
+    if(p<1)requestAnimationFrame(tick);else setTimeout(()=>{ try{ done(); } catch(err){ console.error(err); fallbackResult(); } },200)
   }
-  renderCase(kg,keep);
-  startTimers();
-  A.recKeys = chooseProgramKeys(); save();
-  $('#sLead').innerHTML = keep? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.' : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
+  requestAnimationFrame(tick)
+}
+const idxBy=id=>$$('#screens .screen').findIndex(s=>s.dataset.id===id);
+function fallbackResult(){
+  const name=A.name?.trim()||'Друзья';
+  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
+  $('#nums').textContent=`≈ −${goalKg()} кг за 8 недель`;
+  $('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';
   show(idxBy('result'));
 }
 
-/* ========= 15-мин таймеры ========= */
-function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
-function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
+/* Факторы темпа */
+function fAge(){const a=A.age||'';if(/50/.test(a))return 0.88;if(/40/.test(a))return 0.94;if(/30/.test(a))return 0.98;return 1.06}
+function fLife(){const l=A.life||'';if(/Сидячая/.test(l))return 0.90;if(/Умеренно/.test(l))return 1.00;return 1.08}
+function fExp(){const e=A.exp||'';if(/Никогда/.test(e))return 0.95;if(/Регулярно/.test(e))return 1.08;return 1.00}
+function fBody(){switch(A.body){case 'slim':return .92;case 'avg':return 1.00;case 'large':return .96;case 'obese':return .92;default:return 1.00}}
+function fSteps(){const now=+A.steps||4000,add=2000,t=now+add;let boost=1+add/10000;if(now<3000)boost+=.08;if(now>9000)boost-=.06;return{f:Math.max(.95,Math.min(1.28,boost)),t}}
+function fNutri(){let f=1;if(A.nutri==='menu')f+=.22;else if(A.nutri==='plate')f+=.12;else f-=.12;f-=((A.bad||[]).length)*.03;f+=Math.min(((A.good||[]).length)*.02,10);return Math.max(.7,Math.min(1.35,f))}
+function fHealth(){const h=new Set(A.health||[]);let f=1;if(h.has('Диабет')||h.has('Проблемы со щитовидкой')||h.has('Гипертония'))f-=.06;if(h.has('Боль в суставах'))f-=.04;return Math.max(.8,f)}
+function fPain(){switch(A.hardKey){case 'walk':return .94;case 'stairs':return .93;case 'games':return .96;case 'jumps':return .95;case 'none':return 1.02;default:return 1.00}}
 
-/* ========= Catalog & Program ========= */
-const CATALOG={
-  /* ШАГАЙ И ТАНЦУЙ */
-  dance_grace:{title:'Раскрываем женственность',cat:'Шагай и танцуй',desc:'Танцевальные связки, пластика и грация.',workouts:9,duration:'15–45 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3,detail:`Программа тренировок, состоящих из танцевальных движений и связок, благодаря которым вы сможете не просто набрать шаги, но и раскрыть свою изящность и грацию.`},
-  dance_learn:{title:'Учимся танцевать',cat:'Шагай и танцуй',desc:'Выучите танцевальные связки и набирайте шаги.',workouts:4,duration:'25–30 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3,detail:`Даже если никогда не танцевали — разберём движения и соберём в единый танец.`},
-  dance_mix:{title:'Шагай и танцуй',cat:'Шагай и танцуй',desc:'Шагательные тренировки с элементами танца.',workouts:6,duration:'5–40 мин',steps:'1000–4000',tempo:'низкий–средний',type:'dance',freq:3,detail:`Почему просто шагать, если можно танцевать? Время пролетит незаметно.`},
-  dance_fitness:{title:'Танцевальный фитнес',cat:'Шагай и танцуй',desc:'Эстетика танца + нагрузка.',workouts:12,duration:'20–50 мин',steps:'3000–4000',tempo:'средний',type:'dance',freq:4,detail:`Укрепляем все группы мышц и развиваем координацию.`},
-  zumba:{title:'Зумбавидные тренировки',cat:'Шагай и танцуй',desc:'Фитнес-вечеринка на максимум.',workouts:7,duration:'20–60 мин',steps:'3000–6000',tempo:'высокий',type:'dance',freq:4,detail:`Зажигательная музыка + много шагов.`},
-
-  /* ШАГАТЕЛЬНЫЙ ФИТНЕС */
-  abs_flat:{title:'Плоский живот',cat:'Шагательный фитнес',desc:'Шаги + упражнения на пресс.',workouts:6,duration:'15–25 мин',steps:'1000–2000',tempo:'высокий',type:'fitness',freq:4,detail:`Комбинация шагов и кора для стройной талии.`},
-  strong_body:{title:'Сильное и рельефное тело',cat:'Шагательный фитнес',desc:'Силовые тренировки.',workouts:8,duration:'15–25 мин',steps:'1000–2500',tempo:'высокий',type:'fitness',freq:4,detail:`Руки, спина, ноги — силовая проработка + шаги.`},
-  glutes_legs:{title:'Красивые ягодицы и стройные ноги',cat:'Шагательный фитнес',desc:'Проработка ног и ягодиц.',workouts:8,duration:'15–40 мин',steps:'1000–4000',tempo:'высокий',type:'fitness',freq:4,detail:`Силовой акцент на нижней части тела.`},
-  taebo:{title:'В стиле тай-бо',cat:'Шагательный фитнес',desc:'Боевое кардио.',workouts:12,duration:'10–25 мин',steps:'1000–2000',tempo:'средний',type:'fitness',freq:5,detail:`Связки в стиле бокса/кикбоксинга — быстро в форму.`},
-  lymph:{title:'Лимфодренажные тренировки',cat:'Шагательный фитнес',desc:'Против отёков.',workouts:10,duration:'15–30 мин',steps:'~2000',tempo:'средний',type:'fitness',freq:3,detail:`Лёгкость в теле + шаги.`},
-  tabata:{title:'Шагательная табата',cat:'Шагательный фитнес',desc:'Интервалы 20/10.',workouts:21,duration:'15–30 мин',steps:'1000–4000',tempo:'низкий–высокий',type:'fitness',freq:5,detail:`Ускоряем метаболизм и сжигаем калории быстрее.`},
-  intervals:{title:'Интервальные тренировки',cat:'Шагательный фитнес',desc:'Вес вниз + выносливость.',workouts:6,duration:'25 мин',steps:'1000',tempo:'средний–высокий',type:'fitness',freq:4,detail:`Эффект жиросжигания держится до 48 часов.`},
-
-  /* ШАГАТЕЛЬНАЯ АЭРОБИКА */
-  aero_active:{title:'ШАГАЙ ДОМА. Активно',cat:'Шагательная аэробика',desc:'Долгая активная ходьба.',workouts:7,duration:'15–40 мин',steps:'2000–6000',tempo:'высокий',type:'aero',freq:5,detail:`Для тех, кто любит просто шагать.`},
-  aero_base:{title:'ШАГАЙ ДОМА. База',cat:'Шагательная аэробика',desc:'Простой формат для старта.',workouts:8,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3,detail:`Без сложных связок — понятные шаги.`},
-  plus100:{title:'Тренировки для 100+ кг',cat:'Шагательная аэробика',desc:'Мягкие тренировки.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3,detail:`Комфортно и без стресса для суставов.`},
-  retro:{title:'Аэробика «Всё только начинается»',cat:'Шагательная аэробика',desc:'Ретро-стиль 80-х.',workouts:9,duration:'13–25 мин',steps:'2000–4000',tempo:'средний',type:'aero',freq:4,detail:`Стильно, энергично, динамично.`},
-  fifty:{title:'Тренировки для 50+',cat:'Шагательная аэробика',desc:'Бережно для здоровья.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'средний',type:'aero',freq:3,detail:`Вернём лёгкость и подвижность.`},
-
-  /* КАРДИО ЗАРЯДКИ */
-  hits:{title:'Шагай под хиты',cat:'Кардио зарядки',desc:'Короткие зарядки под песни.',workouts:72,duration:'3–6 мин',steps:'200–600',tempo:'низкий',type:'cardio',freq:7,detail:`Любимая утренняя программа.`},
-  warmups:{title:'Кардио-разминки',cat:'Кардио зарядки',desc:'Быстро взбодриться.',workouts:5,duration:'2–5 мин',steps:'200–600',tempo:'средний',type:'cardio',freq:5,detail:`Когда мало времени, но нужно движение.`},
-
-  /* ДРУГОЕ */
-  stretch:{title:'Растяжки для здоровья',cat:'Другое',desc:'Гибкость и восстановление.',workouts:5,duration:'10–40 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3,detail:`Снимаем напряжение и повышаем эластичность.`},
-  back:{title:'Здоровая спина',cat:'Другое',desc:'Осанка и спина.',workouts:12,duration:'15–20 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3,detail:`Снижаем нагрузку на позвоночник, укрепляем мышцы.`},
-};
-
-/* выбор 4 программ под пользователя */
-function chooseProgramKeys(){
-  const age=A.age||'', exp=A.exp||'', life=A.life||'', bmi=+A.bmi||0, w=+A.w||0, steps=+A.steps||0, keep=!!A.keep, goal=+A.goalKg||0;
-  const list=[]; const push=k=>{if(k && !list.includes(k)) list.push(k)};
-
-  if(/50\+/.test(age)) push('fifty');
-  if(bmi>=35 || w>=100){push('plus100'); push('aero_base');}
-  if(keep || goal===0){push('strong_body'); push('glutes_legs'); push('dance_fitness'); push('stretch');}
-  if(/Никогда/.test(exp)||/Сидячая/.test(life)||steps<4000){push('aero_base'); push('dance_mix');}
-  if(/Регулярно/.test(exp) && (/Активная/.test(life)||steps>8000) && !keep && goal>=5){push('tabata'); push('intervals'); push('aero_active');}
-  push('dance_grace');
-  const fallback=['aero_active','taebo','abs_flat','zumba','back','warmups','lymph','retro','hits'];
-  for(const k of fallback){ if(list.length>=4) break; push(k); }
-  return list.slice(0,4);
+/* Скорость (кг/нед): 100+ кг → 1.0 */
+function rate(){
+  const w=+A.w||0;
+  if(w>=100) return 1.0;
+  let r=.5;
+  const bmi=A.bmi||26;
+  if(bmi>=30) r+=.08; else if(bmi<23) r-=.08;
+  r*=fAge()*fLife()*fExp()*fBody()*fSteps().f*fNutri()*fHealth()*fPain();
+  return Math.max(.25,Math.min(.9,+r.toFixed(2)));
+}
+function fmtDuration(wks){
+  if(wks<=10){return{start:12,value:wks,unitText:'недель',label:`${wks} недель`}}
+  const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:`${months} мес.`}
+}
+function goalKg(){
+  if(A.goalKg!=null) return Math.max(0,Math.min(20,+A.goalKg));
+  const g=A.goal||''; if(g.includes('3–5'))return 4; if(g.includes('5–10'))return 8; if(g.includes('10+'))return 12; return 3
 }
 
-/* рендер карточек выбора */
-function renderProgSelect(){
-  const grid=$('#progGrid'); const keys=A.recKeys || chooseProgramKeys(); A.recKeys=keys; save();
-  const rec=keys[0];
-  grid.innerHTML = keys.map(k=>{
-    const p=CATALOG[k];
-    return `<div class="pcard${k===rec?' is':''}" data-k="${k}">
-      ${k===rec?'<div class="rec">Рекомендуем</div>':''}
-      <span class="tag">${p.cat}</span>
-      <h3>${p.title}</h3>
-      <div class="meta">${p.desc}</div>
-      <div class="meta" style="margin-top:6px">• Тренировок: <b>${p.workouts}</b> · Длительность: <b>${p.duration}</b><br>• Шагов за тренировку: <b>${p.steps}</b> · Темп: <b>${p.tempo}</b></div>
-      <details><summary><b>Подробнее</b></summary><div class="hint" style="margin-top:6px">${p.detail||''}</div></details>
-      <div class="actions" style="margin-top:8px"><button class="btn ghost" data-choose="${k}" type="button">Выбрать</button></div>
-    </div>`;
-  }).join('');
-  grid.onclick=e=>{const b=e.target.closest('[data-choose]'); if(!b) return; const k=b.dataset.choose; A.progKey=k; save(); $$('.pcard',grid).forEach(c=>c.classList.toggle('is',c.dataset.k===k));};
-  if(!A.progKey) A.progKey=rec;
+/* Result render */
+function calculate(){
+  const name=A.name?.trim()||'Друзья',kg=goalKg(),rt=rate();
+  const wks=Math.max(4,Math.min(16,Math.ceil(kg/rt))),t=fSteps().t;
+  const dur=fmtDuration(wks);
+  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
+  animNum(dur.start,dur.value,1400,v=>{$('#nums').textContent=`−${kg} кг за ${v} ${dur.unitText}`});
+  const rtText=rt.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
+  $('#rSub').innerHTML=`С тренировками ШАГАЙ ДОМА ⚡️ вы будете проходить <b>${t.toLocaleString('ru-RU')}</b> шагов каждый день!<br><span class="hint">Ориентировочный темп: <b>~${rtText} кг/неделю</b>.</span>`;
+
+  // пример из клуба
+  const caseObj=pickCase(Math.round(kg)); renderCaseBox(caseObj);
+
+  // текст на финале/продаже
+  const durLabel=dur.label;
+  const leadSale=kg>0?`Чтобы прийти к цели <b>−${kg} кг</b> за <b>${durLabel}</b> — подключите готовые планы и поддержку.`:`Чтобы прийти к цели за <b>${durLabel}</b> — подключите готовые планы и поддержку.`;
+  $('#sTitle').textContent=`${name}, присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡`;
+  $('#sLead').innerHTML=leadSale;
+
+  // показать инлайн-оффер и запустить таймер
+  $('#offerInline').style.display='block';
+  startTimers();
+  show(idxBy('result'))
+}
+function animNum(a,b,d,cb){
+  const s=performance.now(),ease=t=>1-Math.pow(1-t,3);
+  function fr(n){const p=Math.min(1,(n-s)/d);cb(Math.round(a+(b-a)*ease(p)));if(p<1)requestAnimationFrame(fr)}
+  requestAnimationFrame(fr)
+}
+function renderCaseBox(c){
+  const box=$('#caseBox'); if(!c){box.classList.add('hide'); return;}
+  box.classList.remove('hide');
+  box.innerHTML=`<img src="${c.img}" alt="Кейс ${c.name}"><div><h3>Кейс ${c.name}</h3><p>Минус ${c.kg} кг за ${c.months} мес. Пример того, как шагательные тренировки работают в реальности.</p></div>`;
+  box.onclick=()=>openLightbox(c.img, `Кейс ${c.name}: −${c.kg} кг`);
+}
+function openLightbox(src,cap){$('#lbImg').src=src;$('#lbCap').textContent=cap;$('#lightbox').classList.add('show')}
+$('#lbClose').onclick=()=>$('#lightbox').classList.remove('show');
+
+/* ====== Timers (15:00) ====== */
+function startCountdown(el, key){
+  const now=Date.now();
+  const stored=+localStorage.getItem(key)||0;
+  let end = (stored && stored>now) ? stored : now + 15*60*1000;
+  localStorage.setItem(key, end);
+  function tick(){
+    const left=end - Date.now();
+    if(left<=0){ el.textContent='00:00'; return; }
+    const m=Math.floor(left/60000), s=Math.floor((left%60000)/1000);
+    el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+function startTimers(){
+  const inl=$('#inlineTimer'); if(inl) startCountdown(inl,'sdq_inline_deadline');
+  const sale=$('#saleTimer'); if(sale) startCountdown(sale,'sdq_sale_deadline');
 }
 
-/* неделя по выбранной программе */
-function renderProgram(){
-  const key=A.progKey || (A.recKeys?A.recKeys[0]:chooseProgramKeys()[0]); const p=CATALOG[key];
-  if(!p){$('#weekGrid').innerHTML=''; return;}
-  $('#progTitle').textContent = `«${p.title}» — пример вашей недели`;
-  const freq = freqFromPerweek() || p.freq || 3;
-  $('#progLead').innerHTML = `${p.cat} • Рекомендуем тренироваться <b>${freq}</b> раз(а) в неделю · ${p.desc}`;
-  const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-  let trainIdx=[];
-  if(freq===2) trainIdx=[1,4]; else if(freq===3) trainIdx=[0,2,5]; else if(freq===4) trainIdx=[0,2,4,6]; else if(freq===5) trainIdx=[0,1,3,5,6]; else trainIdx=[0,1,2,3,4,5];
-  const grid=$('#weekGrid');
-  const titleByType={dance:'Танцевальная шагательная',fitness:'Шаги + силовые',aero:'Аэробная ходьба',cardio:'Кардио-зарядка',other:'Восстановление'};
-  const addByType={dance:'разбор/связки под музыку',fitness:'20–30 мин • корпус/ягодицы',aero:'длительная ходьба 20–40 мин',cardio:'5–10 мин бодрой активности',other:'растяжка/здоровая спина'};
-  grid.innerHTML = days.map((d,i)=>{
-    const train=trainIdx.includes(i);
-    if(!train) return `<div class="day"><h4>${d}</h4><span class="badge badge-rest">Прогулка / отдых</span><div class="hint">5–8 тыс. шагов в удовольствие</div></div>`;
-    return `<div class="day"><h4>${d}</h4><span class="badge badge-tr">${titleByType[p.type]}</span><div class="hint">${addByType[p.type]}</div></div>`;
-  }).join('');
-}
+/* ====== Flow bindings ====== */
+$('#calc')?.addEventListener('click',()=>{ show(idxBy('trial')); });
+$('#goForecast')?.addEventListener('click',()=>{ show(idxBy('loading')); runLoading(()=>{ try{ calculate(); } catch(e){ console.error(e); fallbackResult(); } }); });
 
-/* ========= Trial Mount ========= */
-function mountTrial(){
-  const tabs=$('#trialTabs'), frame=$('#trialFrame');
-  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
-  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
-  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
-  sel('vk');
-  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
-}
+$('#toPrograms')?.addEventListener('click',()=>show(idxBy('program')));
+$('#toCTA')?.addEventListener('click',()=>show(idxBy('program')));
+$('#toSale')?.addEventListener('click',()=>{ show(idxBy('sale')); startTimers(); });
 
-/* ========= Init ========= */
-$('#start').focus();
+/* стартовая кнопка всегда активна */
+$('#startBtn')?.addEventListener('click',e=>{e.preventDefault(); next();});
+
+/* прогрузка HERO */
+document.querySelector('.hero-media')?.addEventListener('loadeddata',()=>$('#heroSkel')?.classList.add('hide'));
+
+/* init discounts immediately */
+updateDiscount(); updateDiscountVisibility();
+
+/* restore from storage UI bits */
+if(A.goalKg!=null){goalRange.value=A.goalKg; updGoalUI();}
+if(A.perweek){revealAha();}
+if(A.bad||A.good){updateHabitMeter();}
+
+/* END */
 </script>
 </body>
 </html>
