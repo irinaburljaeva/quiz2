@@ -242,10 +242,12 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 })();
 
 /* ===== Helpers ===== */
-const $=s=>document.querySelector(s),$$=(s,r=document)=>Array.from((r||document).querySelectorAll(s));
-const vibrate=n=>{try{navigator.vibrate&&navigator.vibrate(n||12)}catch(e){}};
-const A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
-function idxBy(id){ return $$('#screens .screen').findIndex(s=>s.dataset.id===id); }
+var $=function(s){return document.querySelector(s)};
+var $$=function(s,r){return Array.from((r||document).querySelectorAll(s))};
+function vibrate(n){try{if(navigator.vibrate) navigator.vibrate(n||12)}catch(e){}}
+var A=JSON.parse(localStorage.getItem('sdq')||'{}');
+function save(){localStorage.setItem('sdq',JSON.stringify(A))}
+function idxBy(id){ return $$('#screens .screen').findIndex(function(s){return s.dataset.id===id}); }
 
 /* dicts */
 const AGE=['18–29','30–39','40–49','50+'];
@@ -256,14 +258,23 @@ const HEALTH=['Диабет','Проблемы со щитовидкой','Ги�
 const BAD=['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'];
 const GOOD=['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'];
 const CASES=[{kg:14,name:'Ольги',months:4,img:'olga.png'},{kg:10,name:'Александры',months:4,img:'alexandra.png'},{kg:14,name:'Екатерины',months:6,img:'ekaterina.jpg'},{kg:8,name:'Юлии',months:4,img:'yulia.jpg'},{kg:17.5,name:'Светланы',months:2,img:'svetlana.jpg'},{kg:7,name:'Резеды',months:2,img:'rezeda.jpg'},{kg:17.5,name:'Инны',months:5,img:'inna.jpg'},{kg:16,name:'Шагательницы',months:3,img:'noname.jpg'}];
-function pickCase(targetKg){let best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
+function pickCase(targetKg){var best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
 
 /* scaffolding */
 const screensRoot=$('#screens');
-const section=(id,html)=>`<section class="screen${id==='intro'?' is':''}" data-id="${id}">${html}</section>`;
-const chips=(id,arr)=>`<div class="chips" id="${id}">`+arr.map(t=>`<button type="button" class="chip" data-v="${t}">${t}</button>`).join('')+`</div>`;
-const opts=(id,arr)=>`<div class="grid cols2" id="${id}">`+arr.map(t=>{let label,key;if(typeof t==='string'){label=t;key=t}else if(Array.isArray(t)){label=t[0];key=t[1]??t[0]}else if(t&&typeof t==='object'){label=t.label??t.value??t.key??'';key=t.key??t.value??t.label??''}else{label=String(t);key=String(t)}return `<label class="opt" data-v="${String(key)}"><span>${String(label)}</span></label>`}).join('')+`</div>`;
-const actions=()=>`<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>`;
+function section(id,html){return '<section class="screen'+(id==='intro'?' is':'')+'" data-id="'+id+'">'+html+'</section>'}
+function chips(id,arr){return '<div class="chips" id="'+id+'">'+arr.map(t=>'<button type="button" class="chip" data-v="'+t+'">'+t+'</button>').join('')+'</div>'}
+function opts(id,arr){
+  return '<div class="grid cols2" id="'+id+'">'+arr.map(function(t){
+    let label,key;
+    if(typeof t==='string'){label=t;key=t}
+    else if(Array.isArray(t)){label=t[0];key=t[1]||t[0]}
+    else if(t&&typeof t==='object'){label=t.label||t.value||t.key||'';key=t.key||t.value||t.label||''}
+    else{label=String(t);key=String(t)}
+    return '<label class="opt" data-v="'+String(key)+'"><span>'+String(label)+'</span></label>'
+  }).join('')+'</div>'
+}
+function actions(){return '<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>'}
 
 /* screens HTML */
 const html=
@@ -377,7 +388,7 @@ section('intro',`
   <h2>Сколько готовы тренироваться в неделю?</h2>
   ${chips('pwChips',['2 раза','3 раза','4–5 раз','Каждый день 20–30 мин'])}
   <div id="aha" class="aha hidden"></div>
-  <figure class="promo-hero" style="margin-top:8px"><img src="chart.png" alt="Пример прогресса активности по неделям"></figure>
+  <figure class="promo-hero" style="margin-top:8px"><img src="chart.jpg" alt="Пример прогресса активности по неделям"></figure>
   ${actions()}
 `)
 +section('promo4',`
@@ -486,23 +497,23 @@ function show(n){
   /* показываем скидку со второго экрана */
   progressEl.classList.toggle('hide', idx===0);
   updateDiscount();
-  scrollTo({top:0,behavior:'smooth'})
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 updateDiscount();
 
 /* Navigation + резервная функция для стартовой кнопки */
 function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} show(1); }
 
-addEventListener('click', e => {
+window.addEventListener('click', function(e){
   const next = e.target.closest('[data-next]');
   const prev = e.target.closest('[data-prev]');
   if (next) { vibrate(); goNext(); }
   if (prev) { vibrate(); show(idx-1); }
 });
-$('#startBtn')?.addEventListener('click', e=>{e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});
+var sb=$('#startBtn'); if(sb){sb.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});}
 
-/* Делегированные переходы на CTA/SALE — стабильные даже при пересборке DOM */
-screensRoot.addEventListener('click', (e) => {
+/* Делегированные переходы на CTA/SALE */
+screensRoot.addEventListener('click', function(e){
   if (e.target.closest('#toCTA')) {
     e.preventDefault();
     renderProgram();
@@ -514,9 +525,9 @@ screensRoot.addEventListener('click', (e) => {
   }
 });
 
-/* Relaxed validation */
+/* validation */
 function shake(){S[idx].animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});vibrate(25)}
-const need=k=>!A[k];
+const need=function(k){return !A[k]};
 function goNext(){
   const id=S[idx].dataset.id;
   let warn=false;
@@ -532,17 +543,25 @@ function goNext(){
 }
 
 /* Inputs */
-$('#name').oninput=e=>{A.name=e.target.value.trim();save()};
+var nameI=$('#name'); if(nameI){nameI.oninput=function(e){A.name=e.target.value.trim();save()}}
 const stepsEl=$('#steps'),sv=$('#sv');function updRange(){const min=+stepsEl.min||0,max=+stepsEl.max||100,val=+stepsEl.value||0,p=((val-min)/(max-min))*100;stepsEl.style.setProperty('--pct',p+'%')}
-if(stepsEl){updRange();stepsEl.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updRange();save();updateAha()}}
+if(stepsEl){updRange();stepsEl.oninput=function(e){A.steps=+e.target.value;sv.textContent=A.steps;updRange();save();updateAha()}}
 
 /* BMI calc + label */
-['h','w'].forEach(id=>{$('#'+id)?.addEventListener('input',()=>{updBMI();updateGoalPreview()})});
+['h','w'].forEach(function(id){var el=$('#'+id); if(el){el.addEventListener('input',function(){updBMI();updateGoalPreview()})}});
 function bmiCat(b){if(b<18.5)return{label:'Дефицит массы',cls:'bmi-warn'};if(b<25)return{label:'Норма',cls:'bmi-ok'};if(b<30)return{label:'Избыточная масса',cls:'bmi-warn'};if(b<35)return{label:'Ожирение I ст.',cls:'bmi-bad'};if(b<40)return{label:'Ожирение II ст.',cls:'bmi-bad'};return{label:'Ожирение III ст.',cls:'bmi-bad'}}
-function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML=`Ваш ИМТ: <b>${A.bmi}</b> <span class="bmi-tag ${c.cls}">${c.label}</span><br><span class="hint bmi-line">ИМТ — ориентир. Норма 18,5–24,9.</span>`}else{$('#bmiI').textContent=''}}
+function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> <span class="bmi-tag '+c.cls+'">'+c.label+'</span><br><span class="hint bmi-line">ИМТ — ориентир. Норма 18,5–24,9.</span>'}else{$('#bmiI').textContent=''}}
 
 /* selectors */
-function selectList(root,key,single){if(!root)return;root.addEventListener('click',e=>{const sel=e.target.closest(single?'.opt':'.chip');if(!sel)return;if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));sel.classList.add('is');A[key]=sel.dataset.v||sel.textContent}else{sel.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v||x.textContent)}save();vibrate(8); if(root.id==='bad'||root.id==='good') setTimeout(updMeter,0); if(root.id==='pwChips') updateAha();})}
+function selectList(root,key,single){
+  if(!root)return;
+  root.addEventListener('click',function(e){
+    const sel=e.target.closest(single?'.opt':'.chip');if(!sel)return;
+    if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));sel.classList.add('is');A[key]=sel.dataset.v||sel.textContent}
+    else{sel.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v||x.textContent)}
+    save();vibrate(8); if(root.id==='bad'||root.id==='good') setTimeout(updMeter,0); if(root.id==='pwChips') updateAha();
+  })
+}
 selectList($('#ageOpts'),'age',true);
 selectList($('#bodyOpts'),'body',true);
 selectList($('#lifeOpts'),'life',true);
@@ -558,10 +577,10 @@ selectList($('#nutriOpts'),'nutri',true);
 function nutrPreview(){const b=(A.bad||[]).length,g=(A.good||[]).length;let f=1;f+=g*.02;f-=b*.03;return Math.max(.7,Math.min(1.35,f))}
 function updMeter(){
   const b=(A.bad||[]).length,g=(A.good||[]).length, any=b+g>0;
-  $('#hmWrap').classList.toggle('hidden',!any);
+  var wrap=$('#hmWrap'); if(wrap){wrap.classList.toggle('hidden',!any)}
   if(!any) return;
   const f=nutrPreview(),acc=Math.round((f-1)*100);
-  const ptr=$('#hmPtr'),track=$('#hmTrack'),score=$('#hmScore'),badge=$('#hmBadge']);
+  const ptr=$('#hmPtr'),track=$('#hmTrack'),score=$('#hmScore'),badge=$('#hmBadge');
   const min=-30,max=35,clamp=Math.max(min,Math.min(max,acc)),p=((clamp-min)/(max-min))*100;
   track.style.setProperty('--p',p+'%');ptr.style.left=p+'%';
   score.textContent=(acc>0?'+':'')+acc+'%';
@@ -575,20 +594,30 @@ function updMeter(){
 updMeter();
 
 /* hard cards */
-(function setupHard(){const w=$('#hardCards');if(!w)return;const cs=$$('.hcard',w);if(A.hardKey){cs.find(c=>c.dataset.k===A.hardKey)?.classList.add('is')}w.addEventListener('click',e=>{const c=e.target.closest('.hcard');if(!c)return;cs.forEach(x=>x.classList.toggle('is',x===c));A.hardKey=c.dataset.k;A.hard={'walk':'Долгая прогулка утомляет','stairs':'Каждый пролёт по лестнице — испытание','games':'Стыдно включаться в активные игры','jumps':'Прыжки','none':'Ничего из этого'}[A.hardKey];save();vibrate(8)})})();
+(function setupHard(){
+  const w=$('#hardCards');if(!w)return;
+  const cs=$$('.hcard',w);
+  if(A.hardKey){var sel=cs.find(c=>c.dataset.k===A.hardKey); if(sel) sel.classList.add('is')}
+  w.addEventListener('click',function(e){
+    const c=e.target.closest('.hcard');if(!c)return;
+    cs.forEach(x=>x.classList.toggle('is',x===c));A.hardKey=c.dataset.k;
+    A.hard={'walk':'Долгая прогулка утомляет','stairs':'Каждый пролёт по лестнице — испытание','games':'Стыдно включаться в активные игры','jumps':'Прыжки','none':'Ничего из этого'}[A.hardKey];
+    save();vibrate(8)
+  })
+})();
 
 /* Goal preview */
 const BMI_ANCHORS=[18.8,20.0,21.8,23.5,26.0,29.0,32.0,35.0,38.0];
 function indexFromBMI(bmi){const B=BMI_ANCHORS,N=B.length-1;if(bmi<=B[0])return 0;if(bmi>=B[N])return N;for(let i=0;i<N;i++){if(bmi>=B[i]&&bmi<=B[i+1]){const t=(bmi-B[i])/(B[i+1]-B[i]);return i+t}}return N}
-function bodyToIndex(bodyKey,N){const frac={slim:3/8,avg:5/8,large:7/8,obese:1.0}[bodyKey]??5/8;return frac*(N-1)}
-function crossfade(imgs,t){const N=imgs.length-1,tt=Math.max(0,Math.min(N,t));const iLo=Math.floor(tt),iHi=Math.ceil(tt),f=tt-iLo;imgs.forEach(img=>{img.style.opacity=0;img.style.transform='scale(1)'});if(iLo===iHi){imgs[iLo]&&(imgs[iLo].style.opacity=1)}else{const lo=imgs[iLo],hi=imgs[iHi];if(lo){lo.style.opacity=1-f;lo.style.transform=`scale(${1-0.02*f})`}if(hi){hi.style.opacity=f;hi.style.transform=`scale(${1-0.03*(1-f)})`}}}
+function bodyToIndex(bodyKey,N){const frac={slim:3/8,avg:5/8,large:7/8,obese:1.0}[bodyKey]||5/8;return frac*(N-1)}
+function crossfade(imgs,t){const N=imgs.length-1,tt=Math.max(0,Math.min(N,t));const iLo=Math.floor(tt),iHi=Math.ceil(tt),f=tt-iLo;imgs.forEach(img=>{img.style.opacity=0;img.style.transform='scale(1)'});if(iLo===iHi){if(imgs[iLo]) imgs[iLo].style.opacity=1}else{const lo=imgs[iLo],hi=imgs[iHi];if(lo){lo.style.opacity=1-f;lo.style.transform='scale('+(1-0.02*f)+')'}if(hi){hi.style.opacity=f;hi.style.transform='scale('+(1-0.03*(1-f))+')'}}}
 function updateGoalPreview(){
   const stack=$('#goalStack'); if(!stack) return;
   const imgs=Array.from(stack.querySelectorAll('img[data-i]')).sort((a,b)=>(+a.dataset.i)-(+b.dataset.i));
   const N=imgs.length; if(N<1) return;
-  const keepOn=$('#goalKeep')?.checked || !!A.keep;
+  const keepOn=(document.getElementById('goalKeep')&&document.getElementById('goalKeep').checked) || !!A.keep;
   if(keepOn){imgs.forEach(img=>{img.style.opacity=0;img.style.transform='scale(1)'});(imgs[1]||imgs[0]).style.opacity=1;return}
-  const kg=+A.goalKg||0;const h=+A.h>0?A.h/100:null,w=+A.w>0?+A.w:null;
+  const kg=+A.goalKg||0;const h=(+A.h>0)?A.h/100:null,w=(+A.w>0)?+A.w:null;
   if(h&&w){const w2=Math.max(0.1,w-kg);const bmi2=w2/(h*h);const t=indexFromBMI(bmi2);crossfade(imgs,t)}
   else{const start=bodyToIndex(A.body||'avg',N);const t=Math.max(0,start-(kg/4));crossfade(imgs,t)}
 }
@@ -596,9 +625,9 @@ function gBucket(kg){const v=+kg;if(v<=0)return'Накачать мышцы';if(
 function updGoal(){const kg=+A.goalKg||0;$('#goalVal').textContent=kg.toFixed(1);const b=$('#goalBadge');let cls='goal-mid',txt='умеренно';if(kg===0){cls='goal-soft';txt='поддержание'}else if(kg<=5){cls='goal-soft';txt='мягко'}else if(kg<=10){cls='goal-mid';txt='умеренно'}else{cls='goal-hard';txt='интенсивно'}b.className='goal-badge '+cls;b.textContent=txt;const rng=$('#goalRange'),pct=kg/(+rng.max)*100;rng.style.setProperty('--pct',pct+'%');updateGoalPreview()}
 function setGoal(val){const kg=Math.max(0,Math.min(20,+val||0));A.goalKg=kg;A.goal=gBucket(kg);save();updGoal()}
 function toggleKeep(ch){const rng=$('#goalRange');A.keep=!!ch;save();if(ch){rng.disabled=true;setGoal(0)}else{rng.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}updateGoalPreview()}
-const goalR=$('#goalRange'),goalK=$('#goalKeep');goalR.oninput=e=>setGoal(e.target.value);goalK.onchange=e=>toggleKeep(e.target.checked);(()=>{const kg=(A.goalKg!=null)?+A.goalKg:5;goalR.value=kg;const keep=(A.keep===true)||kg===0;goalK.checked=keep;toggleKeep(keep);if(!keep)setGoal(kg);updateGoalPreview()})();
+const goalR=$('#goalRange'),goalK=$('#goalKeep');if(goalR){goalR.oninput=function(e){setGoal(e.target.value)}}if(goalK){goalK.onchange=function(e){toggleKeep(e.target.checked)}}(function(){const kg=(A.goalKg!=null)?+A.goalKg:5;if(goalR){goalR.value=kg}const keep=(A.keep===true)||kg===0;if(goalK){goalK.checked=keep}toggleKeep(keep);if(!keep)setGoal(kg);updateGoalPreview()})();
 
-/* Aha moment (текст + статичная картинка chart.png на шаге) */
+/* Aha moment */
 function freqFromPerweek(){const sel=A.perweek||[];let s=0;for(const v of sel){if(/Каждый день/.test(v))s=Math.max(s,7);else if(/4–5/.test(v))s=Math.max(s,5);else if(/3/.test(v))s=Math.max(s,3);else if(/2/.test(v))s=Math.max(s,2)}return s}
 function updateAha(){
   const box=$('#aha'); if(!box) return;
@@ -607,22 +636,34 @@ function updateAha(){
   const minPerSess=25,eqSteps=3000,base=(+A.steps||4000)*7,addSteps=s*eqSteps;
   let factor=base>0?(base+addSteps)/base:0; factor=Math.min(2.5,Math.max(1.1,factor));
   const factorTxt=factor.toLocaleString('ru-RU',{maximumFractionDigits:1}),addTxt=addSteps.toLocaleString('ru-RU');
-  const freqLabel=s===7?'каждый день':`~${s} раз(а)`;
-  box.innerHTML=`<div><strong>Супер!</strong> Если вы будете тренироваться <b>${freqLabel}</b> по <b>${minPerSess} минут</b>, активность вырастет <b>примерно в ${factorTxt} раза</b> (ещё ~<b>${addTxt}</b> шагов в неделю).</div>
-  <small>Чем выше активность — тем быстрее идёт прогресс.</small>`;
+  const freqLabel=s===7?'каждый день':'~'+s+' раз(а)';
+  box.innerHTML='<div><strong>Супер!</strong> Если вы будете тренироваться <b>'+freqLabel+'</b> по <b>'+minPerSess+' минут</b>, активность вырастет <b>примерно в '+factorTxt+' раза</b> (ещё ~<b>'+addTxt+'</b> шагов в неделю).</div><small>Чем выше активность — тем быстрее идёт прогресс.</small>';
   box.classList.remove('hidden');
 }
 updateAha();
 
 /* Loading + result */
-function runLoading(done){const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';const D=1500,t0=performance.now();function tick(n){const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}if(p<1)requestAnimationFrame(tick);else setTimeout(()=>{try{done()}catch(err){console.error(err);fallbackResult()}},200)}requestAnimationFrame(tick)}
-$('#calc').onclick=()=>{show(idx+1);runLoading(()=>{try{calculate()}catch(e){console.error(e);fallbackResult()}})};
+function runLoading(done){
+  const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');
+  const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];
+  let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
+  const D=1500,t0=performance.now();
+  function tick(n){
+    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);
+    ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
+    const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
+    if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
+    if(p<1)requestAnimationFrame(tick);else setTimeout(function(){try{done()}catch(err){console.error(err);fallbackResult()}},200)
+  }
+  requestAnimationFrame(tick)
+}
+var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idx+1);runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
 function fallbackResult(){
-  const name=A.name?.trim()||'Друзья';
+  const name=A.name&&A.name.trim()?A.name.trim():'Друзья';
   const kg=goalKg();
-  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
-  if (A.keep || kg===0) $('#nums').textContent=`Чтобы прийти к цели за 4 недели`;
-  else $('#nums').textContent=`≈ −${kg} кг за 8 недель`;
+  $('#rTitle').textContent=name+', ваш прогноз готов ✨';
+  if (A.keep || kg===0) $('#nums').textContent='Чтобы прийти к цели за 4 недели';
+  else $('#nums').textContent='≈ −'+kg+' кг за 8 недель';
   $('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';
   show(idxBy('result'));
 }
@@ -639,12 +680,12 @@ function fPain(){switch(A.hardKey){case 'walk':return .94;case 'stairs':return .
 
 /* Rate + duration */
 function rate(){const w=+A.w||0;if(w>=100)return 1.0;let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-=.08;r*=fAge()*fLife()*fExp()*fBody()*fSteps().f*fNutri()*fHealth()*fPain();return Math.max(.25,Math.min(.9,+r.toFixed(2)))}
-function fmtDuration(wks){if(wks<=10){return{start:12,value:wks,unitText:'недель',label:`${wks} недель`}}const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:`${months} мес.`}}
+function fmtDuration(wks){if(wks<=10){return{start:12,value:wks,unitText:'недель',label:wks+' недель'}}const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:months+' мес.'}}
 function goalKg(){if(A.goalKg!=null)return Math.max(0,Math.min(20,+A.goalKg));const g=A.goal||'';if(g.includes('3–5'))return 4;if(g.includes('5–10'))return 8;if(g.includes('10+'))return 12;return 3}
 
 /* Result */
 function calculate(){
-  const name=A.name?.trim()||'Друзья';
+  const name=A.name&&A.name.trim()?A.name.trim():'Друзья';
   const keepMode = !!A.keep;
   const kg=goalKg();
   const rt=rate();
@@ -652,43 +693,43 @@ function calculate(){
   const dur=fmtDuration(wks);
   const stepsTarget=fSteps().t;
 
-  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
+  $('#rTitle').textContent=name+', ваш прогноз готов ✨';
 
   if (keepMode || kg===0) {
-    $('#nums').textContent=`Чтобы прийти к цели за ${dur.label}`;
-    $('#rSub').innerHTML=`Сделаем акцент на <b>тонусе, выносливости и энергии</b>. С шагательными тренировками вы будете проходить <b>${stepsTarget.toLocaleString('ru-RU')}</b> шагов в день.`;
+    $('#nums').textContent='Чтобы прийти к цели за '+dur.label;
+    $('#rSub').innerHTML='Сделаем акцент на <b>тонусе, выносливости и энергии</b>. С шагательными тренировками вы будете проходить <b>'+stepsTarget.toLocaleString('ru-RU')+'</b> шагов в день.';
     $('#caseBox').classList.add('hide');
   } else {
-    animNum(dur.start,dur.value,1400,v=>{$('#nums').textContent=`−${kg} кг за ${v} ${dur.unitText}`});
+    animNum(dur.start,dur.value,1400,function(v){$('#nums').textContent='−'+kg+' кг за '+v+' '+dur.unitText});
     const rtText=rt.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
-    $('#rSub').innerHTML=`С тренировками ШАГАЙ ДОМА ⚡️ вы будете проходить <b>${stepsTarget.toLocaleString('ru-RU')}</b> шагов каждый день!<br><span class="hint">Ориентировочный темп: <b>~${rtText} кг/неделю</b>.</span>`;
+    $('#rSub').innerHTML='С тренировками ШАГАЙ ДОМА ⚡️ вы будете проходить <b>'+stepsTarget.toLocaleString('ru-RU')+'</b> шагов каждый день!<br><span class="hint">Ориентировочный темп: <b>~'+rtText+' кг/неделю</b>.</span>';
     const caseObj=pickCase(Math.round(kg)); renderCaseBox(caseObj);
   }
 
   const leadSale=(keepMode||kg===0)
-    ? `Чтобы прийти к цели по <b>тонусу и выносливости</b> за <b>${dur.label}</b> — подключите готовые планы и поддержку.`
-    : `Чтобы прийти к цели <b>−${kg} кг</b> за <b>${dur.label}</b> — подключите готовые планы и поддержку.`;
-  $('#sTitle').textContent=`${name}, присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡`;
+    ? 'Чтобы прийти к цели по <b>тонусу и выносливости</b> за <b>'+dur.label+'</b> — подключите готовые планы и поддержку.'
+    : 'Чтобы прийти к цели <b>−'+kg+' кг</b> за <b>'+dur.label+'</b> — подключите готовые планы и поддержку.';
+  $('#sTitle').textContent=name+', присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡';
   $('#sLead').innerHTML=leadSale;
 
   $('#offerInline').style.display='block';
   show(idxBy('result'))
 }
-function animNum(a,b,d,cb){const s=performance.now(),ease=t=>1-Math.pow(1-t,3);function fr(n){const p=Math.min(1,(n-s)/d);cb(Math.round(a+(b-a)*ease(p)));if(p<1)requestAnimationFrame(fr)}requestAnimationFrame(fr)}
+function animNum(a,b,d,cb){const s=performance.now(),ease=function(t){return 1-Math.pow(1-t,3)};function fr(n){const p=Math.min(1,(n-s)/d);cb(Math.round(a+(b-a)*ease(p)));if(p<1)requestAnimationFrame(fr)}requestAnimationFrame(fr)}
 
 /* Case + lightbox */
 function renderCaseBox(c){
   const box=document.getElementById('caseBox'); if(!box) return;
   if(!c){box.classList.add('hide');return}
-  const caption=`Как у нашей шагательницы ${c.name}! Она уже сбросила ${c.kg} кг за ${c.months} мес. в клубе.`;
-  box.innerHTML=`<img src="${c.img||'logo.png'}" alt="${c.name||'ШАГАЙ ДОМА'}" id="caseImg"><div><h3>Как у нашей шагательницы ${c.name}!</h3><p>Она уже сбросила <b>${c.kg}</b> кг за <b>${c.months}</b> мес. в клубе.</p></div>`;
+  const caption='Как у нашей шагательницы '+c.name+'! Она уже сбросила '+c.kg+' кг за '+c.months+' мес. в клубе.';
+  box.innerHTML='<img src="'+(c.img||'logo.png')+'" alt="'+(c.name||'ШАГАЙ ДОМА')+'" id="caseImg"><div><h3>Как у нашей шагательницы '+c.name+'!</h3><p>Она уже сбросила <b>'+c.kg+'</b> кг за <b>'+c.months+'</b> мес. в клубе.</p></div>';
   box.classList.remove('hide');
-  box.querySelector('#caseImg')?.addEventListener('click',()=>openLightbox(c.img||'logo.png',caption));
+  var img=box.querySelector('#caseImg'); if(img){img.addEventListener('click',function(){openLightbox(c.img||'logo.png',caption)})}
 }
 const lightbox=$('#lightbox'),lbImg=$('#lbImg'),lbCap=$('#lbCap'),lbClose=$('#lbClose');
 function openLightbox(src,caption){if(!src)return;lbImg.src=src;lbCap.textContent=caption||'';lightbox.classList.add('show');lightbox.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function closeLightbox(){lightbox.classList.remove('show');lightbox.setAttribute('aria-hidden','true');lbImg.src='';lbCap.textContent='';document.body.style.overflow=''}
-lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
+lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
 
 /* Programs */
 function chooseProgram(){const w=+A.w||0,age=A.age||'',life=A.life||'',exp=A.exp||'',steps=+A.steps||0,bmi=+A.bmi||0;
@@ -698,12 +739,12 @@ function chooseProgram(){const w=+A.w||0,age=A.age||'',life=A.life||'',exp=A.exp
   if(isActive)return{key:'active',title:'Шагай дома. Активно',lead:'Больше шагов и кардио-нагрузки для более быстрого результата.',meta:{workouts:'7 тренировок',duration:'15–40 минут',tempo:'Темп высокий',steps:'2–6 тыс шагов'}};
   return{key:'base',title:'Шагай дома. База',lead:'Комфортный старт, чтобы втянуться без стресса.',meta:{workouts:'8 тренировок',duration:'15–20 минут',tempo:'Темп низкий'}}
 }
-function buildProgramBullets(p){const B=[];const name=A.name?.trim();if(name)B.push(`${name}, начнём с темпа, который будет комфортен именно вам.`);
+function buildProgramBullets(p){const B=[];const name=A.name&&A.name.trim()?A.name.trim():'';if(name)B.push(name+', начнём с темпа, который будет комфортен именно вам.');
   if(/50\+/.test(A.age||''))B.push('Движения подобраны бережно: баланс, гибкость, координация.');
   const bmi=A.bmi||0;if(bmi){if(bmi>=30)B.push('Щадим колени и спину, работаем на результат.');else if(bmi<23)B.push('Больше тонуса и выносливости — поддержим форму.')}
   if(A.body==='obese'||A.body==='large')B.push('Постепенно повышаем нагрузку, чтобы прогресс был устойчивым.');
   if(/Сидячая/.test(A.life||''))B.push('Короткие сессии 15–20 минут — легко вписать даже если вы много работаете.');
-  const st=+A.steps||0;if(st&&st<5000)B.push(`План увеличит ваш шагомер с ~${st.toLocaleString('ru-RU')} до +2 000 шагов/день без перегруза.`);
+  const st=+A.steps||0;if(st&&st<5000)B.push('План увеличит ваш шагомер с ~'+st.toLocaleString('ru-RU')+' до +2 000 шагов/день без перегруза.');
   if(/Никогда/.test(A.exp||''))B.push('Покажем технику в простых шагах.');
   if(/Регулярно/.test(A.exp||''))B.push('Добавим интервалы и прогрессию нагрузки.');
   const h=new Set(A.health||[]);if(h.has('Боль в суставах'))B.push('Безударные варианты и мобилизация суставов.');
@@ -713,33 +754,31 @@ function buildProgramBullets(p){const B=[];const name=A.name?.trim();if(name)B.p
   if(mot.includes('Для энергии и лёгкости'))B.push('Больше энергии уже через 1–2 недели.');
   if(mot.includes('Для здоровья'))B.push('Бережная аэробика — поддержка сердца и сосудов.');
   if(mot.includes('Для уверенности в себе'))B.push('План и поддержка сообщества — мотивация не пропадёт.');
-  const kg=(A.goalKg!=null)?+A.goalKg:0;if(kg>0)B.push(`Двигаемся к цели −${kg} кг безопасным темпом.`);else B.push('Поддержим форму, тонус и выносливость.');
+  const kg=(A.goalKg!=null)?+A.goalKg:0;if(kg>0)B.push('Двигаемся к цели −'+kg+' кг безопасным темпом.');else B.push('Поддержим форму, тонус и выносливость.');
   return B.slice(0,7)
 }
 function renderProgram(){const p=chooseProgram();
-  const title=`У нас 28 программ, но вам лучше начать с «${p.title}». Входит в любой абонемент!`;
+  const title='У нас 28 программ, но вам лучше начать с «'+p.title+'». Входит в любой абонемент!';
   const leadParts=[p.lead];
   if(/Активная/.test(A.life||'')||/Регулярно/.test(A.exp||''))leadParts.push('Подойдёт, если вы любите более высокий темп.');
   if(/Сидячая/.test(A.life||''))leadParts.push('Подойдёт, если вы много сидите.');
-  const chips=[];if(p.meta?.workouts)chips.push(p.meta.workouts);if(p.meta?.duration)chips.push(p.meta.duration);if(p.meta?.steps)chips.push(p.meta.steps);if(p.meta?.tempo)chips.push(p.meta.tempo);
-  const chipsHtml=chips.map(t=>`<span class="p-chip${/высокий/i.test(t)?' emph':''}">${t}</span>`).join('');
+  const chips=[];if(p.meta&&p.meta.workouts)chips.push(p.meta.workouts);if(p.meta&&p.meta.duration)chips.push(p.meta.duration);if(p.meta&&p.meta.steps)chips.push(p.meta.steps);if(p.meta&&p.meta.tempo)chips.push(p.meta.tempo);
+  const chipsHtml=chips.map(t=>'<span class="p-chip'+(/высокий/i.test(t)?' emph':'')+'">'+t+'</span>').join('');
   $('#progTitle').textContent=title;$('#progLead').textContent=leadParts.join(' ');$('#progChips').innerHTML=chipsHtml;
-  const ul=$('#progList');ul.innerHTML='';buildProgramBullets(p).forEach(b=>{const li=document.createElement('li');li.textContent=b;ul.appendChild(li)})
+  const ul=$('#progList');ul.innerHTML='';buildProgramBullets(p).forEach(function(b){const li=document.createElement('li');li.textContent=b;ul.appendChild(li)})
 }
 
-/* Timers (15 минут, общий дедлайн) */
+/* Timers (15 минут) */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline_15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline_15',String(t))}return t}
-function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
+function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?pad(h)+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s)}
 let __sdqTimerInt=null;
-function startTimers(){if(__sdqTimerInt){clearInterval(__sdqTimerInt);__sdqTimerInt=null}const deadline=getDeadline();const saleTimer=$('#saleTimer');const inlineTimer=$('#inlineTimer');const tick=()=>{const rem=deadline-Date.now();const str=fmtHMS(rem);saleTimer&&(saleTimer.textContent=str);inlineTimer&&(inlineTimer.textContent=str);if(rem<=0){clearInterval(__sdqTimerInt);__sdqTimerInt=null}};tick();__sdqTimerInt=setInterval(tick,1000)}
-function layoutSaleOffer(){const saleSection=$('section[data-id="sale"]');if(!saleSection)return;const deal=saleSection.querySelector('.deal');const specialP=Array.from(saleSection.querySelectorAll('p.hint')).find(p=>/Только для вас у нас действует специальное предложение/i.test(p.textContent||''));if(deal&&specialP){specialP.after(deal)}}
+function startTimers(){if(__sdqTimerInt){clearInterval(__sdqTimerInt);__sdqTimerInt=null}const deadline=getDeadline();const saleTimer=$('#saleTimer');const inlineTimer=$('#inlineTimer');const tick=function(){const rem=deadline-Date.now();const str=fmtHMS(rem);if(saleTimer)saleTimer.textContent=str;if(inlineTimer)inlineTimer.textContent=str;if(rem<=0){clearInterval(__sdqTimerInt);__sdqTimerInt=null}};tick();__sdqTimerInt=setInterval(tick,1000)}
+function layoutSaleOffer(){const saleSection=document.querySelector('section[data-id="sale"]');if(!saleSection)return;const deal=saleSection.querySelector('.deal');const specialP=Array.from(saleSection.querySelectorAll('p.hint')).find(p=>/Только для вас у нас действует специальное предложение/i.test(p.textContent||''));if(deal&&specialP){specialP.after(deal)}}
 
-/* hero skeleton hide / fallback */
-const hv=document.querySelector('video.hero-media'),hs=document.getElementById('heroSkel');
-function hideS(){hs&&hs.classList.add('hide')}
-hv?.addEventListener('loadeddata',hideS,{once:true});
-hv?.addEventListener('canplay',hideS,{once:true});
-hv?.addEventListener('error',()=>setTimeout(hideS,800),{once:true});
+/* hero skeleton hide */
+var hv=document.querySelector('video.hero-media'),hs=document.getElementById('heroSkel');
+function hideS(){if(hs) hs.classList.add('hide')}
+if(hv){hv.addEventListener('loadeddata',hideS,{once:true});hv.addEventListener('canplay',hideS,{once:true});hv.addEventListener('error',function(){setTimeout(hideS,800)},{once:true})}
 setTimeout(hideS,1500);
 
 /* init */
@@ -750,7 +789,7 @@ const __oldCalc=(typeof calculate==='function')?calculate:null;
 if(__oldCalc){window.calculate=function(){__oldCalc.apply(this,arguments);startTimers()}}
 
 /* убрать кнопку «Посмотреть программу» на экране результата локально */
-document.getElementById('toPrograms')?.closest('.actions')?.remove();
+var tp=document.getElementById('toPrograms'); if(tp){var ac=tp.closest('.actions'); if(ac) ac.remove();}
 </script>
 </body>
 </html>
