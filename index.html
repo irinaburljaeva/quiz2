@@ -60,6 +60,7 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .goal-soft{background:#e8f7ee;color:#0d7d46}
 .goal-mid{background:#fff3cc;color:#9a6b00}
 .goal-hard{background:#ffe9e6;color:#a11000}
+.goal-figure{display:block;max-width:420px;width:100%;border-radius:14px}
 
 /* habits meter */
 .habit-meter{border:2px solid var(--g);border-radius:14px;padding:12px}
@@ -112,12 +113,11 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 
 /* responsive chart */
 #chartFig img{max-width:min(520px,100%);height:auto;display:block;margin:0 auto}
-.goal-figure{display:block;max-width:420px;width:100%;border-radius:14px}
 </style>
 </head>
 <body>
 <div class="app"><div class="card">
-  <!-- Скидка в шапке (показываем со второго вопроса, т.е. с экрана body) -->
+  <!-- Скидка в шапке (со 2-го вопроса) -->
   <div id="progress" class="hide">
     <div class="discbox">
       <span class="title">Ваша скидка</span>
@@ -131,19 +131,19 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 </div></div>
 
 <script>
-/* helpers */
+/* ========= Helpers & State ========= */
 const $=s=>document.querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 let A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
-function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 
-/* screen builder */
+/* ========= Screens Builder ========= */
 const S=$("#screens");
 const section=(id,html)=>`<section class="screen${id==='intro'?' is':''}" data-id="${id}">${html}</section>`;
 const opts=(id,arr)=>`<div class="grid cols2" id="${id}">${arr.map(v=>`<label class="opt" data-v="${v}">${v}</label>`).join('')}</div>`;
 const chips=(id,arr)=>`<div class="chips" id="${id}">${arr.map(v=>`<button type="button" class="chip" data-v="${v}">${v}</button>`).join('')}</div>`;
 const actions=()=>`<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>`;
 
-/* flow HTML */
+/* ========= Flow HTML ========= */
 const html =
 section('intro',`
   <figure class="hero"><video autoplay muted playsinline loop preload="metadata" poster="logo.png"><source src="intro.mp4#t=0.1" type="video/mp4"></video></figure>
@@ -298,11 +298,12 @@ section('intro',`
 
 S.innerHTML = html;
 
-/* progress header (увеличиваем скидку только от вопросов) */
+/* ========= Progress & Navigation ========= */
 let idx=0, SECTIONS=$$('.screen');
 const progress=$('#progress'), discVal=$('#discVal');
 const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','perweek','hard','health','nutrition','food'];
-function idxBy(id){return SECTIONS.findIndex(s=>s.dataset.id===id)}
+const idxBy=id=>SECTIONS.findIndex(s=>s.dataset.id===id);
+
 function updateDiscount(){
   let seen=0;
   for(const id of QUESTION_IDS){
@@ -315,7 +316,7 @@ function show(n){
   SECTIONS[idx].classList.remove('is');
   idx=clamp(n,0,SECTIONS.length-1);
   SECTIONS[idx].classList.add('is');
-  /* показываем скидку только начиная с ЭКРАНА body (второй вопрос) */
+  // скидка только со второго вопроса (body)
   progress.classList.toggle('hide', idx < idxBy('body'));
   updateDiscount();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -325,7 +326,6 @@ function show(n){
   if(id==='program') renderProgram();
 }
 
-/* navigation */
 $('#start').onclick=()=>show(1);
 window.addEventListener('click',e=>{
   if(e.target.closest('[data-next]')) show(idx+1);
@@ -338,10 +338,13 @@ $('#seeProgram').onclick=()=>show(idxBy('progSelect'));
 $('#goProgram').onclick=()=>show(idxBy('program'));
 $('#progToOffer').onclick=()=>show(idxBy('sale'));
 
-/* inputs */
+/* ========= Inputs ========= */
 $('#name').oninput=e=>{A.name=e.target.value.trim();save()};
-const stepsRange=$('#steps'), sv=$('#sv'); const updR=()=>{const min=+stepsRange.min,max=+stepsRange.max,val=+stepsRange.value;stepsRange.style.setProperty('--pct',((val-min)/(max-min))*100+'%')};
-stepsRange.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updR();save();updateAha()}; updR();
+
+const stepsRange=$('#steps'), sv=$('#sv');
+const updR=()=>{const min=+stepsRange.min,max=+stepsRange.max,val=+stepsRange.value;stepsRange.style.setProperty('--pct',((val-min)/(max-min))*100+'%')};
+stepsRange.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updR();save();updateAha()};
+updR();
 
 ['h','w'].forEach(id=>{$('#'+id).addEventListener('input',updBMI)});
 function bmiCat(b){if(b<18.5)return['Дефицит массы','goal-soft'];if(b<25)return['Норма','goal-soft'];if(b<30)return['Избыточная масса','goal-mid'];if(b<35)return['Ожирение I ст.','goal-hard'];if(b<40)return['Ожирение II ст.','goal-hard'];return['Ожирение III ст.','goal-hard']}
@@ -354,7 +357,7 @@ function updBMI(){
   }else{$('#bmiI').textContent=''}
 }
 
-/* selectors */
+/* Generic chooser */
 function choose(root,key,single){root.addEventListener('click',e=>{const el=e.target.closest(single?'.opt':'.chip');if(!el)return;
   if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));el.classList.add('is');A[key]=el.dataset.v||el.textContent}
   else{el.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v)}
@@ -368,7 +371,7 @@ choose($('#pwChips'),'perweek',false);
 choose($('#healthChips'),'health',false);
 choose($('#nutriOpts'),'nutri',true);
 
-/* HARD question */
+/* ========= HARD question ========= */
 (function(){
   const wrap=$('#hardCards'); const map={walk:'Долгая прогулка утомляет',stairs:'Лестницы — испытание',games:'Активные игры',jumps:'Прыжки',none:'Ничего из этого'};
   if(A.hardKey){const sel=wrap.querySelector(`[data-k="${A.hardKey}"]`); if(sel) sel.classList.add('is')}
@@ -379,14 +382,14 @@ choose($('#nutriOpts'),'nutri',true);
   });
 })();
 
-/* goal */
+/* ========= Goal ========= */
 const goalR=$('#goalRange'), goalV=$('#goalVal'), goalB=$('#goalBadge'), goalKeep=$('#goalKeep');
 function setGoal(v){v=clamp(+v||0,0,20);A.goalKg=v;goalV.textContent=v.toFixed(1);const cls=v===0?'goal-soft':v<=10?'goal-mid':'goal-hard';const txt=v===0?'поддержание':v<=10?'умеренно':'интенсивно';goalB.className='goal-badge '+cls;goalB.textContent=txt;save()}
 goalR.oninput=e=>setGoal(e.target.value);
 goalKeep.onchange=e=>{A.keep=!!e.target.checked;save();if(A.keep){setGoal(0);goalR.disabled=true}else{goalR.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}};
 (function(){const kg=(A.goalKg!=null)?A.goalKg:5;goalR.value=kg;setGoal(kg);goalKeep.checked=!!A.keep;goalR.disabled=!!A.keep})();
 
-/* perweek & chart reveal */
+/* ========= Per week & Chart reveal ========= */
 function freqFromPerweek(){const s=A.perweek||[];let n=0;if(s.some(v=>/Каждый день/.test(v)))n=7;else if(s.some(v=>/4–5/.test(v)))n=5;else if(s.some(v=>/3/.test(v)))n=3;else if(s.some(v=>/2/.test(v)))n=2;return n}
 function perweekLabel(){const s=freqFromPerweek();return s===7?'каждый день':s===5?'4–5 раз в неделю':s===3?'3 раза в неделю':s===2?'2 раза в неделю':'3 раза в неделю'}
 function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'); if(!n){box.classList.add('hidden');box.innerHTML='';fig.classList.add('hidden');return}
@@ -395,9 +398,9 @@ function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'
  box.classList.remove('hidden'); fig.classList.remove('hidden');
 }
 
-/* Привычки — индекс */
+/* ========= Habits Index ========= */
 (function habits(){
-  const wrapBad=$('#bad'), wrapGood=$('#good'), hmWrap=$('#hmWrap'), ptr=$('#hmPtr'), scoreEl=$('#hmScore'), badge=$('#hmBadge'), track=$('#hmTrack');
+  const wrapBad=$('#bad'), wrapGood=$('#good'), hmWrap=$('#hmWrap'), ptr=$('#hmPtr'), scoreEl=$('#hmScore'), badge=$('#hmBadge');
   function recompute(){
     const bad=$$('.chip.is',wrapBad).length, good=$$('.chip.is',wrapGood).length;
     A.badHabits=$$('.chip.is',wrapBad).map(x=>x.dataset.v);
@@ -407,13 +410,9 @@ function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'
     scoreEl.textContent=score+'%';
     ptr.style.left = score+'%';
     hmWrap.classList.toggle('hidden', (bad+good)===0);
-    badge.textContent = score<40?'старт':'нейтрально';
-    if(score>=60) badge.textContent='молодец!';
+    badge.textContent = score<40?'старт':(score>=60?'молодец!':'нейтрально');
   }
-  function toggle(e){
-    const b=e.target.closest('.chip'); if(!b) return;
-    b.classList.toggle('is'); recompute();
-  }
+  function toggle(e){const b=e.target.closest('.chip'); if(!b) return; b.classList.toggle('is'); recompute();}
   wrapBad.addEventListener('click',toggle);
   wrapGood.addEventListener('click',toggle);
   // restore
@@ -422,7 +421,7 @@ function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'
   recompute();
 })();
 
-/* trial player (VK/YouTube/RuTube) */
+/* ========= Trial Player ========= */
 const EMBEDS={vk:'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',yt:'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',rt:'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'};
 function mountTrial(){
   const tabs=$('#trialTabs'), frame=$('#trialFrame');
@@ -433,14 +432,14 @@ function mountTrial(){
   $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
 }
 
-/* loading ring */
+/* ========= Loading Ring ========= */
 function runLoading(done){
   const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
   const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
   requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
 }
 
-/* расчёт */
+/* ========= Calculation Helpers ========= */
 function fLife(){return /Активная/.test(A.life||'')?1.08:/Сидячая/.test(A.life||'')?0.9:1.0}
 function fExp(){return /Регулярно/.test(A.exp||'')?1.08:/Никогда/.test(A.exp||'')?0.95:1.0}
 function fBody(){return {slim:.92,avg:1,large:.96,obese:.92}[A.body||'avg']||1}
@@ -449,6 +448,7 @@ function rate(){let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-
 function fmtDur(w){return w<=10?{v:w,u:'недель'}:{v:Math.ceil(w/4),u:'мес.'}}
 function goalKg(){if(A.keep)return 0;return A.goalKg!=null?+A.goalKg:5}
 
+/* ========= Case block (example) ========= */
 function renderCase(kg,keep){
   const box=$('#caseBox'), txt=$('#caseTxt'), img=$('#caseImg');
   if(keep){txt.innerHTML='Елена, 41 год: «Через 6 недель стала выносливее, ушли отёки, объёмы −4 см по талии.»'; img.src='otzyv.jpg'; box.classList.remove('hidden'); return;}
@@ -458,6 +458,7 @@ function renderCase(kg,keep){
   box.classList.remove('hidden');
 }
 
+/* ========= Calculate & Show Result ========= */
 function calculate(){
   const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
   $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
@@ -475,21 +476,19 @@ function calculate(){
   show(idxBy('result'));
 }
 
-/* таймеры 15 минут (общий дедлайн) */
+/* ========= 15-мин таймеры ========= */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
 function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
 
-/* ====== КАТАЛОГ ПРОГРАММ ====== */
+/* ========= Catalog & Program ========= */
 const CATALOG={
-  /* ШАГАЙ И ТАНЦУЙ */
   dance_grace:{title:'Раскрываем женственность',cat:'Шагай и танцуй',desc:'Танцевальные связки, пластика и грация.',workouts:9,duration:'15–45 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3},
   dance_learn:{title:'Учимся танцевать',cat:'Шагай и танцуй',desc:'Выучите танцевальные связки и набирайте шаги.',workouts:4,duration:'25–30 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3},
   dance_mix:{title:'Шагай и танцуй',cat:'Шагай и танцуй',desc:'Шагательные тренировки с элементами танца.',workouts:6,duration:'5–40 мин',steps:'1000–4000',tempo:'низкий–средний',type:'dance',freq:3},
   dance_fitness:{title:'Танцевальный фитнес',cat:'Шагай и танцуй',desc:'Эстетика танца + нагрузка на всё тело.',workouts:12,duration:'20–50 мин',steps:'3000–4000',tempo:'средний',type:'dance',freq:4},
   zumba:{title:'Зумбавидные тренировки',cat:'Шагай и танцуй',desc:'Фитнес-вечеринка с пользой для фигуры.',workouts:7,duration:'20–60 мин',steps:'3000–6000',tempo:'высокий',type:'dance',freq:4},
 
-  /* ШАГАТЕЛЬНЫЙ ФИТНЕС */
   abs_flat:{title:'Плоский живот',cat:'Шагательный фитнес',desc:'Шаги + упражнения на пресс.',workouts:6,duration:'15–25 мин',steps:'1000–2000',tempo:'высокий',type:'fitness',freq:4},
   strong_body:{title:'Сильное и рельефное тело',cat:'Шагательный фитнес',desc:'Силовые повышенной сложности.',workouts:8,duration:'15–25 мин',steps:'1000–2500',tempo:'высокий',type:'fitness',freq:4},
   glutes_legs:{title:'Красивые ягодицы и стройные ноги',cat:'Шагательный фитнес',desc:'Силовая проработка ног и ягодиц.',workouts:8,duration:'15–40 мин',steps:'1000–4000',tempo:'высокий',type:'fitness',freq:4},
@@ -498,28 +497,21 @@ const CATALOG={
   tabata:{title:'Шагательная табата',cat:'Шагательный фитнес',desc:'Интервалы 20/10 для быстрого прогресса.',workouts:21,duration:'15–30 мин',steps:'1000–4000',tempo:'низкий–высокий',type:'fitness',freq:5},
   intervals:{title:'Интервальные тренировки',cat:'Шагательный фитнес',desc:'Снижение веса + выносливость.',workouts:6,duration:'25 мин',steps:'1000',tempo:'средний–высокий',type:'fitness',freq:4},
 
-  /* ШАГАТЕЛЬНАЯ АЭРОБИКА */
   aero_active:{title:'ШАГАЙ ДОМА. Активно',cat:'Шагательная аэробика',desc:'Долгая активная ходьба без танцев.',workouts:7,duration:'15–40 мин',steps:'2000–6000',tempo:'высокий',type:'aero',freq:5},
   aero_base:{title:'ШАГАЙ ДОМА. База',cat:'Шагательная аэробика',desc:'Простой формат без разучивания движений.',workouts:8,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3},
   plus100:{title:'Тренировки для 100+ кг',cat:'Шагательная аэробика',desc:'Мягкие и небыстрые тренировки для старта.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3},
   retro:{title:'Аэробика «Всё только начинается»',cat:'Шагательная аэробика',desc:'Ретро-стиль 80-х, динамика и стиль.',workouts:9,duration:'13–25 мин',steps:'2000–4000',tempo:'средний',type:'aero',freq:4},
   fifty:{title:'Тренировки для 50+',cat:'Шагательная аэробика',desc:'Бережная нагрузка, здоровье суставов.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'средний',type:'aero',freq:3},
 
-  /* КАРДИО ЗАРЯДКИ */
   hits:{title:'Шагай под хиты',cat:'Кардио зарядки',desc:'Короткие зарядки под любимые песни.',workouts:72,duration:'3–6 мин',steps:'200–600',tempo:'низкий',type:'cardio',freq:7},
   warmups:{title:'Кардио-разминки',cat:'Кардио зарядки',desc:'Бодрые мини-тренировки по 5 минут.',workouts:5,duration:'2–5 мин',steps:'200–600',tempo:'средний',type:'cardio',freq:5},
 
-  /* ДРУГОЕ */
   stretch:{title:'Растяжки для здоровья',cat:'Другое',desc:'Гибкость, лёгкость и восстановление.',workouts:5,duration:'10–40 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3},
   back:{title:'Здоровая спина',cat:'Другое',desc:'Укрепление спины и осанки.',workouts:12,duration:'15–20 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3},
 };
-const ALL_KEYS=Object.keys(CATALOG);
-
-/* выбор 4 программ под пользователя */
 function chooseProgramKeys(){
   const age=A.age||'', exp=A.exp||'', life=A.life||'', bmi=+A.bmi||0, w=+A.w||0, steps=+A.steps||0, keep=!!A.keep, goal=+A.goalKg||0;
   const list=[]; const push=k=>{if(k && !list.includes(k)) list.push(k)};
-
   if(/50\+/.test(age)) push('fifty');
   if(bmi>=35 || w>=100){push('plus100'); push('aero_base');}
   if(keep || goal===0){push('strong_body'); push('glutes_legs'); push('dance_fitness'); push('stretch');}
@@ -530,8 +522,6 @@ function chooseProgramKeys(){
   for(const k of fallback){ if(list.length>=4) break; push(k); }
   return list.slice(0,4);
 }
-
-/* рендер карточек выбора */
 function renderProgSelect(){
   const grid=$('#progGrid'); const keys=A.recKeys || chooseProgramKeys(); A.recKeys=keys; save();
   const rec=keys[0];
@@ -549,13 +539,11 @@ function renderProgSelect(){
   grid.onclick=e=>{const b=e.target.closest('[data-choose]'); if(!b) return; const k=b.dataset.choose; A.progKey=k; save(); $$('.pcard',grid).forEach(c=>c.classList.toggle('is',c.dataset.k===k));};
   if(!A.progKey) A.progKey=rec;
 }
-
-/* неделя по выбранной программе */
 function renderProgram(){
   const key=A.progKey || (A.recKeys?A.recKeys[0]:chooseProgramKeys()[0]); const p=CATALOG[key];
   if(!p){$('#weekGrid').innerHTML=''; return;}
   $('#progTitle').textContent = `«${p.title}» — пример вашей недели`;
-  const freq = freqFromPerweek() || p.freq || 3;
+  const freq = (function(){const f=freqFromPerweek();return f||p.freq||3})(); 
   $('#progLead').innerHTML = `${p.cat} • Рекомендуем тренироваться <b>${freq}</b> раз(а) в неделю · ${p.desc}`;
   const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   let trainIdx=[];
@@ -570,35 +558,22 @@ function renderProgram(){
   }).join('');
 }
 
-/* trial */
-const EMBEDS={vk:'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',yt:'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',rt:'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'};
-function mountTrial(){
-  const tabs=$('#trialTabs'), frame=$('#trialFrame');
-  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
-  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
-  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
-  sel('vk');
-  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
+/* ========= RESULT Case text helper ========= */
+function renderCase(kg,keep){
+  const box=$('#caseBox'), txt=$('#caseTxt'), img=$('#caseImg');
+  if(keep){txt.innerHTML='Елена, 41 год: «Через 6 недель стала выносливее, ушли отёки, объёмы −4 см по талии.»'; img.src='otzyv.jpg'; box.classList.remove('hidden'); return;}
+  if(kg>=8){txt.innerHTML='Марина, 34 года: −9.2 кг за 12 недель на шагах и простом питании из клуба.'; img.src='doposle.jpg'}
+  else if(kg>=4){txt.innerHTML='Алёна, 29 лет: −5.1 кг за 8 недель, тренировки 3 раза в неделю.'; img.src='otzyv.jpg'}
+  else{txt.innerHTML='Наталья, 47 лет: −2.3 кг за 4 недели, сон и вода по плану + шагательные.'; img.src='otzyv.jpg'}
+  box.classList.remove('hidden');
 }
 
-/* loading */
-function runLoading(done){
-  const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
-  const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
-  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
-}
-
-/* calc */
+/* ========= Loading & Calculate binding ========= */
 function calculate(){
   const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
   $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
-  if(keep||kg===0){
-    $('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;
-    $('#rSub').innerHTML=`Сфокусируемся на <b>тонусе и выносливости</b>.`;
-  }else{
-    $('#nums').textContent=`−${kg} кг за ${d.v} ${d.u}`;
-    $('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;
-  }
+  if(keep||kg===0){$('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;$('#rSub').innerHTML=`Сфокусируемся на <b>тонусе и выносливости</b>.`;}
+  else{$('#nums').textContent=`−${kg} кг за ${d.v} ${d.u}`;$('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;}
   renderCase(kg,keep);
   startTimers();
   A.recKeys = chooseProgramKeys(); save();
@@ -606,23 +581,27 @@ function calculate(){
   show(idxBy('result'));
 }
 
-/* utils reused */
-function fLife(){return /Активная/.test(A.life||'')?1.08:/Сидячая/.test(A.life||'')?0.9:1.0}
-function fExp(){return /Регулярно/.test(A.exp||'')?1.08:/Никогда/.test(A.exp||'')?0.95:1.0}
-function fBody(){return {slim:.92,avg:1,large:.96,obese:.92}[A.body||'avg']||1}
-function fSteps(){const now=+A.steps||4000;let b=1+2000/10000;if(now<3000)b+=.08;if(now>9000)b-=.06;return clamp(b,.95,1.28)}
-function rate(){let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-=.08;r*=fLife()*fExp()*fBody()*fSteps();return clamp(+r.toFixed(2),.25,.9)}
-function fmtDur(w){return w<=10?{v:w,u:'недель'}:{v:Math.ceil(w/4),u:'мес.'}}
-function goalKg(){if(A.keep)return 0;return A.goalKg!=null?+A.goalKg:5}
+/* ========= Mount: Trial, Timers ========= */
+function mountTrial(){
+  const tabs=$('#trialTabs'), frame=$('#trialFrame');
+  const EMBEDS={vk:'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',yt:'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',rt:'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'};
+  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
+  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
+  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
+  sel('vk');
+  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
+}
+
+function runLoading(done){
+  const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
+  const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
+  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
+}
 
 /* timers */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
 function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
-
-/* mount */
-function renderCase(kg,keep){/* defined above but needed before call - kept here to avoid hoist issues */}
-/* NOTE: renderCase already defined earlier; noop here to satisfy parser if minified */
 
 /* init */
 $('#start').focus();
