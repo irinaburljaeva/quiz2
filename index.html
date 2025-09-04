@@ -38,6 +38,7 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .grid{display:grid;gap:10px}.cols2{grid-template-columns:1fr 1fr}
 @media (max-width:620px){.cols2{grid-template-columns:1fr}}
 
+/* options */
 .opt{border:2px solid var(--g);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;background:#fff;cursor:pointer;transition:.2s}
 .opt.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
 .opt--img{flex-direction:column;align-items:center;text-align:center;padding:10px}
@@ -68,7 +69,7 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .plogo img{height:32px;width:auto;display:block;object-fit:contain}
 @media (max-width:480px){.plogo img{height:28px}}
 
-/* Steps slider */
+/* slider */
 #steps{--pct:0%;--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o);width:100%;height:40px;background:transparent;accent-color:var(--o)}
 #steps:focus{outline:none}
 #steps::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--fill-start) 0 var(--pct),var(--track) var(--pct) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
@@ -102,17 +103,6 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .hm-scale{display:flex;justify-content:space-between;font-size:.82rem;color:#666;margin-top:6px}
 .hm-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem;margin-left:8px}
 .hm-bad{background:#ffe9e6;color:#a11000}.hm-ok{background:#fff3cc;color:#9a6b00}.hm-good{background:#e7f7ef;color:#0f7a42}
-
-/* Hard cards */
-.hardw{display:grid;gap:14px}
-.hard-cards{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media (max-width:760px){.hard-cards{grid-template-columns:1fr}}
-.hcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px;cursor:pointer;transform-style:preserve-3d;transition:transform .15s ease,box-shadow .2s ease,border-color .2s;box-shadow:0 8px 18px rgba(0,0,0,.05);overflow:hidden}
-.hcard:hover{box-shadow:0 12px 26px rgba(0,0,0,.08)}
-.hcard.is{border-color:var(--o);background:linear-gradient(180deg,#fff 0,#fff9f3 100%);box-shadow:0 12px 26px rgba(232,93,4,.18)}
-.hhead{display:flex;gap:10px;align-items:center;letter-spacing:-.02em}
-.hicon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#fff6f1;border:2px solid #ffd5c2}
-.hhead,.hhead *{font-weight:500 !important}
 
 /* Goal UI */
 .goalw{display:grid;gap:12px}
@@ -182,6 +172,27 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .p-btn.is{border-color:#ffd5c2;background:#fff7ef}
 .player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* ===== Выбор программы (4 варианта) ===== */
+.pgrid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media (max-width:760px){.pgrid{grid-template-columns:1fr}}
+.pcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px}
+.pcard.is{border-color:var(--o);box-shadow:0 10px 24px rgba(232,93,4,.18);background:linear-gradient(180deg,#fff,#fff9f3)}
+.pcard h3{margin:0 0 6px}
+.pcard .tag{display:inline-block;border:1px solid #ffd5c2;background:#fff7ef;border-radius:999px;padding:4px 8px;font-weight:700;margin-right:6px}
+.pcard .rec{position:absolute;top:10px;right:10px;background:#12A06A;color:#fff;border-radius:999px;padding:4px 8px;font-weight:800;font-size:.85rem}
+.pcard ul{margin:6px 0 0;padding-left:18px}
+.pcard .choose{margin-top:10px}
+
+/* ===== Week program ===== */
+.week-grid{display:grid;gap:10px;grid-template-columns:repeat(7,1fr)}
+@media (max-width:840px){.week-grid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:540px){.week-grid{grid-template-columns:repeat(2,1fr)}}
+.day{border:2px solid var(--g);border-radius:14px;background:#fff;padding:10px;display:grid;gap:8px}
+.day h4{margin:0;font-size:.95rem}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.8rem;font-weight:700}
+.badge-tr{background:#fff2ec;color:#b34009;border:1px solid #ffd5c2}
+.badge-rest{background:#eef8f3;color:#0f7a42;border:1px solid #cfeee0}
 </style>
 </head>
 <body>
@@ -446,8 +457,12 @@ section('intro',`
   <p class="hint" id="rSub"></p>
   <div id="caseBox" class="case hide"></div>
 
+  <div class="actions" style="margin-top:6px">
+    <button class="btn ghost" id="seeProgram" type="button">Посмотреть программу</button>
+  </div>
+
   <div id="offerInline" class="offer-inline" style="display:block">
-    <p class="hint" style="margin:0 0 8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
+    <p class="hint" style="margin:8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
     <div class="deal">
       <div class="deal-row">
         <span class="deal-badge">Предложение ограничено</span>
@@ -462,6 +477,27 @@ section('intro',`
   <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
   <div class="actions sticky">
     <button class="btn ghost" data-prev type="button">Назад</button>
+  </div>
+`)
+/* ===== НОВОЕ: экран выбора программы (4 варианта) ===== */
++section('progSelect',`
+  <h2>Подберём программу под вас</h2>
+  <p class="hint">Мы учли ваш возраст, ИМТ, активность, опыт и цель. Можно выбрать другой вариант.</p>
+  <div class="pgrid" id="progGrid"></div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="goProgram" type="button">Смотреть неделю →</button>
+  </div>
+`)
+/* ===== НЕДЕЛЯ ПРОГРАММЫ ===== */
++section('program',`
+  <h2>Пример вашей недели в клубе</h2>
+  <p class="hint" id="progLead"></p>
+  <div class="week-grid" id="weekGrid"></div>
+  <p class="hint">Занятия по 20–30 минут • Без прыжков • Подходит новичкам</p>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="progToCTA" type="button">Перейти к предложению!</button>
   </div>
 `)
 +section('sale',`
@@ -506,16 +542,17 @@ function show(n){
   S[idx].classList.remove('is');
   idx=Math.max(0,Math.min(S.length-1,n));
   S[idx].classList.add('is');
-  /* показываем скидку со второго экрана */
   progressEl.classList.toggle('hide', idx===0);
   updateDiscount();
   const curId=S[idx].dataset.id;
   if (curId === 'trial') { mountTrialPlayer(); updateTrialCtaText(); }
+  if (curId === 'progSelect') { renderProgSelect(); }
+  if (curId === 'program') { renderProgram(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 updateDiscount();
 
-/* Navigation + резерв для стартовой кнопки */
+/* Navigation + старт */
 function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} show(1); }
 window.addEventListener('click', function(e){
   const next = e.target.closest('[data-next]');
@@ -525,9 +562,11 @@ window.addEventListener('click', function(e){
 });
 var sb=$('#startBtn'); if(sb){sb.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});}
 
-/* делегированные переходы с результата на sale */
+/* переходы */
 screensRoot.addEventListener('click', function(e){
   if (e.target.closest('#toCTA')) { e.preventDefault(); show(idxBy('sale')); }
+  if (e.target.closest('#progToCTA')) { e.preventDefault(); show(idxBy('sale')); }
+  if (e.target.closest('#seeProgram')) { e.preventDefault(); show(idxBy('progSelect')); }
 });
 
 /* validation */
@@ -695,6 +734,26 @@ function rate(){const w=+A.w||0;if(w>=100)return 1.0;let r=.5;const bmi=A.bmi||2
 function fmtDuration(wks){if(wks<=10){return{start:12,value:wks,unitText:'недель',label:wks+' недель'}}const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:months+' мес.'}}
 function goalKg(){if(A.goalKg!=null)return Math.max(0,Math.min(20,+A.goalKg));const g=A.goal||'';if(g.includes('3–5'))return 4;if(g.includes('5–10'))return 8;if(g.includes('10+'))return 12;return 3}
 
+/* === Программы: логика подбора (4 варианта) === */
+function chooseProgram(){
+  const w=+A.w||0, age=A.age||'', life=A.life||'', exp=A.exp||'',
+        steps=+A.steps||0, bmi=+A.bmi||0, keep=!!A.keep, goal=+A.goalKg||0;
+  let key='slim'; // по умолчанию «Стройность»
+  // Если цель — поддержание/тонус
+  if (keep || goal===0) key='tone';
+  // Совсем базовый уровень/избыточный вес — «Лёгкий старт»
+  if (bmi>=30 || w>=90 || /Никогда/.test(exp) || /Сидячая/.test(life) || steps<4000) key='easy';
+  // Хорошая база — «Интенсив»
+  if (/Регулярно/.test(exp) && /Активная/.test(life) && steps>8000 && !keep && goal>=5) key='intense';
+  return key;
+}
+const PROGRAMS={
+  easy:{title:'Лёгкий старт',tag:'Новичкам / лишний вес',bul:['2–3 тренировки в неделю','Без прыжков, мягко','Фокус на технику и привычку'],freq:3,style:'soft'},
+  slim:{title:'Стройность',tag:'Снижение веса',bul:['3–4 тренировки в неделю','Жиросжигающий темп','Умеренный прогресс'],freq:4,style:'fat'},
+  tone:{title:'Тонус и мышцы',tag:'Поддержание формы',bul:['3 тренировки + прогулки','Силовые без прыжков','Подтянутый корпус'],freq:3,style:'tone'},
+  intense:{title:'Интенсив',tag:'Опыт и выносливость',bul:['5–6 тренировок в неделю','Высокая плотность','Быстрый прогресс'],freq:6,style:'hard'}
+};
+
 /* Result */
 function calculate(){
   const name=A.name&&A.name.trim()?A.name.trim():'Друзья';
@@ -723,6 +782,9 @@ function calculate(){
     : 'Чтобы прийти к цели <b>−'+kg+' кг</b> за <b>'+dur.label+'</b> — подключите готовые планы и поддержку.';
   $('#sTitle').textContent=name+', присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡';
   $('#sLead').innerHTML=leadSale;
+
+  // подготовим рекомендованную программу
+  A.progKey = chooseProgram(); save();
 
   $('#offerInline').style.display='block';
   show(idxBy('result'))
@@ -779,6 +841,58 @@ function mountTrialPlayer(){
   if(order.length) select(order[0]);
 }
 
+/* ===== Выбор программы: рендер ===== */
+function renderProgSelect(){
+  var grid=$('#progGrid'); if(!grid) return;
+  var rec= A.progKey || chooseProgram();
+  function card(k,p){
+    return '<div class="pcard'+(k===rec?' is':'')+'" data-k="'+k+'">'+
+      (k===rec?'<div class="rec">Рекомендуем</div>':'')+
+      '<span class="tag">'+p.tag+'</span>'+
+      '<h3>'+p.title+'</h3>'+
+      '<ul>'+p.bul.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
+      '<div class="choose"><button type="button" class="btn ghost" data-choose="'+k+'">Выбрать</button></div>'+
+    '</div>';
+  }
+  grid.innerHTML = Object.keys(PROGRAMS).map(function(k){return card(k,PROGRAMS[k])}).join('');
+  grid.onclick=function(e){
+    var b=e.target.closest('[data-choose]'); if(!b) return;
+    var k=b.getAttribute('data-choose'); A.progKey=k; save();
+    $$('.pcard',grid).forEach(function(c){c.classList.toggle('is',c.getAttribute('data-k')===k)});
+  };
+  var go=$('#goProgram'); if(go){go.onclick=function(){show(idxBy('program'))}};
+}
+
+/* ===== Программа недели ===== */
+function renderProgram(){
+  var key = A.progKey || chooseProgram();
+  var p = PROGRAMS[key] || PROGRAMS.slim;
+  var lead=$('#progLead'), grid=$('#weekGrid');
+  var s = p.freq;
+  var muscle = (key==='tone') || !!A.keep || (+A.goalKg===0);
+  if(lead){
+    lead.innerHTML = 'Программа: <b>'+p.title+'</b> · '+p.tag+' · частота <b>'+s+'</b> раз(а) в неделю' + (muscle?' · фокус на <b>тонус и мышцы</b>.':' · фокус на <b>снижение веса</b>.');
+  }
+  if(!grid) return;
+  var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  var trainIdx=[];
+  if(s===2) trainIdx=[1,4];
+  else if(s===3) trainIdx=[0,2,4];
+  else if(s===4) trainIdx=[0,2,4,6];
+  else if(s===5) trainIdx=[0,1,3,5,6];
+  else trainIdx=[0,1,2,3,4,5]; // 6
+
+  grid.innerHTML = days.map(function(d,i){
+    var train = trainIdx.indexOf(i)>-1;
+    if(!train){
+      return '<div class="day"><h4>'+d+'</h4><span class="badge badge-rest">Прогулка / отдых</span><div class="hint">5–8 тыс. шагов в удовольствие</div></div>';
+    }
+    var title = muscle ? 'Шаги + силовые без прыжков' : 'Шагательная тренировка';
+    var add   = muscle ? '20–25 мин · корпус/ягодицы' : '20–30 мин · жиросжигающий темп';
+    return '<div class="day"><h4>'+d+'</h4><span class="badge badge-tr">'+title+'</span><div class="hint">'+add+'</div></div>';
+  }).join('');
+}
+
 /* Timers (15 минут) */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline_15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline_15',String(t))}return t}
 function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?pad(h)+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s)}
@@ -795,7 +909,7 @@ setTimeout(hideS,1500);
 /* init */
 (function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide');mountTrialPlayer();hookButtons()}catch(e){console.error(e)}})();
 
-/* Кнопка «Далее» после привычек → сразу на trial */
+/* Кнопки «после привычек», «trial → расчёт», и переходы */
 function hookButtons(){
   var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trial'))}}
   var tbtn=$('#trialComputeBtn'); if(tbtn){tbtn.onclick=function(){show(idxBy('loading'));runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
@@ -811,8 +925,6 @@ function updateTrialCtaText(){
 const __oldCalc=(typeof calculate==='function')?calculate:null;
 if(__oldCalc){window.calculate=function(){__oldCalc.apply(this,arguments);startTimers()}}
 
-/* убрать локально «Посмотреть программу» (если где-то осталось) */
-var tp=document.getElementById('toPrograms'); if(tp){var ac=tp.closest('.actions'); if(ac) ac.remove();}
 </script>
 </body>
 </html>
