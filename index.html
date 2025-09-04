@@ -194,13 +194,19 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .promo{display:grid;gap:10px}
 .promo-hero{margin:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
 .promo-hero img,.promo-hero video{width:100%;display:block;border-radius:16px;object-fit:cover}
-.promo h2{margin-top:2px}
 
 /* Goal badge styles */
 .goal-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem}
 .goal-soft{background:#e9f9f0;color:#0f7a42}
 .goal-mid{background:#fff3cc;color:#9a6b00}
 .goal-hard{background:#ffe9e6;color:#a11000}
+
+/* === Player tabs (trial) === */
+.p-tabs{display:flex;gap:8px;margin:6px 0 8px}
+.p-btn{border:2px solid var(--g);background:#fff;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer}
+.p-btn.is{border-color:#ffd5c2;background:#fff7ef}
+.player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 </style>
 </head>
 <body>
@@ -464,6 +470,19 @@ section('intro',`
     <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toSale" type="button">К программе →</button></div>
   </div>
 `)
+/* ==== Новый экран с пробной тренировкой (между program и sale) ==== */
++section('trial', `
+  <h2>Пробная тренировка: включайтесь прямо сейчас</h2>
+  <p class="hint">Если видео не загружается — переключите источник ниже.</p>
+
+  <div class="p-tabs" id="trialTabs"></div>
+
+  <figure class="promo-hero" style="aspect-ratio:16/9">
+    <div id="trialFrame" class="player"></div>
+  </figure>
+
+  ${actions()}
+`)
 +section('sale',`
   <figure class="sale-hero"><img src="final.PNG" alt="Результаты и атмосфера клуба"></figure>
   <h2 id="sTitle">Присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡</h2>
@@ -512,17 +531,10 @@ window.addEventListener('click', function(e){
 });
 var sb=$('#startBtn'); if(sb){sb.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});}
 
-/* Делегированные переходы на CTA/SALE */
+/* Делегированные переходы */
 screensRoot.addEventListener('click', function(e){
-  if (e.target.closest('#toCTA')) {
-    e.preventDefault();
-    renderProgram();
-    show(idxBy('program'));
-  }
-  if (e.target.closest('#toSale')) {
-    e.preventDefault();
-    show(idxBy('sale'));
-  }
+  if (e.target.closest('#toCTA')) { e.preventDefault(); renderProgram(); show(idxBy('program')); }
+  if (e.target.closest('#toSale')) { e.preventDefault(); show(idxBy('trial')); } /* теперь сначала trial */
 });
 
 /* validation */
@@ -768,6 +780,44 @@ function renderProgram(){const p=chooseProgram();
   const ul=$('#progList');ul.innerHTML='';buildProgramBullets(p).forEach(function(b){const li=document.createElement('li');li.textContent=b;ul.appendChild(li)})
 }
 
+/* ==== Пробная тренировка: несколько источников ==== */
+const TRIAL_EMBEDS = {
+  vk: 'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',
+  yt: 'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',
+  rt: 'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'
+};
+const TRIAL_LABELS = { vk:'VK Видео', yt:'YouTube', rt:'RuTube' };
+
+function mountTrialPlayer(){
+  var tabs = document.getElementById('trialTabs');
+  var frame = document.getElementById('trialFrame');
+  if(!tabs || !frame) return;
+
+  var order = ['vk','yt','rt'].filter(function(k){ return !!TRIAL_EMBEDS[k]; });
+
+  tabs.innerHTML = order.map(function(k,i){
+    return '<button type="button" class="p-btn'+(i===0?' is':'')+'" data-k="'+k+'">'+TRIAL_LABELS[k]+'</button>';
+  }).join('');
+
+  function select(key){
+    Array.from(tabs.querySelectorAll('.p-btn')).forEach(function(b){
+      b.classList.toggle('is', b.dataset.k === key);
+    });
+    var url = TRIAL_EMBEDS[key];
+    frame.innerHTML =
+      '<iframe src="'+url+'" title="Пробная тренировка" loading="lazy" '+
+      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '+
+      'allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>';
+  }
+
+  tabs.addEventListener('click', function(e){
+    var b = e.target.closest('.p-btn'); if(!b) return;
+    select(b.dataset.k);
+  });
+
+  if(order.length) select(order[0]);
+}
+
 /* Timers (15 минут) */
 function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline_15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline_15',String(t))}return t}
 function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?pad(h)+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s)}
@@ -782,7 +832,7 @@ if(hv){hv.addEventListener('loadeddata',hideS,{once:true});hv.addEventListener('
 setTimeout(hideS,1500);
 
 /* init */
-(function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide')}catch(e){console.error(e)}})();
+(function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide');mountTrialPlayer()}catch(e){console.error(e)}})();
 
 /* after result restart timers */
 const __oldCalc=(typeof calculate==='function')?calculate:null;
