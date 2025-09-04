@@ -292,7 +292,7 @@ section('intro',`
 +section('promo1',`
   <div class="promo">
     <figure class="promo-hero"><img src="2.jpg" alt="ШАГАЙ ДОМА⚡ — больше 1 млн подписчиков" loading="lazy" decoding="async"></figure>
-    <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчика во всех соцсетях!</h2>
+    <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчиков во всех соцсетях!</h2>
     <p class="hint">Присоединяйтесь к самому дружелюбному фитнес-сообществу.</p>
     ${actions()}
   </div>
@@ -381,7 +381,7 @@ section('intro',`
 +section('promo4',`
   <div class="promo">
     <figure class="promo-hero"><img src="doposle.jpg" alt="85% похудели" loading="lazy" decoding="async"></figure>
-    <h2><b>85%</b> клубников похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
+    <h2><b>85%</b> женщин в клубе похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
     <p class="hint">Стартовать легко — результаты мотивируют продолжать.</p>
     ${actions()}
   </div>
@@ -555,7 +555,7 @@ if(stepsEl){updRange();stepsEl.oninput=function(e){A.steps=+e.target.value;sv.te
 /* BMI calc + label */
 ['h','w'].forEach(function(id){var el=$('#'+id); if(el){el.addEventListener('input',function(){updBMI();updateGoalPreview()})}});
 function bmiCat(b){if(b<18.5)return{label:'Дефицит массы',cls:'bmi-warn'};if(b<25)return{label:'Норма',cls:'bmi-ok'};if(b<30)return{label:'Избыточная масса',cls:'bmi-warn'};if(b<35)return{label:'Ожирение I ст.',cls:'bmi-bad'};if(b<40)return{label:'Ожирение II ст.',cls:'bmi-bad'};return{label:'Ожирение III ст.',cls:'bmi-bad'}}
-function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> <span class="bmi-tag '+c.cls+'">'+c.label+'</span><br><span class="hint bmi-line">ИМТ — ориентир. Норма 18,5–24,9.</span>'}else{$('#bmiI').textContent=''}}
+function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> <span class="bmi-tag '+c.cls+'">'+c.label+'</span><br><span class="hint bmi-line">ИМТ — индекс массы тела. Помогает определить, есть ли лишний вес. Норма 18,5–24,9.</span>'}else{$('#bmiI').textContent=''}}
 
 /* selectors */
 function selectList(root,key,single){
@@ -671,9 +671,9 @@ function runLoading(done){
   requestAnimationFrame(tick)
 }
 function fallbackResult(){
-  const name=A.name&&A.name.trim()?A.name.trim():'Друзья';
+  const name=A.name&&A.name.trim()?A.name.trim():'';
   const kg=goalKg();
-  $('#rTitle').textContent=name+', ваш прогноз готов ✨';
+  $('#rTitle').textContent=name+'Ваш прогноз готов ✨';
   if (A.keep || kg===0) $('#nums').textContent='Чтобы прийти к цели за 4 недели';
   else $('#nums').textContent='≈ −'+kg+' кг за 8 недель';
   $('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';
@@ -745,7 +745,7 @@ lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightb
 
 /* ==== Пробная тренировка: несколько источников ==== */
 const TRIAL_EMBEDS = {
-  vk: 'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',
+  vk: 'https://vkvideo.ru/video-222534261_456239990?list=ln-vcO6bQouZ1Apz53Rfh',
   yt: 'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',
   rt: 'https://rutube.ru/play/embed/fbad797705787d6048d2344b7aa55a90?r=a&p=93p6xGkyvbtXxF38SzuoSw'
 };
