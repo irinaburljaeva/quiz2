@@ -13,6 +13,7 @@
 :root{--r:#CF2C02;--y:#FFBA08;--o:#E85D04;--g:#D9D9D9;--txt:#1a1a1a;--hero-pos-y:28%;--hero-pos-y-m:22%}
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);background:#fff;overflow-x:hidden}
+.hidden{display:none!important}
 .app{width:min(960px,100%);margin:0 auto;padding:16px}
 .card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;overflow:hidden;position:relative}
 
@@ -142,6 +143,12 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
 .counter{font-size:clamp(26px,6vw,48px);line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
 .sale-hero{margin:0 0 12px;border-radius:16px;overflow:hidden}
 .sale-hero img{width:100%;display:block;border-radius:16px;object-fit:cover}
+
+/* DEAL (таймер/бейдж) */
+.deal{margin:8px 0}
+.deal-row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.deal-badge{display:inline-block;padding:8px 12px;border-radius:999px;border:2px solid #ffd5c2;background:#fff7ef;font-weight:800;white-space:nowrap}
+.deal-timer{font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.5px;border:2px solid var(--g);background:#fff;border-radius:12px;padding:6px 10px;min-width:72px;text-align:center}
 
 /* кейс-виджет */
 .case{border:2px solid var(--g);border-radius:16px;padding:12px;background:#fff;display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;margin:10px 0}
@@ -368,7 +375,7 @@ section('intro',`
   <h2>Сколько готовы тренироваться в неделю?</h2>
   ${chips('pwChips',['2 раза','3 раза','4–5 раз','Каждый день 20–30 мин'])}
   <div id="aha" class="aha hidden"></div>
-  <figure class="promo-hero" style="margin-top:8px"><img src="chart.jpg" alt="Пример прогресса активности по неделям"></figure>
+  <figure id="chartFig" class="promo-hero hidden" style="margin-top:8px"><img src="chart.jpg" alt="Пример прогресса активности по неделям"></figure>
   ${actions()}
 `)
 +section('promo4',`
@@ -439,16 +446,22 @@ section('intro',`
   <p class="hint" id="rSub"></p>
   <div id="caseBox" class="case hide"></div>
 
-  <div id="offerInline" class="offer-inline" style="display:none">
+  <div id="offerInline" class="offer-inline" style="display:block">
     <p class="hint" style="margin:0 0 8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-    <div class="deal"><div class="deal-row" style="justify-content:flex-end"><span class="deal-timer" id="inlineTimer">15:00</span><span class="deal-badge">Предложение ограничено</span></div></div>
-    <div class="actions" style="margin-top:10px"><button class="btn primary" id="toCTA" type="button">Перейти к предложению!</button></div>
+    <div class="deal">
+      <div class="deal-row">
+        <span class="deal-badge">Предложение ограничено</span>
+        <span class="deal-timer" id="inlineTimer">15:00</span>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn primary" id="toCTA" type="button">Перейти к предложению!</button>
+    </div>
   </div>
 
   <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
   <div class="actions sticky">
     <button class="btn ghost" data-prev type="button">Назад</button>
-    <button class="btn primary" id="toCTA2" type="button">Перейти к предложению!</button>
   </div>
 `)
 +section('sale',`
@@ -456,10 +469,22 @@ section('intro',`
   <h2 id="sTitle">Присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡</h2>
   <p class="hint" id="sLead"></p>
   <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-  <div class="deal"><div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="saleTimer">15:00</span></div></div>
-  <ul><li>Домашние шагательные тренировки 20–30 минут</li><li>Готовые планы на неделю</li><li>Поддержка и мотивация в чате</li><li>Помощь куратора и сообщество</li></ul>
-  <p class="hint" style="margin-top:8px"><b>Предлагаем вам прямо сейчас познакомиться с системой тренировок на шагах с помощью нашей пробной тренировки!</b></p>
-  <div class="actions"><a class="btn primary" id="cta" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=looseweight" target="_blank" rel="noopener">Забрать пробную тренировку и скидку 70%</a><button class="btn ghost" data-prev type="button">Назад</button></div>
+  <div class="deal">
+    <div class="deal-row">
+      <span class="deal-badge">Предложение ограничено</span>
+      <span class="deal-timer" id="saleTimer">15:00</span>
+    </div>
+  </div>
+  <ul>
+    <li>Домашние шагательные тренировки 20–30 минут</li>
+    <li>Готовые планы на неделю</li>
+    <li>Поддержка и мотивация в чате</li>
+    <li>Помощь куратора и сообщество</li>
+  </ul>
+  <div class="actions">
+    <a class="btn primary" id="cta" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=looseweight" target="_blank" rel="noopener">Хочу абонемент со скидкой 70%!</a>
+    <button class="btn ghost" data-prev type="button">Назад</button>
+  </div>
 `);
 screensRoot.innerHTML=html;
 
@@ -502,7 +527,7 @@ var sb=$('#startBtn'); if(sb){sb.addEventListener('click', function(e){e.prevent
 
 /* делегированные переходы с результата на sale */
 screensRoot.addEventListener('click', function(e){
-  if (e.target.closest('#toCTA') || e.target.closest('#toCTA2')) { e.preventDefault(); show(idxBy('sale')); }
+  if (e.target.closest('#toCTA')) { e.preventDefault(); show(idxBy('sale')); }
 });
 
 /* validation */
@@ -607,19 +632,26 @@ function setGoal(val){const kg=Math.max(0,Math.min(20,+val||0));A.goalKg=kg;A.go
 function toggleKeep(ch){const rng=$('#goalRange');A.keep=!!ch;save();if(ch){rng.disabled=true;setGoal(0)}else{rng.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}updateGoalPreview()}
 const goalR=$('#goalRange'),goalK=$('#goalKeep');if(goalR){goalR.oninput=function(e){setGoal(e.target.value)}}if(goalK){goalK.onchange=function(e){toggleKeep(e.target.checked)}}(function(){const kg=(A.goalKg!=null)?+A.goalKg:5;if(goalR){goalR.value=kg}const keep=(A.keep===true)||kg===0;if(goalK){goalK.checked=keep}toggleKeep(keep);if(!keep) setGoal(kg);updateGoalPreview()})();
 
-/* Aha moment */
+/* Aha moment + chart reveal */
 function freqFromPerweek(){const sel=A.perweek||[];let s=0;for(const v of sel){if(/Каждый день/.test(v))s=Math.max(s,7);else if(/4–5/.test(v))s=Math.max(s,5);else if(/3/.test(v))s=Math.max(s,3);else if(/2/.test(v))s=Math.max(s,2)}return s}
 function perweekLabel(){const sel=A.perweek||[];if(sel.some(s=>/Каждый день/.test(s)))return 'каждый день';if(sel.some(s=>/4–5/.test(s)))return '4–5 раз в неделю';if(sel.some(s=>/3 раза/.test(s)))return '3 раза в неделю';if(sel.some(s=>/2 раза/.test(s)))return '2 раза в неделю';return '3 раза в неделю'}
 function updateAha(){
-  const box=$('#aha'); if(!box) return;
+  const box=$('#aha'); const fig=$('#chartFig');
   const s=freqFromPerweek();
-  if(!s){box.classList.add('hidden');box.innerHTML='';return}
+  if(!s){
+    if(box){box.classList.add('hidden');box.innerHTML='';}
+    if(fig){fig.classList.add('hidden');}
+    return;
+  }
   const minPerSess=25,eqSteps=3000,base=(+A.steps||4000)*7,addSteps=s*eqSteps;
   let factor=base>0?(base+addSteps)/base:0; factor=Math.min(2.5,Math.max(1.1,factor));
   const factorTxt=factor.toLocaleString('ru-RU',{maximumFractionDigits:1}),addTxt=addSteps.toLocaleString('ru-RU');
   const freqLabel=s===7?'каждый день':'~'+s+' раз(а)';
-  box.innerHTML='<div><strong>Супер!</strong> Если вы будете тренироваться <b>'+freqLabel+'</b> по <b>'+minPerSess+' минут</b>, активность вырастет <b>примерно в '+factorTxt+' раза</b> (ещё ~<b>'+addTxt+'</b> шагов в неделю).</div><small>Чем выше активность — тем быстрее идёт прогресс.</small>';
-  box.classList.remove('hidden');
+  if(box){
+    box.innerHTML='<div><strong>Супер!</strong> Если вы будете тренироваться <b>'+freqLabel+'</b> по <b>'+minPerSess+' минут</b>, активность вырастет <b>примерно в '+factorTxt+' раза</b> (ещё ~<b>'+addTxt+'</b> шагов в неделю).</div><small>Чем выше активность — тем быстрее идёт прогресс.</small>';
+    box.classList.remove('hidden');
+  }
+  if(fig){fig.classList.remove('hidden');}
 }
 updateAha();
 
