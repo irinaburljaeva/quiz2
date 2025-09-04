@@ -231,7 +231,13 @@ const MOT=['Для здоровья','Для внешности','Для эне�
 const HEALTH=['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'];
 const BAD=['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'];
 const GOOD=['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'];
-const CASES=[{kg:14,name:'Ольги',months:4,img:'olga.png'},{kg:10,name:'Александры',months:4,img:'alexandra.png'},{kg:14,name:'Екатерины',months:6,img:'ekaterina.jpg'},{kg:8,name:'Юлии',months:4,img:'yulia.jpg'},{kg:17.5,name:'Светланы',months:2,img:'svetlana.jpg'},{kg:7,name:'Резеды',months:2,img:'rezeda.jpg'},{kg:17.5,name:'Инны',months:5,img:'inna.jpg'},{kg:16,name:'Шагательницы',months:3,img:'noname.jpg'}];
+const CASES=[
+  {kg:14,name:'Ольги',months:4,img:'olga.png'},
+  {kg:10,name:'Александры',months:4,img:'alexandra.png'},
+  {kg:14,name:'Екатерины',months:6,img:'ekaterina.jpg'},
+  {kg:17.5,name:'Инны',months:5,img:'inna.jpg'},
+  {kg:16,name:'Шагательницы',months:3,img:'noname.jpg'}
+];
 function pickCase(targetKg){var best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
 
 /* scaffolding */
@@ -401,29 +407,23 @@ section('intro',`
       <div class="hm-scale"><span>тормозит</span><span>нейтрально</span><span>ускоряет</span></div>
     </div>
     <p class="hint">Отметьте только то, что про вас — индикатор появится автоматически ✨</p>
-    <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="calc" type="button">Далее к пробной тренировке →</button></div>
+    <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="calc" type="button">Далее →</button></div>
   </div>
 `)
-/* === новый экран после теста === */
-+section('trialIntro',`
+/* ==== ЕДИНЫЙ ЭКРАН: «Ура! … + пробная тренировка» ==== */
++section('trial', `
   <h2>Ура! Вы ответили на все вопросы 🎉</h2>
   <p class="hint"><b>Теперь вам доступна пробная тренировка.</b></p>
-  ${actions()}
-`)
-/* === экран с видео-источниками === */
-+section('trial', `
-  <h2>Пробная тренировка: включайтесь прямо сейчас</h2>
-  <p class="hint">Если видео не загружается — переключите источник ниже.</p>
+
   <div class="p-tabs" id="trialTabs"></div>
   <figure class="promo-hero" style="aspect-ratio:16/9">
     <div id="trialFrame" class="player"></div>
   </figure>
-  ${actions()}
-`)
-/* === экран с кнопкой «Узнать прогноз» === */
-+section('trialCta',`
-  <h2>Готовы узнать свой прогноз?</h2>
-  <p class="hint"><b id="trialCtaText">Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам 3 раза в неделю.</b></p>
+
+  <p class="hint"><b id="trialCtaText">
+    Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам 3 раза в неделю.
+  </b></p>
+
   <div class="actions sticky">
     <button class="btn ghost" data-prev type="button">Назад</button>
     <button class="btn primary" id="trialComputeBtn" type="button">Узнать мой прогноз →</button>
@@ -484,12 +484,13 @@ function show(n){
   /* показываем скидку со второго экрана */
   progressEl.classList.toggle('hide', idx===0);
   updateDiscount();
-  if (S[idx].dataset.id==='trialCta') updateTrialCtaText();
+  const curId=S[idx].dataset.id;
+  if (curId === 'trial') { mountTrialPlayer(); updateTrialCtaText(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 updateDiscount();
 
-/* Navigation + резервная функция для стартовой кнопки */
+/* Navigation + резерв для стартовой кнопки */
 function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} show(1); }
 window.addEventListener('click', function(e){
   const next = e.target.closest('[data-next]');
@@ -604,7 +605,7 @@ function gBucket(kg){const v=+kg;if(v<=0)return'Накачать мышцы';if(
 function updGoal(){const kg=+A.goalKg||0;$('#goalVal').textContent=kg.toFixed(1);const b=$('#goalBadge');let cls='goal-mid',txt='умеренно';if(kg===0){cls='goal-soft';txt='поддержание'}else if(kg<=5){cls='goal-soft';txt='мягко'}else if(kg<=10){cls='goal-mid';txt='умеренно'}else{cls='goal-hard';txt='интенсивно'}b.className='goal-badge '+cls;b.textContent=txt;const rng=$('#goalRange'),pct=kg/(+rng.max)*100;rng.style.setProperty('--pct',pct+'%');updateGoalPreview()}
 function setGoal(val){const kg=Math.max(0,Math.min(20,+val||0));A.goalKg=kg;A.goal=gBucket(kg);save();updGoal()}
 function toggleKeep(ch){const rng=$('#goalRange');A.keep=!!ch;save();if(ch){rng.disabled=true;setGoal(0)}else{rng.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}updateGoalPreview()}
-const goalR=$('#goalRange'),goalK=$('#goalKeep');if(goalR){goalR.oninput=function(e){setGoal(e.target.value)}}if(goalK){goalK.onchange=function(e){toggleKeep(e.target.checked)}}(function(){const kg=(A.goalKg!=null)?+A.goalKg:5;if(goalR){goalR.value=kg}const keep=(A.keep===true)||kg===0;if(goalK){goalK.checked=keep}toggleKeep(keep);if(!keep)setGoal(kg);updateGoalPreview()})();
+const goalR=$('#goalRange'),goalK=$('#goalKeep');if(goalR){goalR.oninput=function(e){setGoal(e.target.value)}}if(goalK){goalK.onchange=function(e){toggleKeep(e.target.checked)}}(function(){const kg=(A.goalKg!=null)?+A.goalKg:5;if(goalR){goalR.value=kg}const keep=(A.keep===true)||kg===0;if(goalK){goalK.checked=keep}toggleKeep(keep);if(!keep=setGoal){}if(!keep)setGoal(kg);updateGoalPreview()})();
 
 /* Aha moment */
 function freqFromPerweek(){const sel=A.perweek||[];let s=0;for(const v of sel){if(/Каждый день/.test(v))s=Math.max(s,7);else if(/4–5/.test(v))s=Math.max(s,5);else if(/3/.test(v))s=Math.max(s,3);else if(/2/.test(v))s=Math.max(s,2)}return s}
@@ -762,13 +763,13 @@ setTimeout(hideS,1500);
 /* init */
 (function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide');mountTrialPlayer();hookButtons()}catch(e){console.error(e)}})();
 
-/* Переназначаем кнопку «Далее к пробной тренировке» на экране food */
+/* Кнопка «Далее» после привычек → сразу на trial */
 function hookButtons(){
-  var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trialIntro'))}}
+  var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trial'))}}
   var tbtn=$('#trialComputeBtn'); if(tbtn){tbtn.onclick=function(){show(idxBy('loading'));runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
 }
 
-/* Текст на trialCta */
+/* Текст под видео на trial */
 function updateTrialCtaText(){
   var el=$('#trialCtaText'); if(!el) return;
   el.innerHTML='<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам '+perweekLabel()+'.</b>';
