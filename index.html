@@ -6,33 +6,46 @@
 <title>Квиз • ШАГАЙ ДОМА ⚡</title>
 <meta name="color-scheme" content="light only"/>
 <style>
-:root{--r:#cf2c02;--o:#e85d04;--y:#ffba08;--g:#e6e6e6;--txt:#111}
+/* =============== Base / Theme =============== */
+:root{
+  --r:#cf2c02;
+  --o:#e85d04;
+  --y:#ffba08;
+  --g:#e6e6e6;
+  --txt:#111;
+}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);background:#fff}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--txt);
+  background:#fff;
+}
 .hidden{display:none!important}
 .app{max-width:960px;margin:0 auto;padding:16px}
 .card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px}
 
-/* screens */
+/* =============== Screens =============== */
 .screen{display:none;animation:.28s fadeUp ease both}
 .screen.is{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 h1{font-size:clamp(22px,5vw,36px);line-height:1.15;margin:8px 0 10px}
 h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .hint{color:#666}
-.grid{display:grid;gap:10px}.cols2{grid-template-columns:1fr 1fr}
+.grid{display:grid;gap:10px}
+.cols2{grid-template-columns:1fr 1fr}
 @media(max-width:620px){.cols2{grid-template-columns:1fr}}
 
-/* inputs */
+/* =============== Inputs / Choices =============== */
 .text{width:100%;border:2px solid var(--g);border-radius:12px;padding:12px 14px;font-size:1rem}
-.opt{border:2px solid var(--g);border-radius:14px;padding:12px;cursor:pointer;background:#fff}
+.opt{border:2px solid var(--g);border-radius:14px;padding:12px;cursor:pointer;background:#fff;transition:.2s}
 .opt.is{border-color:var(--o);box-shadow:0 8px 18px rgba(232,93,4,.14)}
 .opt--img{display:flex;flex-direction:column;align-items:center;text-align:center}
 .opt--img img{width:100%;height:180px;object-fit:contain;background:#fafafa;border-radius:12px}
 .opt--img span{margin-top:8px;font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:2px solid var(--g);border-radius:999px;padding:9px 12px;background:#fff;cursor:pointer}
+.chip{border:2px solid var(--g);border-radius:999px;padding:9px 12px;background:#fff;cursor:pointer;transition:.2s}
 .chip.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
 .actions{display:flex;gap:8px;margin-top:12px}
 .btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
@@ -40,7 +53,7 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .ghost{background:#fff;border:2px solid var(--g)}
 .sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 60%, rgba(255,255,255,0));padding-top:8px;z-index:5}
 
-/* discount header */
+/* =============== Discount header =============== */
 #progress{display:flex;align-items:center;gap:10px;margin:0 0 12px}
 #progress.hide{display:none!important}
 .discbox{display:flex;align-items:center;gap:10px;border:2px solid #ffd7c7;background:#fff7ef;border-radius:14px;padding:8px 12px}
@@ -50,43 +63,43 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .disc-tip .tt{position:absolute;left:50%;bottom:140%;transform:translateX(-50%);background:#111;color:#fff;padding:6px 8px;border-radius:8px;font-size:.84rem;white-space:nowrap;opacity:0;pointer-events:none}
 .disc-tip:hover .tt{opacity:1}
 
-/* slider steps */
+/* =============== Steps slider =============== */
 #steps{--pct:0%;width:100%;height:40px;background:transparent}
 #steps::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--o) 0 var(--pct),#eee var(--pct))}
 #steps::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border:3px solid var(--o);background:#fff;border-radius:50%;margin-top:-8px}
 
-/* goal */
+/* =============== Goal visuals =============== */
 .goal-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem}
 .goal-soft{background:#e8f7ee;color:#0d7d46}
 .goal-mid{background:#fff3cc;color:#9a6b00}
 .goal-hard{background:#ffe9e6;color:#a11000}
 .goal-figure{display:block;max-width:420px;width:100%;border-radius:14px}
 
-/* habits meter */
+/* =============== Habits meter =============== */
 .habit-meter{border:2px solid var(--g);border-radius:14px;padding:12px}
 .hm-track{--p:50%;position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,#ffe2db 0,#fff8e5 50%,#e6f7ef 100%)}
 .hm-pointer{position:absolute;top:50%;left:var(--p);transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--o)}
 .hm-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.85rem;font-weight:700}
 
-/* HARD cards */
-.hcard{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff;cursor:pointer}
+/* =============== HARD cards =============== */
+.hcard{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff;cursor:pointer;transition:.2s}
 .hcard.is{border-color:var(--o);box-shadow:0 8px 18px rgba(232,93,4,.14)}
 .hhead{display:flex;align-items:center;gap:10px;font-weight:700}
 .hicon{width:28px;height:28px;display:grid;place-items:center;background:#fff2ec;border:1px solid #ffd5c2;border-radius:999px}
 
-/* deal + timer */
+/* =============== Deal + timers =============== */
 .deal-row{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
 .deal-badge{display:inline-block;padding:6px 10px;border-radius:999px;border:2px solid #ffd7c7;background:#fff7ef;font-weight:800}
 .deal-timer{font-weight:900;border:2px solid #ddd;border-radius:10px;padding:6px 10px;min-width:72px;text-align:center}
 
-/* player tabs */
+/* =============== Trial player =============== */
 .p-tabs{display:flex;gap:8px;margin:6px 0 8px}
 .p-btn{border:2px solid #ddd;border-radius:999px;background:#fff;padding:6px 10px;font-weight:700;cursor:pointer}
 .p-btn.is{border-color:#ffd7c7;background:#fff7ef}
 .player{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
-/* Program select */
+/* =============== Program select =============== */
 .pgrid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
 @media(max-width:760px){.pgrid{grid-template-columns:1fr}}
 .pcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px}
@@ -95,8 +108,9 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .pcard .tag{display:inline-block;border:1px solid #ffd7c7;background:#fff7ef;border-radius:999px;padding:4px 8px;font-weight:700;margin-right:6px}
 .pcard .meta{color:#555;font-size:.92rem}
 .pcard .rec{position:absolute;top:10px;right:10px;background:#12a06a;color:#fff;border-radius:999px;padding:4px 8px;font-weight:800;font-size:.82rem}
+.pcard details{margin-top:8px}
 
-/* week */
+/* =============== Week plan =============== */
 .week-grid{display:grid;gap:10px;grid-template-columns:repeat(7,1fr)}
 @media(max-width:840px){.week-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:540px){.week-grid{grid-template-columns:repeat(2,1fr)}}
@@ -105,13 +119,13 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .badge-tr{background:#fff2ec;color:#b34009;border:1px solid #ffd5c2}
 .badge-rest{background:#eef8f3;color:#0f7a42;border:1px solid #cfeee0}
 
-/* hero / images */
+/* =============== Media blocks =============== */
 .hero{margin:0 0 12px;border-radius:18px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08)}
 .hero video,.hero img{display:block;width:100%;height:auto}
 .promo-hero{margin:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
 .promo-hero img{display:block;width:100%;height:auto}
 
-/* responsive chart */
+/* =============== Images sizing =============== */
 #chartFig img{max-width:min(520px,100%);height:auto;display:block;margin:0 auto}
 </style>
 </head>
@@ -127,57 +141,95 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
     <div style="margin-left:auto"><img src="logo.png" alt="ШАГАЙ ДОМА" style="height:32px"></div>
   </div>
 
+  <!-- Контейнер экранов -->
   <div id="screens"></div>
 </div></div>
 
 <script>
-/* ========= Helpers & State ========= */
+/* ===========================================================
+   Helpers & State
+=========================================================== */
 const $=s=>document.querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-let A=JSON.parse(localStorage.getItem('sdq')||'{}'); const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
+let A=JSON.parse(localStorage.getItem('sdq')||'{}');
+const save=()=>localStorage.setItem('sdq',JSON.stringify(A));
 
-/* ========= Screens Builder ========= */
+/* ===========================================================
+   Screen builder
+=========================================================== */
 const S=$("#screens");
 const section=(id,html)=>`<section class="screen${id==='intro'?' is':''}" data-id="${id}">${html}</section>`;
 const opts=(id,arr)=>`<div class="grid cols2" id="${id}">${arr.map(v=>`<label class="opt" data-v="${v}">${v}</label>`).join('')}</div>`;
 const chips=(id,arr)=>`<div class="chips" id="${id}">${arr.map(v=>`<button type="button" class="chip" data-v="${v}">${v}</button>`).join('')}</div>`;
 const actions=()=>`<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>`;
 
-/* ========= Flow HTML ========= */
+/* ===========================================================
+   Flow HTML (all screens)
+=========================================================== */
 const html =
+/* -------- Intro -------- */
 section('intro',`
-  <figure class="hero"><video autoplay muted playsinline loop preload="metadata" poster="logo.png"><source src="intro.mp4#t=0.1" type="video/mp4"></video></figure>
+  <figure class="hero">
+    <video autoplay muted playsinline loop preload="metadata" poster="logo.png">
+      <source src="intro.mp4#t=0.1" type="video/mp4">
+    </video>
+  </figure>
   <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах</b></h1>
   <p class="hint"><b>…а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!</b></p>
-  <div class="grid"><div><div class="hint">Как к вам обращаться?</div><input id="name" class="text" placeholder="Например: Ирина"></div></div>
-  <div class="actions sticky"><button class="btn primary" id="start" type="button">Поехали →</button></div>
+  <div class="grid">
+    <div>
+      <div class="hint">Как к вам обращаться?</div>
+      <input id="name" class="text" placeholder="Например: Ирина">
+    </div>
+  </div>
+  <div class="actions sticky">
+    <button class="btn primary" id="start" type="button">Поехали →</button>
+  </div>
 `)
-+section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',['18–29','30–39','40–49','50+'])}${actions()}`)
+/* -------- Age -------- */
++section('age',`
+  <h2>Ваш возраст</h2>
+  ${opts('ageOpts',['18–29','30–39','40–49','50+'])}
+  ${actions()}
+`)
+/* -------- Promo 1 -------- */
 +section('promo1',`
   <figure class="promo-hero"><img src="2.jpg" alt="Больше 1 млн подписчиков"></figure>
   <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчика во всех соцсетях!</h2>
   <p class="hint">Присоединяйтесь к самому дружелюбному фитнес-сообществу.</p>
   ${actions()}
 `)
+/* -------- Body type -------- */
 +section('body',`
   <h2>Телосложение сейчас</h2>
   <div class="grid cols2" id="bodyOpts">
-    ${[{k:'slim',t:'Худощавое',img:'skinny.png'},{k:'avg',t:'Среднее',img:'slim.png'},{k:'large',t:'Крупное',img:'medium.png'},{k:'obese',t:'Избыточный вес',img:'xl.png'}].map(o=>`<label class="opt opt--img" data-v="${o.k}"><img src="${o.img}" alt=""><span>${o.t}</span></label>`).join('')}
+    ${[
+      {k:'slim',t:'Худощавое',img:'skinny.png'},
+      {k:'avg',t:'Среднее',img:'slim.png'},
+      {k:'large',t:'Крупное',img:'medium.png'},
+      {k:'obese',t:'Избыточный вес',img:'xl.png'}
+    ].map(o=>`<label class="opt opt--img" data-v="${o.k}">
+      <img src="${o.img}" alt="">
+      <span>${o.t}</span>
+    </label>`).join('')}
   </div>
   ${actions()}
 `)
+/* -------- Promo 2 -------- */
 +section('promo2',`
   <figure class="promo-hero"><img src="otzyv.jpg" alt="Уже больше 10 000 людей в клубе"></figure>
   <h2>Уже больше <b>10&nbsp;000</b> людей в клубе ШАГАЙ ДОМА ⚡</h2>
   <p class="hint">Каждый на своём уровне, но вместе — сильнее.</p>
   ${actions()}
 `)
+/* -------- Steps now -------- */
 +section('steps',`
   <h2>Сколько шагов вы проходите сейчас в день?</h2>
   <input id="steps" type="range" min="0" max="25000" step="250" value="4000">
   <div class="hint">Сейчас: <b><span id="sv">4000</span> шагов</b></div>
   ${actions()}
 `)
+/* -------- BMI -------- */
 +section('bmi',`
   <h2>Давайте посчитаем ваш ИМТ</h2>
   <div class="grid cols2">
@@ -185,43 +237,73 @@ section('intro',`
     <div><div class="hint">Вес, кг</div><input id="w" type="number" class="text" inputmode="numeric"></div>
   </div>
   <div id="bmiI" class="hint" style="margin-top:8px"></div>
-  <details style="margin-top:8px"><summary>Что такое ИМТ?</summary><div class="hint">Индекс массы тела — показатель соответствия массы и роста. Норма: 18.5–24.9, избыточная масса: 25–29.9, ожирение: 30+.</div></details>
+  <details style="margin-top:8px">
+    <summary>Что такое ИМТ?</summary>
+    <div class="hint">Индекс массы тела — показатель соответствия массы и роста. Норма: 18.5–24.9, избыточная масса: 25–29.9, ожирение: 30+.</div>
+  </details>
   ${actions()}
 `)
-+section('life',`<h2>Образ жизни</h2>${opts('lifeOpts',['Сидячая работа','Умеренно активная','Активная'])}${actions()}`)
-+section('exp',`<h2>Опыт тренировок</h2>${opts('expOpts',['Никогда не занималась','Иногда дома / по видео','Регулярно'])}${actions()}`)
+/* -------- Lifestyle -------- */
++section('life',`
+  <h2>Образ жизни</h2>
+  ${opts('lifeOpts',['Сидячая работа','Умеренно активная','Активная'])}
+  ${actions()}
+`)
+/* -------- Experience -------- */
++section('exp',`
+  <h2>Опыт тренировок</h2>
+  ${opts('expOpts',['Никогда не занималась','Иногда дома / по видео','Регулярно'])}
+  ${actions()}
+`)
+/* -------- Promo 3 -------- */
 +section('promo3',`
   <figure class="promo-hero"><img src="walkwalk.jpg" alt="20 млн шагов в день"></figure>
   <h2><b>20&nbsp;миллионов</b> шагов каждый день набирают участницы клуба 😍</h2>
   <p class="hint">Короткие шагательные тренировки легко вписать в день.</p>
   ${actions()}
 `)
+/* -------- Goal -------- */
 +section('goal',`
   <h2>Ваша цель</h2>
   <div class="grid cols2">
     <div>
       <label><input id="goalKeep" type="checkbox"> <b>Накачать мышцы / поддерживать форму</b></label>
       <div class="hint" style="margin:6px 0">Если цель — не худеть, отметьте этот пункт.</div>
-      <div style="margin:10px 0"><span>Скинуть (кг): </span><input id="goalRange" type="range" min="0" max="20" step="0.5" value="5"><b> <span id="goalVal">5.0</span> кг</b></div>
+      <div style="margin:10px 0">
+        <span>Скинуть (кг): </span>
+        <input id="goalRange" type="range" min="0" max="20" step="0.5" value="5">
+        <b> <span id="goalVal">5.0</span> кг</b>
+      </div>
       <div class="hint">Сложность цели: <span id="goalBadge" class="goal-badge goal-mid">умеренно</span></div>
     </div>
-    <div><img class="goal-figure" src="doposle.jpg" alt="Цель и результат"></div>
+    <div>
+      <img class="goal-figure" src="doposle.jpg" alt="Цель и результат">
+    </div>
   </div>
   ${actions()}
 `)
+/* -------- Per week -------- */
 +section('perweek',`
   <h2>Сколько готовы тренироваться в неделю?</h2>
   ${chips('pwChips',['2 раза','3 раза','4–5 раз','Каждый день 20–30 мин'])}
   <div id="aha" class="hidden" style="margin-top:8px"></div>
-  <figure id="chartFig" class="hidden" style="margin:6px 0 0"><img src="chart.jpg" alt="Пример прогресса"></figure>
+  <figure id="chartFig" class="hidden" style="margin:6px 0 0">
+    <picture>
+      <source srcset="chart.webp" type="image/webp">
+      <source srcset="chart.png" type="image/png">
+      <img src="chart.jpg" alt="Пример прогресса">
+    </picture>
+  </figure>
   ${actions()}
 `)
+/* -------- Promo 4 -------- */
 +section('promo4',`
   <figure class="promo-hero"><img src="doposle.jpg" alt="85% похудели на 1–2 кг"></figure>
   <h2><b>85%</b> клубников похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
   <p class="hint">Результат мотивирует продолжать.</p>
   ${actions()}
 `)
+/* -------- Hard -------- */
 +section('hard',`
   <h2>Что сейчас даётся тяжелее всего?</h2>
   <div class="grid cols2" id="hardCards">
@@ -233,29 +315,65 @@ section('intro',`
   </div>
   ${actions()}
 `)
-+section('health',`<h2>Есть ли состояния, которые важно учитывать?</h2>${chips('healthChips',['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'])}${actions()}`)
-+section('nutrition',`<h2>Питание</h2>${opts('nutriOpts',['Буду питаться по меню-конструктору в клубе','Хочу научиться правильно составлять тарелку','Нет, пока без питания'])}${actions()}`)
+/* -------- Health -------- */
++section('health',`
+  <h2>Есть ли состояния, которые важно учитывать?</h2>
+  ${chips('healthChips',['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'])}
+  ${actions()}
+`)
+/* -------- Nutrition -------- */
++section('nutrition',`
+  <h2>Питание</h2>
+  ${opts('nutriOpts',['Буду питаться по меню-конструктору в клубе','Хочу научиться правильно составлять тарелку','Нет, пока без питания'])}
+  ${actions()}
+`)
+/* -------- Habits -------- */
 +section('food',`
   <h2>Ваши привычки</h2>
-  <div class="chips" id="bad">${['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'].map(x=>`<button class="chip" data-kind="bad" data-v="${x}">${x}</button>`).join('')}</div>
-  <div class="chips" id="good" style="margin-top:8px">${['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'].map(x=>`<button class="chip" data-kind="good" data-v="${x}">${x}</button>`).join('')}</div>
+  <div class="chips" id="bad">
+    ${['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'].map(x=>`<button class="chip" data-kind="bad" data-v="${x}">${x}</button>`).join('')}
+  </div>
+  <div class="chips" id="good" style="margin-top:8px">
+    ${['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'].map(x=>`<button class="chip" data-kind="good" data-v="${x}">${x}</button>`).join('')}
+  </div>
   <div class="habit-meter hidden" id="hmWrap" style="margin-top:10px">
-    <div style="display:flex;justify-content:space-between"><div>Индекс прогресса <span id="hmBadge" class="hm-badge">нейтрально</span></div><b id="hmScore">0%</b></div>
+    <div style="display:flex;justify-content:space-between">
+      <div>Индекс прогресса <span id="hmBadge" class="hm-badge">нейтрально</span></div>
+      <b id="hmScore">0%</b>
+    </div>
     <div class="hm-track" id="hmTrack"><div class="hm-pointer" id="hmPtr"></div></div>
   </div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toTrial" type="button">Далее →</button></div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="toTrial" type="button">Далее →</button>
+  </div>
 `)
+/* -------- Trial -------- */
 +section('trial',`
   <h2>Ура! Вы ответили на все вопросы 🎉</h2>
   <p class="hint"><b>Теперь вам доступна пробная тренировка.</b></p>
   <div class="p-tabs" id="trialTabs"></div>
-  <figure style="aspect-ratio:16/9;border-radius:16px;overflow:hidden"><div id="trialFrame" class="player"></div></figure>
+  <figure style="aspect-ratio:16/9;border-radius:16px;overflow:hidden">
+    <div id="trialFrame" class="player"></div>
+  </figure>
   <p class="hint"><b id="trialCtaText">Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам 3 раза в неделю.</b></p>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="calc" type="button">Узнать мой прогноз →</button></div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="calc" type="button">Узнать мой прогноз →</button>
+  </div>
 `)
+/* -------- Loading -------- */
 +section('loading',`
-  <div style="text-align:center;padding:34px 0"><div id="lp" style="display:inline-grid;place-items:center;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--o) 0deg,#eee 0deg)"><div style="width:70px;height:70px;background:#fff;border-radius:50%;display:grid;place-items:center"><b id="lpct">0%</b></div></div><div style="margin-top:12px" id="lmsg">Собираем данные…</div></div>
+  <div style="text-align:center;padding:34px 0">
+    <div id="lp" style="display:inline-grid;place-items:center;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--o) 0deg,#eee 0deg)">
+      <div style="width:70px;height:70px;background:#fff;border-radius:50%;display:grid;place-items:center">
+        <b id="lpct">0%</b>
+      </div>
+    </div>
+    <div style="margin-top:12px" id="lmsg">Собираем данные…</div>
+  </div>
 `)
+/* -------- Result -------- */
 +section('result',`
   <h2 id="rTitle">Готово!</h2>
   <div style="font-size:clamp(24px,6vw,44px);font-weight:900;margin:6px 0" id="nums">0 кг за 0 недель</div>
@@ -264,41 +382,66 @@ section('intro',`
   <!-- Пример из клуба -->
   <div id="caseBox" class="hidden" style="display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;margin:12px 0">
     <img id="caseImg" src="otzyv.jpg" alt="Пример из клуба" style="width:120px;height:120px;object-fit:cover;border-radius:12px">
-    <div><div style="font-weight:800;margin-bottom:4px">Пример из клуба</div><div class="hint" id="caseTxt"></div></div>
+    <div>
+      <div style="font-weight:800;margin-bottom:4px">Пример из клуба</div>
+      <div class="hint" id="caseTxt"></div>
+    </div>
   </div>
 
-  <!-- Спец-предложение без CTA (CTA только в финале) -->
+  <!-- Спец-предложение (без CTA здесь) -->
   <div style="margin:10px 0">
     <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-    <div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="inlineTimer">15:00</span></div>
+    <div class="deal-row">
+      <span class="deal-badge">Предложение ограничено</span>
+      <span class="deal-timer" id="inlineTimer">15:00</span>
+    </div>
   </div>
 
-  <div class="actions"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="seeProgram" type="button">Посмотреть программу</button></div>
+  <div class="actions">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="seeProgram" type="button">Посмотреть программу</button>
+  </div>
 `)
+/* -------- Program Select -------- */
 +section('progSelect',`
   <h2>Подберём программу под вас</h2>
   <p class="hint">Мы учли ваш возраст, ИМТ, активность, опыт и цель. Можно выбрать другой вариант.</p>
   <div class="pgrid" id="progGrid"></div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="goProgram" type="button">Смотреть неделю →</button></div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="goProgram" type="button">Смотреть неделю →</button>
+  </div>
 `)
+/* -------- Program week -------- */
 +section('program',`
   <h2 id="progTitle">Пример вашей недели в клубе</h2>
   <p class="hint" id="progLead"></p>
   <div class="week-grid" id="weekGrid"></div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toSale" type="button">Перейти к предложению!</button></div>
+  <div class="actions sticky">
+    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn primary" id="toSale" type="button">Перейти к предложению!</button>
+  </div>
 `)
+/* -------- Sale -------- */
 +section('sale',`
   <figure class="promo-hero"><img src="2.jpg" alt="Клуб ШАГАЙ ДОМА"></figure>
   <h2>Присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡</h2>
   <p class="hint" id="sLead"></p>
   <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-  <div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="saleTimer">15:00</span></div>
-  <div class="actions" style="margin-top:10px"><a class="btn primary" id="cta" target="_blank" rel="noopener" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=looseweight">Хочу абонемент со скидкой 70%!</a></div>
+  <div class="deal-row">
+    <span class="deal-badge">Предложение ограничено</span>
+    <span class="deal-timer" id="saleTimer">15:00</span>
+  </div>
+  <div class="actions" style="margin-top:10px">
+    <a class="btn primary" id="cta" target="_blank" rel="noopener" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=looseweight">Хочу абонемент со скидкой 70%!</a>
+  </div>
 `);
 
 S.innerHTML = html;
 
-/* ========= Progress & Navigation ========= */
+/* ===========================================================
+   Navigation / Discount header
+=========================================================== */
 let idx=0, SECTIONS=$$('.screen');
 const progress=$('#progress'), discVal=$('#discVal');
 const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','perweek','hard','health','nutrition','food'];
@@ -316,17 +459,18 @@ function show(n){
   SECTIONS[idx].classList.remove('is');
   idx=clamp(n,0,SECTIONS.length-1);
   SECTIONS[idx].classList.add('is');
-  // скидка только со второго вопроса (body)
+  // скидка только со второго вопроса (после intro -> age -> body)
   progress.classList.toggle('hide', idx < idxBy('body'));
   updateDiscount();
   window.scrollTo({top:0,behavior:'smooth'});
+
   const id=SECTIONS[idx].dataset.id;
   if(id==='trial') mountTrial();
   if(id==='progSelect') renderProgSelect();
   if(id==='program') renderProgram();
 }
-
 $('#start').onclick=()=>show(1);
+
 window.addEventListener('click',e=>{
   if(e.target.closest('[data-next]')) show(idx+1);
   if(e.target.closest('[data-prev]')) show(idx-1);
@@ -340,7 +484,9 @@ document.addEventListener('click',e=>{
   if(id==='toSale') show(idxBy('sale'));
 });
 
-/* ========= Inputs ========= */
+/* ===========================================================
+   Inputs / Model
+=========================================================== */
 $('#name').oninput=e=>{A.name=e.target.value.trim();save()};
 
 const stepsRange=$('#steps'), sv=$('#sv');
@@ -349,22 +495,41 @@ stepsRange.oninput=e=>{A.steps=+e.target.value;sv.textContent=A.steps;updR();sav
 updR();
 
 ['h','w'].forEach(id=>{$('#'+id).addEventListener('input',updBMI)});
-function bmiCat(b){if(b<18.5)return['Дефицит массы','goal-soft'];if(b<25)return['Норма','goal-soft'];if(b<30)return['Избыточная масса','goal-mid'];if(b<35)return['Ожирение I ст.','goal-hard'];if(b<40)return['Ожирение II ст.','goal-hard'];return['Ожирение III ст.','goal-hard']}
+function bmiCat(b){
+  if(b<18.5) return ['Дефицит массы','goal-soft'];
+  if(b<25)   return ['Норма','goal-soft'];
+  if(b<30)   return ['Избыточная масса','goal-mid'];
+  if(b<35)   return ['Ожирение I ст.','goal-hard'];
+  if(b<40)   return ['Ожирение II ст.','goal-hard'];
+  return ['Ожирение III ст.','goal-hard'];
+}
 function updBMI(){
   const h=+$('#h').value,w=+$('#w').value;
   if(h>0&&w>0){
     A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();
     const [lbl,cls]=bmiCat(A.bmi);
     $('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> — <span class="goal-badge '+cls+'">'+lbl+'</span>';
-  }else{$('#bmiI').textContent=''}
+  }else{
+    $('#bmiI').textContent='';
+  }
 }
 
-/* Generic chooser */
-function choose(root,key,single){root.addEventListener('click',e=>{const el=e.target.closest(single?'.opt':'.chip');if(!el)return;
-  if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));el.classList.add('is');A[key]=el.dataset.v||el.textContent}
-  else{el.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v)}
-  save(); if(key==='perweek') updateAha();
-});}
+/* Generic chooser (single/multi) */
+function choose(root,key,single){
+  root.addEventListener('click',e=>{
+    const el=e.target.closest(single?'.opt':'.chip');if(!el)return;
+    if(single){
+      $$('.opt',root).forEach(x=>x.classList.remove('is'));
+      el.classList.add('is');
+      A[key]=el.dataset.v||el.textContent;
+    }else{
+      el.classList.toggle('is');
+      A[key]=$$('.chip.is',root).map(x=>x.dataset.v);
+    }
+    save();
+    if(key==='perweek') updateAha();
+  });
+}
 choose($('#ageOpts'),'age',true);
 choose($('#bodyOpts'),'body',true);
 choose($('#lifeOpts'),'life',true);
@@ -373,34 +538,76 @@ choose($('#pwChips'),'perweek',false);
 choose($('#healthChips'),'health',false);
 choose($('#nutriOpts'),'nutri',true);
 
-/* ========= HARD question ========= */
+/* ===========================================================
+   HARD question (single select cards)
+=========================================================== */
 (function(){
-  const wrap=$('#hardCards'); const map={walk:'Долгая прогулка утомляет',stairs:'Лестницы — испытание',games:'Активные игры',jumps:'Прыжки',none:'Ничего из этого'};
+  const wrap=$('#hardCards');
+  const map={walk:'Долгая прогулка утомляет',stairs:'Лестницы — испытание',games:'Активные игры',jumps:'Прыжки',none:'Ничего из этого'};
   if(A.hardKey){const sel=wrap.querySelector(`[data-k="${A.hardKey}"]`); if(sel) sel.classList.add('is')}
   wrap.addEventListener('click',e=>{
     const c=e.target.closest('.hcard'); if(!c) return;
     $$('.hcard',wrap).forEach(x=>x.classList.remove('is'));
-    c.classList.add('is'); A.hardKey=c.dataset.k; A.hard=map[A.hardKey]; save();
+    c.classList.add('is');
+    A.hardKey=c.dataset.k;
+    A.hard=map[A.hardKey];
+    save();
   });
 })();
 
-/* ========= Goal ========= */
+/* ===========================================================
+   Goal handling
+=========================================================== */
 const goalR=$('#goalRange'), goalV=$('#goalVal'), goalB=$('#goalBadge'), goalKeep=$('#goalKeep');
-function setGoal(v){v=clamp(+v||0,0,20);A.goalKg=v;goalV.textContent=v.toFixed(1);const cls=v===0?'goal-soft':v<=10?'goal-mid':'goal-hard';const txt=v===0?'поддержание':v<=10?'умеренно':'интенсивно';goalB.className='goal-badge '+cls;goalB.textContent=txt;save()}
+function setGoal(v){
+  v=clamp(+v||0,0,20);
+  A.goalKg=v;
+  goalV.textContent=v.toFixed(1);
+  const cls=v===0?'goal-soft':v<=10?'goal-mid':'goal-hard';
+  const txt=v===0?'поддержание':v<=10?'умеренно':'интенсивно';
+  goalB.className='goal-badge '+cls;
+  goalB.textContent=txt;
+  save();
+}
 goalR.oninput=e=>setGoal(e.target.value);
-goalKeep.onchange=e=>{A.keep=!!e.target.checked;save();if(A.keep){setGoal(0);goalR.disabled=true}else{goalR.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}};
-(function(){const kg=(A.goalKg!=null)?A.goalKg:5;goalR.value=kg;setGoal(kg);goalKeep.checked=!!A.keep;goalR.disabled=!!A.keep})();
+goalKeep.onchange=e=>{
+  A.keep=!!e.target.checked;save();
+  if(A.keep){ setGoal(0); goalR.disabled=true; }
+  else{ goalR.disabled=false; if((+A.goalKg||0)===0) setGoal(5); }
+};
+(function initGoal(){
+  const kg=(A.goalKg!=null)?A.goalKg:5;
+  goalR.value=kg; setGoal(kg);
+  goalKeep.checked=!!A.keep; goalR.disabled=!!A.keep;
+})();
 
-/* ========= Per week & Chart reveal ========= */
-function freqFromPerweek(){const s=A.perweek||[];let n=0;if(s.some(v=>/Каждый день/.test(v)))n=7;else if(s.some(v=>/4–5/.test(v)))n=5;else if(s.some(v=>/3/.test(v)))n=3;else if(s.some(v=>/2/.test(v)))n=2;return n}
-function perweekLabel(){const s=freqFromPerweek();return s===7?'каждый день':s===5?'4–5 раз в неделю':s===3?'3 раза в неделю':s===2?'2 раза в неделю':'3 раза в неделю'}
-function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'); if(!n){box.classList.add('hidden');box.innerHTML='';fig.classList.add('hidden');return}
- const add=n*3000, base=(+A.steps||4000)*7, k=base?Math.min(2.5,Math.max(1.1,(base+add)/base)):1.3;
- box.innerHTML='<b>Отлично!</b> С тренировками '+(n===7?'каждый день':'~'+n+' раза в неделю')+' активность вырастет примерно в <b>'+k.toFixed(1)+' раза</b> (ещё ~'+add.toLocaleString('ru-RU')+' шагов/нед).';
- box.classList.remove('hidden'); fig.classList.remove('hidden');
+/* ===========================================================
+   Per-week reveal (chart appears after choice)
+=========================================================== */
+function freqFromPerweek(){
+  const s=A.perweek||[];let n=0;
+  if(s.some(v=>/Каждый день/.test(v))) n=7;
+  else if(s.some(v=>/4–5/.test(v))) n=5;
+  else if(s.some(v=>/3/.test(v))) n=3;
+  else if(s.some(v=>/2/.test(v))) n=2;
+  return n;
+}
+function perweekLabel(){
+  const s=freqFromPerweek();
+  return s===7?'каждый день':s===5?'4–5 раз в неделю':s===3?'3 раза в неделю':s===2?'2 раза в неделю':'3 раза в неделю';
+}
+function updateAha(){
+  const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig');
+  if(!n){ box.classList.add('hidden'); box.innerHTML=''; fig.classList.add('hidden'); return; }
+  const add=n*3000, base=(+A.steps||4000)*7;
+  const k=base?Math.min(2.5,Math.max(1.1,(base+add)/base)):1.3;
+  box.innerHTML='<b>Отлично!</b> С тренировками '+(n===7?'каждый день':'~'+n+' раза в неделю')+' активность вырастет примерно в <b>'+k.toFixed(1)+' раза</b> (ещё ~'+add.toLocaleString('ru-RU')+' шагов/нед).';
+  box.classList.remove('hidden'); fig.classList.remove('hidden');
 }
 
-/* ========= Habits Index ========= */
+/* ===========================================================
+   Habits meter
+=========================================================== */
 (function habits(){
   const wrapBad=$('#bad'), wrapGood=$('#good'), hmWrap=$('#hmWrap'), ptr=$('#hmPtr'), scoreEl=$('#hmScore'), badge=$('#hmBadge');
   function recompute(){
@@ -423,7 +630,9 @@ function updateAha(){const n=freqFromPerweek(), box=$('#aha'), fig=$('#chartFig'
   recompute();
 })();
 
-/* ========= Trial Player ========= */
+/* ===========================================================
+   Trial Player (VK / YouTube / RuTube)
+=========================================================== */
 const EMBEDS={
   vk:'https://vk.com/video_ext.php?oid=-222534261&id=456239990&hd=2',
   yt:'https://www.youtube-nocookie.com/embed/TFltKZJoV2g?rel=0&modestbranding=1',
@@ -431,21 +640,36 @@ const EMBEDS={
 };
 function mountTrial(){
   const tabs=$('#trialTabs'), frame=$('#trialFrame');
-  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
-  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
+  tabs.innerHTML=['vk','yt','rt']
+    .map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`)
+    .join('');
+  function sel(k){
+    tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));
+    frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  }
   tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
   sel('vk');
   $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
 }
 
-/* ========= Loading Ring ========= */
+/* ===========================================================
+   Loading ring
+=========================================================== */
 function runLoading(done){
   const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
   const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
-  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
+  requestAnimationFrame(function tick(t){
+    const p=Math.min(1,(t-t0)/T);
+    pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';
+    msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];
+    lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;
+    if(p<1) requestAnimationFrame(tick); else setTimeout(done,200);
+  })
 }
 
-/* ========= Calculation Helpers ========= */
+/* ===========================================================
+   Calculation & Result
+=========================================================== */
 function fLife(){return /Активная/.test(A.life||'')?1.08:/Сидячая/.test(A.life||'')?0.9:1.0}
 function fExp(){return /Регулярно/.test(A.exp||'')?1.08:/Никогда/.test(A.exp||'')?0.95:1.0}
 function fBody(){return {slim:.92,avg:1,large:.96,obese:.92}[A.body||'avg']||1}
@@ -454,19 +678,33 @@ function rate(){let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-
 function fmtDur(w){return w<=10?{v:w,u:'недель'}:{v:Math.ceil(w/4),u:'мес.'}}
 function goalKg(){if(A.keep)return 0;return A.goalKg!=null?+A.goalKg:5}
 
-/* ========= Case block (example) ========= */
 function renderCase(kg,keep){
   const box=$('#caseBox'), txt=$('#caseTxt'), img=$('#caseImg');
-  if(keep){txt.innerHTML='Елена, 41 год: «Через 6 недель стала выносливее, ушли отёки, объёмы −4 см по талии.»'; img.src='otzyv.jpg'; box.classList.remove('hidden'); return;}
-  if(kg>=8){txt.innerHTML='Марина, 34 года: −9.2 кг за 12 недель на шагах и простом питании из клуба.'; img.src='doposle.jpg'}
-  else if(kg>=4){txt.innerHTML='Алёна, 29 лет: −5.1 кг за 8 недель, тренировки 3 раза в неделю.'; img.src='otzyv.jpg'}
-  else{txt.innerHTML='Наталья, 47 лет: −2.3 кг за 4 недели, сон и вода по плану + шагательные.'; img.src='otzyv.jpg'}
+  if(keep){
+    txt.innerHTML='Елена, 41 год: «Через 6 недель стала выносливее, ушли отёки, объёмы −4 см по талии.»';
+    img.src='otzyv.jpg'; box.classList.remove('hidden'); return;
+  }
+  if(kg>=8){
+    txt.innerHTML='Марина, 34 года: −9.2 кг за 12 недель на шагах и простом питании из клуба.';
+    img.src='doposle.jpg';
+  }else if(kg>=4){
+    txt.innerHTML='Алёна, 29 лет: −5.1 кг за 8 недель, тренировки 3 раза в неделю.';
+    img.src='otzyv.jpg';
+  }else{
+    txt.innerHTML='Наталья, 47 лет: −2.3 кг за 4 недели, сон и вода по плану + шагательные.';
+    img.src='otzyv.jpg';
+  }
   box.classList.remove('hidden');
 }
 
-/* ========= Calculate & Show Result ========= */
 function calculate(){
-  const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
+  const name=A.name?.trim()||'Друзья';
+  const keep=!!A.keep;
+  const kg=goalKg();
+  const r=rate();
+  const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r)));
+  const d=fmtDur(w);
+
   $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
   if(keep||kg===0){
     $('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;
@@ -476,68 +714,109 @@ function calculate(){
     $('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;
   }
   renderCase(kg,keep);
-  startTimers(); // запускаем 15-мин отсчёт на результатах/финале
+
+  // Запускаем 15-мин таймеры после расчёта (и для финала он продолжит тикать)
+  startTimers();
+
+  // Сохраним рекомендованные программы
   A.recKeys = chooseProgramKeys(); save();
-  $('#sLead').innerHTML = keep? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.' : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
+
+  // Текст на финале
+  $('#sLead').innerHTML = keep
+    ? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.'
+    : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
+
   show(idxBy('result'));
 }
 
-/* ========= 15-мин таймеры ========= */
-function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
-function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
+/* ===========================================================
+   15-мин таймер (общий для результата и финала)
+=========================================================== */
+function getDeadline(){
+  let t=+localStorage.getItem('sdq_offer_deadline15')||0;
+  const now=Date.now();
+  if(!t||t<now){ t=now+15*60*1000; localStorage.setItem('sdq_offer_deadline15',String(t)); }
+  return t;
+}
+function fmt(ms){
+  let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+let timerI=null;
+function startTimers(){
+  if(timerI)clearInterval(timerI);
+  const dl=getDeadline();
+  const t1=$('#inlineTimer'), t2=$('#saleTimer');
+  function tick(){
+    const left=dl-Date.now(); const v=fmt(left);
+    if(t1) t1.textContent=v;
+    if(t2) t2.textContent=v;
+    if(left<=0) clearInterval(timerI);
+  }
+  tick(); timerI=setInterval(tick,1000);
+}
 
-/* ========= Catalog & Program ========= */
+/* ===========================================================
+   Catalog of programs (full with details)
+=========================================================== */
 const CATALOG={
   /* ШАГАЙ И ТАНЦУЙ */
-  dance_grace:{title:'Раскрываем женственность',cat:'Шагай и танцуй',desc:'Танцевальные связки, пластика и грация.',workouts:9,duration:'15–45 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3},
-  dance_learn:{title:'Учимся танцевать',cat:'Шагай и танцуй',desc:'Выучите танцевальные связки и набирайте шаги.',workouts:4,duration:'25–30 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3},
-  dance_mix:{title:'Шагай и танцуй',cat:'Шагай и танцуй',desc:'Шагательные тренировки с элементами танца.',workouts:6,duration:'5–40 мин',steps:'1000–4000',tempo:'низкий–средний',type:'dance',freq:3},
-  dance_fitness:{title:'Танцевальный фитнес',cat:'Шагай и танцуй',desc:'Эстетика танца + нагрузка на всё тело.',workouts:12,duration:'20–50 мин',steps:'3000–4000',tempo:'средний',type:'dance',freq:4},
-  zumba:{title:'Зумбавидные тренировки',cat:'Шагай и танцуй',desc:'Фитнес-вечеринка с пользой для фигуры.',workouts:7,duration:'20–60 мин',steps:'3000–6000',tempo:'высокий',type:'dance',freq:4},
+  dance_grace:{title:'Раскрываем женственность',cat:'Шагай и танцуй',desc:'Танцевальные связки, пластика и грация.',workouts:9,duration:'15–45 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3,detail:`Программа тренировок, состоящих из танцевальных движений и связок, благодаря которым вы сможете не просто набрать шаги, но и раскрыть свою изящность и грацию. Эта программа про плавность, гибкость и эстетику тела.`},
+  dance_learn:{title:'Учимся танцевать',cat:'Шагай и танцуй',desc:'Выучите танцевальные связки и набирайте шаги.',workouts:4,duration:'25–30 мин',steps:'2000–3000',tempo:'средний',type:'dance',freq:3,detail:`Подходит даже тем, кто никогда не танцевал. С обучающими тренировками вы легко соедините движения в единый танец и наберёте норму шагов.`},
+  dance_mix:{title:'Шагай и танцуй',cat:'Шагай и танцуй',desc:'Шагательные тренировки с элементами танца.',workouts:6,duration:'5–40 мин',steps:'1000–4000',tempo:'низкий–средний',type:'dance',freq:3,detail:`Зачем просто шагать, когда можно танцевать? Программа, где время летит незаметно, а шаги набираются сами собой.`},
+  dance_fitness:{title:'Танцевальный фитнес',cat:'Шагай и танцуй',desc:'Эстетика танца + нагрузка на всё тело.',workouts:12,duration:'20–50 мин',steps:'3000–4000',tempo:'средний',type:'dance',freq:4,detail:`Совмещаем приятное с полезным: через танцевальные движения укрепляем все группы мышц и улучшаем координацию.`},
+  zumba:{title:'Зумбавидные тренировки',cat:'Шагай и танцуй',desc:'Фитнес-вечеринка с пользой для фигуры.',workouts:7,duration:'20–60 мин',steps:'3000–6000',tempo:'высокий',type:'dance',freq:4,detail:`Яркие ритмы, энергия и много шагов — тренировки проходят как праздничная вечеринка.`},
 
   /* ШАГАТЕЛЬНЫЙ ФИТНЕС */
-  abs_flat:{title:'Плоский живот',cat:'Шагательный фитнес',desc:'Шаги + упражнения на пресс.',workouts:6,duration:'15–25 мин',steps:'1000–2000',tempo:'высокий',type:'fitness',freq:4},
-  strong_body:{title:'Сильное и рельефное тело',cat:'Шагательный фитнес',desc:'Силовые повышенной сложности.',workouts:8,duration:'15–25 мин',steps:'1000–2500',tempo:'высокий',type:'fitness',freq:4},
-  glutes_legs:{title:'Красивые ягодицы и стройные ноги',cat:'Шагательный фитнес',desc:'Силовая проработка ног и ягодиц.',workouts:8,duration:'15–40 мин',steps:'1000–4000',tempo:'высокий',type:'fitness',freq:4},
-  taebo:{title:'В стиле тай-бо',cat:'Шагательный фитнес',desc:'Движения в стиле бокса/кикбоксинга.',workouts:12,duration:'10–25 мин',steps:'1000–2000',tempo:'средний',type:'fitness',freq:5},
-  lymph:{title:'Лимфодренажные тренировки',cat:'Шагательный фитнес',desc:'Избавиться от отёков и тяжести.',workouts:10,duration:'15–30 мин',steps:'~2000',tempo:'средний',type:'fitness',freq:3},
-  tabata:{title:'Шагательная табата',cat:'Шагательный фитнес',desc:'Интервалы 20/10 для быстрого прогресса.',workouts:21,duration:'15–30 мин',steps:'1000–4000',tempo:'низкий–высокий',type:'fitness',freq:5},
-  intervals:{title:'Интервальные тренировки',cat:'Шагательный фитнес',desc:'Снижение веса + выносливость.',workouts:6,duration:'25 мин',steps:'1000',tempo:'средний–высокий',type:'fitness',freq:4},
+  abs_flat:{title:'Плоский живот',cat:'Шагательный фитнес',desc:'Шаги + упражнения на пресс.',workouts:6,duration:'15–25 мин',steps:'1000–2000',tempo:'высокий',type:'fitness',freq:4,detail:`Соединяем шаги с проработкой мышц кора, чтобы подтянуть живот и талию.`},
+  strong_body:{title:'Сильное и рельефное тело',cat:'Шагательный фитнес',desc:'Силовые повышенной сложности.',workouts:8,duration:'15–25 мин',steps:'1000–2500',tempo:'высокий',type:'fitness',freq:4,detail:`Укрепляем руки, спину и ноги, повышаем силовые возможности. Норма шагов также набирается.`},
+  glutes_legs:{title:'Красивые ягодицы и стройные ноги',cat:'Шагательный фитнес',desc:'Силовая проработка ног и ягодиц.',workouts:8,duration:'15–40 мин',steps:'1000–4000',tempo:'высокий',type:'fitness',freq:4,detail:`Самая «силовая» программа для округлых ягодиц и стройных бёдер, с сочетанием шагов и упражнений.`},
+  taebo:{title:'В стиле тай-бо',cat:'Шагательный фитнес',desc:'Движения в стиле бокса/кикбоксинга.',workouts:12,duration:'10–25 мин',steps:'1000–2000',tempo:'средний',type:'fitness',freq:5,detail:`Быстрый путь в форму: боевые связки на музыку, сжигаем калории и прокачиваем выносливость.`},
+  lymph:{title:'Лимфодренажные тренировки',cat:'Шагательный фитнес',desc:'Избавиться от отёков и тяжести.',workouts:10,duration:'15–30 мин',steps:'~2000',tempo:'средний',type:'fitness',freq:3,detail:`Снимаем отёки и тяжесть в теле благодаря сочетанию лимфодренажных упражнений и шагов.`},
+  tabata:{title:'Шагательная табата',cat:'Шагательный фитнес',desc:'Интервалы 20/10 для быстрого прогресса.',workouts:21,duration:'15–30 мин',steps:'1000–4000',tempo:'низкий–высокий',type:'fitness',freq:5,detail:`Высокоинтенсивные интервалы 20/10 ускоряют метаболизм и сжигание калорий.`},
+  intervals:{title:'Интервальные тренировки',cat:'Шагательный фитнес',desc:'Снижение веса + выносливость.',workouts:6,duration:'25 мин',steps:'1000',tempo:'средний–высокий',type:'fitness',freq:4,detail:`Совмещаем методы активного сжигания, а эффект сохраняется ещё до двух суток.`},
 
   /* ШАГАТЕЛЬНАЯ АЭРОБИКА */
-  aero_active:{title:'ШАГАЙ ДОМА. Активно',cat:'Шагательная аэробика',desc:'Долгая активная ходьба без танцев.',workouts:7,duration:'15–40 мин',steps:'2000–6000',tempo:'высокий',type:'aero',freq:5},
-  aero_base:{title:'ШАГАЙ ДОМА. База',cat:'Шагательная аэробика',desc:'Простой формат без разучивания движений.',workouts:8,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3},
-  plus100:{title:'Тренировки для 100+ кг',cat:'Шагательная аэробика',desc:'Мягкие и небыстрые тренировки для старта.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3},
-  retro:{title:'Аэробика «Всё только начинается»',cat:'Шагательная аэробика',desc:'Ретро-стиль 80-х, динамика и стиль.',workouts:9,duration:'13–25 мин',steps:'2000–4000',tempo:'средний',type:'aero',freq:4},
-  fifty:{title:'Тренировки для 50+',cat:'Шагательная аэробика',desc:'Бережная нагрузка, здоровье суставов.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'средний',type:'aero',freq:3},
+  aero_active:{title:'ШАГАЙ ДОМА. Активно',cat:'Шагательная аэробика',desc:'Долгая активная ходьба без танцев.',workouts:7,duration:'15–40 мин',steps:'2000–6000',tempo:'высокий',type:'aero',freq:5,detail:`Для тех, кто любит активную ходьбу: просто встаём и шагаем под ритм.`},
+  aero_base:{title:'ШАГАЙ ДОМА. База',cat:'Шагательная аэробика',desc:'Простой формат без разучивания движений.',workouts:8,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3,detail:`Отличный старт для новичков — только базовые шаги и понятная структура.`},
+  plus100:{title:'Тренировки для 100+ кг',cat:'Шагательная аэробика',desc:'Мягкие и небыстрые тренировки для старта.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'низкий',type:'aero',freq:3,detail:`Бережные занятия для комфортного старта без стресса для суставов.`},
+  retro:{title:'Аэробика «Всё только начинается»',cat:'Шагательная аэробика',desc:'Ретро-стиль 80-х, динамика и стиль.',workouts:9,duration:'13–25 мин',steps:'2000–4000',tempo:'средний',type:'aero',freq:4,detail:`Эстетика 80-х и ритмическая гимнастика — ярко, энергично, динамично.`},
+  fifty:{title:'Тренировки для 50+',cat:'Шагательная аэробика',desc:'Бережная нагрузка, здоровье суставов.',workouts:7,duration:'15–20 мин',steps:'2000–2500',tempo:'средний',type:'aero',freq:3,detail:`Для «серебряного возраста»: мягко укрепляем тело и улучшаем самочувствие.`},
 
   /* КАРДИО ЗАРЯДКИ */
-  hits:{title:'Шагай под хиты',cat:'Кардио зарядки',desc:'Короткие зарядки под любимые песни.',workouts:72,duration:'3–6 мин',steps:'200–600',tempo:'низкий',type:'cardio',freq:7},
-  warmups:{title:'Кардио-разминки',cat:'Кардио зарядки',desc:'Бодрые мини-тренировки по 5 минут.',workouts:5,duration:'2–5 мин',steps:'200–600',tempo:'средний',type:'cardio',freq:5},
+  hits:{title:'Шагай под хиты',cat:'Кардио зарядки',desc:'Короткие зарядки под любимые песни.',workouts:72,duration:'3–6 мин',steps:'200–600',tempo:'низкий',type:'cardio',freq:7,detail:`Мини-тренировки по 2–5 минут — любимая программа участников для бодрого утра.`},
+  warmups:{title:'Кардио-разминки',cat:'Кардио зарядки',desc:'Бодрые мини-тренировки по 5 минут.',workouts:5,duration:'2–5 мин',steps:'200–600',tempo:'средний',type:'cardio',freq:5,detail:`Если нет времени на полноценное занятие, эти мини-сессии выручат.`},
 
   /* ДРУГОЕ */
-  stretch:{title:'Растяжки для здоровья',cat:'Другое',desc:'Гибкость, лёгкость и восстановление.',workouts:5,duration:'10–40 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3},
-  back:{title:'Здоровая спина',cat:'Другое',desc:'Укрепление спины и осанки.',workouts:12,duration:'15–20 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3},
+  stretch:{title:'Растяжки для здоровья',cat:'Другое',desc:'Гибкость, лёгкость и восстановление.',workouts:5,duration:'10–40 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3,detail:`Улучшаем подвижность суставов, снимаем напряжение и повышаем эластичность.`},
+  back:{title:'Здоровая спина',cat:'Другое',desc:'Укрепление спины и осанки.',workouts:12,duration:'15–20 мин',steps:'—',tempo:'низк.–средн.',type:'other',freq:3,detail:`Снижаем нагрузку на позвоночник, расслабляем зажатые мышцы и улучшаем осанку.`},
 };
 
-/* выбор 4 программ под пользователя */
+/* Выбор 4 программ под пользователя */
 function chooseProgramKeys(){
   const age=A.age||'', exp=A.exp||'', life=A.life||'', bmi=+A.bmi||0, w=+A.w||0, steps=+A.steps||0, keep=!!A.keep, goal=+A.goalKg||0;
   const list=[]; const push=k=>{if(k && !list.includes(k)) list.push(k)};
 
   if(/50\+/.test(age)) push('fifty');
   if(bmi>=35 || w>=100){push('plus100'); push('aero_base');}
-  if(keep || goal===0){push('strong_body'); push('glutes_legs'); push('dance_fitness'); push('stretch');}
-  if(/Никогда/.test(exp)||/Сидячая/.test(life)||steps<4000){push('aero_base'); push('dance_mix');}
-  if(/Регулярно/.test(exp) && (/Активная/.test(life)||steps>8000) && !keep && goal>=5){push('tabata'); push('intervals'); push('aero_active');}
+
+  if(keep || goal===0){ push('strong_body'); push('glutes_legs'); push('dance_fitness'); push('stretch'); }
+
+  if(/Никогда/.test(exp)||/Сидячая/.test(life)||steps<4000){ push('aero_base'); push('dance_mix'); }
+
+  if(/Регулярно/.test(exp) && (/Активная/.test(life)||steps>8000) && !keep && goal>=5){
+    push('tabata'); push('intervals'); push('aero_active');
+  }
+
   push('dance_grace');
+
   const fallback=['aero_active','taebo','abs_flat','zumba','back','warmups','lymph','retro','hits'];
   for(const k of fallback){ if(list.length>=4) break; push(k); }
+
   return list.slice(0,4);
 }
 
-/* рендер карточек выбора */
+/* Рендер карточек выбора */
 function renderProgSelect(){
   const grid=$('#progGrid'); const keys=A.recKeys || chooseProgramKeys(); A.recKeys=keys; save();
   const rec=keys[0];
@@ -548,27 +827,44 @@ function renderProgSelect(){
       <span class="tag">${p.cat}</span>
       <h3>${p.title}</h3>
       <div class="meta">${p.desc}</div>
-      <div class="meta" style="margin-top:6px">• Тренировок: <b>${p.workouts}</b> · Длительность: <b>${p.duration}</b><br>• Шагов за тренировку: <b>${p.steps}</b> · Темп: <b>${p.tempo}</b></div>
-      <div class="actions" style="margin-top:8px"><button class="btn ghost" data-choose="${k}" type="button">Выбрать</button></div>
+      <div class="meta" style="margin-top:6px">
+        • Тренировок: <b>${p.workouts}</b> · Длительность: <b>${p.duration}</b><br>
+        • Шагов за тренировку: <b>${p.steps}</b> · Темп: <b>${p.tempo}</b>
+      </div>
+      <details><summary><b>Подробнее</b></summary><div class="hint" style="margin-top:6px">${p.detail||''}</div></details>
+      <div class="actions" style="margin-top:8px">
+        <button class="btn ghost" data-choose="${k}" type="button">Выбрать</button>
+      </div>
     </div>`;
   }).join('');
-  grid.onclick=e=>{const b=e.target.closest('[data-choose]'); if(!b) return; const k=b.dataset.choose; A.progKey=k; save(); $$('.pcard',grid).forEach(c=>c.classList.toggle('is',c.dataset.k===k));};
+
+  grid.onclick=e=>{
+    const b=e.target.closest('[data-choose]'); if(!b) return;
+    const k=b.dataset.choose; A.progKey=k; save();
+    $$('.pcard',grid).forEach(c=>c.classList.toggle('is',c.dataset.k===k));
+  };
   if(!A.progKey) A.progKey=rec;
 }
 
-/* неделя по выбранной программе */
+/* Неделя по выбранной программе */
 function renderProgram(){
-  const key=A.progKey || (A.recKeys?A.recKeys[0]:chooseProgramKeys()[0]); const p=CATALOG[key];
-  if(!p){$('#weekGrid').innerHTML=''; return;}
+  const key=A.progKey || (A.recKeys?A.recKeys[0]:chooseProgramKeys()[0]);
+  const p=CATALOG[key]; if(!p){$('#weekGrid').innerHTML=''; return;}
   $('#progTitle').textContent = `«${p.title}» — пример вашей недели`;
   const freq = freqFromPerweek() || p.freq || 3;
   $('#progLead').innerHTML = `${p.cat} • Рекомендуем тренироваться <b>${freq}</b> раз(а) в неделю · ${p.desc}`;
   const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   let trainIdx=[];
-  if(freq===2) trainIdx=[1,4]; else if(freq===3) trainIdx=[0,2,5]; else if(freq===4) trainIdx=[0,2,4,6]; else if(freq===5) trainIdx=[0,1,3,5,6]; else trainIdx=[0,1,2,3,4,5];
+  if(freq===2) trainIdx=[1,4];
+  else if(freq===3) trainIdx=[0,2,5];
+  else if(freq===4) trainIdx=[0,2,4,6];
+  else if(freq===5) trainIdx=[0,1,3,5,6];
+  else trainIdx=[0,1,2,3,4,5];
+
   const grid=$('#weekGrid');
   const titleByType={dance:'Танцевальная шагательная',fitness:'Шаги + силовые',aero:'Аэробная ходьба',cardio:'Кардио-зарядка',other:'Восстановление'};
   const addByType={dance:'разбор/связки под музыку',fitness:'20–30 мин • корпус/ягодицы',aero:'длительная ходьба 20–40 мин',cardio:'5–10 мин бодрой активности',other:'растяжка/здоровая спина'};
+
   grid.innerHTML = days.map((d,i)=>{
     const train=trainIdx.includes(i);
     if(!train) return `<div class="day"><h4>${d}</h4><span class="badge badge-rest">Прогулка / отдых</span><div class="hint">5–8 тыс. шагов в удовольствие</div></div>`;
@@ -576,15 +872,10 @@ function renderProgram(){
   }).join('');
 }
 
-/* ========= Mount trial once we reach it ========= */
-function mountTrial(){
-  const tabs=$('#trialTabs'), frame=$('#trialFrame');
-  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
-  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
-  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
-  sel('vk');
-  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
-}
+/* ===========================================================
+   Init (no early timers!)
+=========================================================== */
+$('#start').focus();
 </script>
 </body>
 </html>
