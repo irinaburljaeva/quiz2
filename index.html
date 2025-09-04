@@ -40,7 +40,7 @@ h2{font-size:clamp(20px,4.6vw,30px);line-height:1.18;margin:6px 0 12px}
 .ghost{background:#fff;border:2px solid var(--g)}
 .sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 60%, rgba(255,255,255,0));padding-top:8px;z-index:5}
 
-/* progress / discount */
+/* discount header */
 #progress{display:flex;align-items:center;gap:10px;margin:0 0 12px}
 #progress.hide{display:none!important}
 .discbox{display:flex;align-items:center;gap:10px;border:2px solid #ffd7c7;background:#fff7ef;border-radius:14px;padding:8px 12px}
@@ -267,10 +267,10 @@ section('intro',`
     <div><div style="font-weight:800;margin-bottom:4px">Пример из клуба</div><div class="hint" id="caseTxt"></div></div>
   </div>
 
+  <!-- Спец-предложение без CTA (CTA только в финале) -->
   <div style="margin:10px 0">
     <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
     <div class="deal-row"><span class="deal-badge">Предложение ограничено</span><span class="deal-timer" id="inlineTimer">15:00</span></div>
-    <div class="actions" style="margin-top:10px"><button class="btn primary" id="toOffer" type="button">Перейти к предложению!</button></div>
   </div>
 
   <div class="actions"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="seeProgram" type="button">Посмотреть программу</button></div>
@@ -285,7 +285,7 @@ section('intro',`
   <h2 id="progTitle">Пример вашей недели в клубе</h2>
   <p class="hint" id="progLead"></p>
   <div class="week-grid" id="weekGrid"></div>
-  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="progToOffer" type="button">Перейти к предложению!</button></div>
+  <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="toSale" type="button">Перейти к предложению!</button></div>
 `)
 +section('sale',`
   <figure class="promo-hero"><img src="2.jpg" alt="Клуб ШАГАЙ ДОМА"></figure>
@@ -331,14 +331,13 @@ window.addEventListener('click',e=>{
   if(e.target.closest('[data-next]')) show(idx+1);
   if(e.target.closest('[data-prev]')) show(idx-1);
 });
-/* direct buttons */
 document.addEventListener('click',e=>{
-  if(e.target?.id==='toTrial') show(idxBy('trial'));
-  if(e.target?.id==='calc'){ show(idxBy('loading')); runLoading(calculate); }
-  if(e.target?.id==='toOffer') show(idxBy('sale'));
-  if(e.target?.id==='seeProgram') show(idxBy('progSelect'));
-  if(e.target?.id==='goProgram') show(idxBy('program'));
-  if(e.target?.id==='progToOffer') show(idxBy('sale'));
+  const id=e.target?.id;
+  if(id==='toTrial') show(idxBy('trial'));
+  if(id==='calc'){ show(idxBy('loading')); runLoading(calculate); }
+  if(id==='seeProgram') show(idxBy('progSelect'));
+  if(id==='goProgram') show(idxBy('program'));
+  if(id==='toSale') show(idxBy('sale'));
 });
 
 /* ========= Inputs ========= */
@@ -577,11 +576,41 @@ function renderProgram(){
   }).join('');
 }
 
-/* ========= Utilities used above ========= */
-function freqFromPerweek(){const s=A.perweek||[];let n=0;if(s.some(v=>/Каждый день/.test(v)))n=7;else if(s.some(v=>/4–5/.test(v)))n=5;else if(s.some(v=>/3/.test(v)))n=3;else if(s.some(v=>/2/.test(v)))n=2;return n}
-function perweekLabel(){const s=freqFromPerweek();return s===7?'каждый день':s===5?'4–5 раз в неделю':s===3?'3 раза в неделю':s===2?'2 раза в неделю':'3 раза в неделю'}
+/* ========= Trial mount ========= */
+function mountTrial(){
+  const tabs=$('#trialTabs'), frame=$('#trialFrame');
+  tabs.innerHTML=['vk','yt','rt'].map((k,i)=>`<button class="p-btn${i?'':' is'}" data-k="${k}">${{vk:'VK Видео',yt:'YouTube',rt:'RuTube'}[k]}</button>`).join('');
+  function sel(k){tabs.querySelectorAll('.p-btn').forEach(b=>b.classList.toggle('is',b.dataset.k===k));frame.innerHTML=`<iframe src="${EMBEDS[k]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
+  tabs.onclick=e=>{const b=e.target.closest('.p-btn'); if(b) sel(b.dataset.k)};
+  sel('vk');
+  $('#trialCtaText').innerHTML = `<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам ${perweekLabel()}.</b>`;
+}
 
-/* ========= Mount ========= */
+/* ========= Loading & Calculate ========= */
+function runLoading(done){
+  const lp=$('#lp'),pct=$('#lpct'),msg=$('#lmsg');const T=1500,t0=performance.now();
+  const steps=['Возраст и ИМТ','Активность и опыт','Цель и питание','Готовим прогноз…'];
+  requestAnimationFrame(function tick(t){const p=Math.min(1,(t-t0)/T);pct.textContent=Math.round(5+95*(1-Math.pow(1-p,3)))+'%';msg.textContent=steps[Math.min(steps.length-1,Math.floor(p*steps.length))];lp.style.background=`conic-gradient(var(--o) ${Math.round(p*360)}deg,#eee 0)`;if(p<1)requestAnimationFrame(tick);else setTimeout(done,200)})
+}
+function calculate(){
+  const name=A.name?.trim()||'Друзья'; const keep=!!A.keep; const kg=goalKg(); const r=rate(); const w=Math.max(4,Math.min(16,Math.ceil((keep?4:kg)/r))); const d=fmtDur(w);
+  $('#rTitle').textContent=`${name}, ваш прогноз готов ✨`;
+  if(keep||kg===0){$('#nums').textContent=`Чтобы прийти к цели за ${d.v} ${d.u}`;$('#rSub').innerHTML=`Сфокусируемся на <b>тонусе и выносливости</b>.`;}
+  else{$('#nums').textContent=`−${kg} кг за ${d.v} ${d.u}`;$('#rSub').innerHTML=`С ШАГАЙ ДОМА ⚡ вы будете проходить <b>${(+A.steps+2000).toLocaleString('ru-RU')}</b> шагов в день.`;}
+  renderCase(kg,keep);
+  startTimers();
+  A.recKeys = chooseProgramKeys(); save();
+  $('#sLead').innerHTML = keep? 'Готовые планы на тонус и мышцы, поддержка и сообщество помогут вам держать ритм.' : `Чтобы прийти к цели <b>−${kg} кг</b> — подключите готовые планы и поддержку.`;
+  show(idxBy('result'));
+}
+
+/* ========= Timers ========= */
+function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline15',String(t))}return t}
+function fmt(ms){let s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);s%=60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+let timerI=null;function startTimers(){if(timerI)clearInterval(timerI);const dl=getDeadline();const t1=$('#inlineTimer'),t2=$('#saleTimer');function tick(){const left=dl-Date.now();const v=fmt(left);t1&&(t1.textContent=v);t2&&(t2.textContent=v);if(left<=0)clearInterval(timerI)}tick();timerI=setInterval(tick,1000)}
+
+/* ========= Init ========= */
+$('#start').onclick=()=>show(1);
 $('#start').focus();
 startTimers();
 </script>
