@@ -834,7 +834,7 @@ function mountTrialPlayer(){
       '<iframe src="'+src+'" title="Пробная тренировка" loading="lazy" '+
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '+
       'allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>';
-    if (extLink) extLink.href = raw;
+
   }
   tabs.addEventListener('click', function(e){
     var b = e.target.closest('.p-btn'); if(!b) return;
