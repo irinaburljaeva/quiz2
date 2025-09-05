@@ -692,16 +692,25 @@ updateAha();
 function runLoading(done){
   const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');
   const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];
-  let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
-  const D=1500,t0=performance.now();
+  let si=0;
+  lmsg.textContent=stepsTxt[0];
+  lsub.textContent='Возраст • ИМТ • Активность • Цель';
+
+  const D=1500, t0=performance.now();
   function tick(n){
-    const p=Math.min(1,(n-t0)/D); const ease=1-Math.pow(1-p,3); const pct=Math.round(5+95*ease);
-    ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
+    const p=Math.min(1,(n-t0)/D);
+    const ease=1-Math.pow(1-p,3);
+    const pct=Math.round(5+95*ease);
+    ring.style.setProperty('--p',pct+'%');
+    lpct.textContent=pct+'%';
+
     const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
-    if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
-    if(p<1){ requestAnimationFrame(tick);} else { setTimeout (()+>{ try{done();}catch(err){console.error(err);fallbackResult();}},200);}
+    if(i!==si){ si=i; lmsg.textContent=stepsTxt[si]; }
+
+    if(p<1){ requestAnimationFrame(tick); }
+    else { setTimeout(()=>{ try{ done(); } catch(err){ console.error(err); fallbackResult(); } },200); }
   }
-  requestAnimationFrame(tick)
+  requestAnimationFrame(tick);
 }
 function fallbackResult(){
   const name=A.name&&A.name.trim()?A.name.trim():'';
