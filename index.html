@@ -10,576 +10,423 @@
 <link rel="preload" as="image" href="m.png">
 <link rel="preload" as="image" href="xxl.png">
 <style>
-:root{--r:#CF2C02;--y:#FFBA08;--o:#E85D04;--g:#D9D9D9;--txt:#1a1a1a;--hero-pos-y:28%;--hero-pos-y-m:22%}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);background:#fff;overflow-x:hidden}
-.hidden{display:none!important}
-.app{width:min(960px,100%);margin:0 auto;padding:16px}
-.card{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;overflow:hidden;position:relative}
+:root{
+  --bg:#fff; --txt:#0c0c0c; --sub:#606060; --mut:#999; --g:#e9e9e9; --gg:#f3f3f3;
+  --brand:#CF2C02; --brand2:#E85D04; --brand3:#FFBA08; --ok:#089c39; --bad:#d31919;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+img{max-width:100%}
+button{border:0;cursor:pointer}
+.hidden{display:none !important}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--g);font-weight:700;font-size:.9rem;white-space:nowrap}
+.badge b{font-size:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;border-radius:10px;font-weight:800}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.ghost{background:#fff;border:2px solid var(--g)}
+.btn.wide{width:100%}
+.actions{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.actions.sticky{position:sticky;bottom:0;z-index:5;background:linear-gradient(0deg,#fff,rgba(255,255,255,.95));padding-top:8px}
+.header{position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid var(--g)}
+.header .inner{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.02em}
+.logo .dot{width:10px;height:10px;border-radius:50%;background:var(--brand)}
+.container{max-width:780px;margin:0 auto;padding:10px 12px 24px}
+h1{margin:10px 0 12px;font-size:clamp(22px,7vw,32px);line-height:1.1;letter-spacing:-.02em}
+.sub{color:var(--sub);margin:0 0 6px}
+.hero{display:grid;gap:10px}
+.hero .card{border:1px solid var(--g);border-radius:12px;padding:10px;background:#fff}
+.inline-opts{display:flex;flex-wrap:wrap;gap:10px}
+.inline-opts .opt{border:2px solid var(--g);border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer}
+.inline-opts .opt.is{background:#fff7ef;border-color:#ffd5c2}
+grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+grid-2 .card{border:1px solid var(--g);border-radius:12px;padding:10px;background:#fff}
+small.mut{color:#777}
+.slide{display:grid;gap:12px}
+.progress{height:10px;background:#f2f2f2;border-radius:999px;overflow:hidden}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0}
+.answer-opts{display:grid;gap:10px}
+.answer-opts .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:2px solid var(--g);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;user-select:none}
+.answer-opts .chip.is{background:#fff7ef;border-color:#ffd5c2}
+.answer-opts .chip .dot{width:10px;height:10px;border-radius:50%;background:var(--g)}
+.answer-opts .chip.is .dot{background:var(--brand)}
+.answer-opts .chip img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.answer-opts .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.answer-opts .grid .chip{width:100%;justify-content:flex-start}
+.media{border:1px solid var(--g);border-radius:12px;overflow:hidden}
+.media .ph{display:grid;place-items:center;aspect-ratio:16/9;background:#000;color:#fff;font-weight:800}
+.hero-img{border-radius:12px;overflow:hidden}
+.hero-img img{display:block;width:100%;height:auto}
+.kg{display:flex;align-items:center;gap:8px}
+.kg input{width:100%;height:44px;border:1px solid var(--g);border-radius:8px;padding:0 10px;font-weight:800;font-size:1rem}
+.kg .badge{height:38px}
+.hint{font-size:.95rem;color:#333}
+hr.sep{margin:14px 0;border:0;border-top:1px dashed var(--g)}
+/* Trial video */
+.video-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.video-tabs .tab{border:2px solid var(--g);border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer;background:#fff}
+.video-tabs .tab.is{background:#fff0e5;border-color:#ffc9ad}
+.video-embed{position:relative;border:1px solid var(--g);border-radius:12px;overflow:hidden}
+.video-embed iframe{display:block;width:100%;height:54vw;max-height:420px}
+@media (min-width:740px){ .video-embed iframe{height:440px} }
 
-/* HERO */
-.hero-wrap{position:relative;margin:0 0 12px;border-radius:20px;overflow:hidden;box-shadow:0 10px 18px rgba(0,0,0,.08);aspect-ratio:16/9}
-.hero-wrap::before{content:"";display:block;padding-top:56.25%}
-.hero-media,.hero-skel{position:absolute;inset:0;width:100%;height:100%;border-radius:20px}
-.hero-media{display:block;object-fit:cover;object-position:50% var(--hero-pos-y)}
-@media (max-width:480px){.hero-media{object-position:50% var(--hero-pos-y-m)}}
-.hero-skel{background:linear-gradient(110deg,#f4f4f4 8%,#eaeaea 18%,#f4f4f4 33%);background-size:200% 100%;animation:heroShimmer 1.2s linear infinite;pointer-events:none}
-@keyframes heroShimmer{to{background-position-x:-200%}}
-.hero-skel.hide{opacity:0;pointer-events:none;transition:opacity .25s ease}
-
-/* Screens */
-.screen{display:none;animation:.35s fs ease both;padding-bottom:90px}
-.screen.is{display:block}
-@keyframes fs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:clamp(22px,5.6vw,38px);line-height:1.15;margin:8px 0 10px}
-h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
-.hint{color:#6b6b6b;font-size:.95rem}
-.lead-sub{margin:6px 0 12px}
-.grid{display:grid;gap:10px}.cols2{grid-template-columns:1fr 1fr}
-@media (max-width:620px){.cols2{grid-template-columns:1fr}}
-
-.opt{border:2px solid var(--g);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;background:#fff;cursor:pointer;transition:.2s}
-.opt.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
-.opt--img{flex-direction:column;align-items:center;text-align:center;padding:10px}
-.opt--img img{width:100%;height:180px;object-fit:contain;background:#fafafa;border-radius:12px}
-.opt--img span{margin-top:8px;font-weight:600}
-
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border:2px solid var(--g);border-radius:999px;padding:8px 12px;background:#fff;cursor:pointer}
-.chip.is{border-color:var(--o);box-shadow:0 6px 16px rgba(232,93,4,.12)}
-.text{width:100%;border:2px solid var(--g);border-radius:12px;padding:10px 12px;font-size:1rem}
-
-.actions{display:flex;gap:8px;margin-top:14px}
-.btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
-.primary{background:linear-gradient(135deg,var(--r),var(--o));color:#fff;box-shadow:0 10px 18px rgba(207,44,2,.25)}
-.ghost{background:#fff;border:2px solid var(--g)}
-.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,#fff 70%,rgba(255,255,255,0));padding-top:8px;z-index:30}
-
-/* ===== Discount header ===== */
-#progress{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
-#progress.hide{display:none!important}
-.discbox{display:flex;align-items:center;gap:10px;border:2px solid #ffd5c2;background:#fff7ef;border-radius:14px;padding:8px 12px}
-.discbox .title{font-weight:800}
-.discbox .value{font-weight:900;font-size:1.2rem;letter-spacing:-.02em}
-.disc-tip{position:relative;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#FFBA08;color:#000;font-weight:800;font-size:.8rem;cursor:help}
-.disc-tip .tt{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translate(-50%,0);background:#222;color:#fff;padding:6px 8px;border-radius:8px;font-size:.85rem;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s}
-.disc-tip .tt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#222}
-.disc-tip:hover .tt,.disc-tip:focus .tt{opacity:1;transform:translate(-50%,-4px)}
-.plogo{margin-left:auto;display:flex;align-items:center}
-.plogo img{height:32px;width:auto;display:block;object-fit:contain}
-@media (max-width:480px){.plogo img{height:28px}}
-
-/* Steps slider */
-#steps{--pct:0%;--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o);width:100%;height:40px;background:transparent;accent-color:var(--o)}
-#steps:focus{outline:none}
-#steps::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--fill-start) 0 var(--pct),var(--track) var(--pct) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
-#steps::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 10px rgba(232,93,4,.25);margin-top:-8px;transition:transform .12s ease}
-#steps:active::-webkit-slider-thumb{transform:scale(1.06)}
-#steps::-moz-range-track{height:12px;border-radius:999px;background:#e9e9e9}
-#steps::-moz-range-progress{height:12px;border-radius:999px;background:linear-gradient(135deg,var(--fill-start),var(--fill-end))}
-#steps::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 10px rgba(232,93,4,.25)}
-
-/* BMI */
-.bmi-line{margin-top:6px}
-.bmi-tag{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.9rem;vertical-align:baseline}
-.bmi-ok{background:#e8f7ee;color:#0f7a42}.bmi-warn{background:#fff4e6;color:#a04b00}.bmi-bad{background:#ffe9e6;color:#a11000}
-
-/* Habits */
-.habit{display:grid;gap:14px}
-.habit-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media (max-width:720px){.habit-grid{grid-template-columns:1fr}}
-.habit h3{margin:.2rem 0 .6rem;font-size:1.02rem}
-.habit .col{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff}
-.chips--pills{gap:8px}
-.chips--pills .chip{border-radius:999px;padding:9px 12px;font-weight:600;border:2px solid var(--g);background:#fff;transition:.15s}
-.chips--pills .chip.is{border-color:var(--o);background:#fffaf5}
-
-.habit-meter{border:2px solid var(--g);border-radius:14px;padding:12px;background:#fff}
-.habit-meter.hidden{display:none}
-.hm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-#hmScore{font-weight:800}
-.hm-track{--p:50%;position:relative;height:12px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#ffe1db 0%,#fff7e8 50%,#e7f7ef 100%)}
-.hm-pointer{position:absolute;top:50%;left:var(--p);transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 3px 10px rgba(0,0,0,.12);transition:left .25s ease}
-.hm-scale{display:flex;justify-content:space-between;font-size:.82rem;color:#666;margin-top:6px}
-.hm-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem;margin-left:8px}
-.hm-bad{background:#ffe9e6;color:#a11000}.hm-ok{background:#fff3cc;color:#9a6b00}.hm-good{background:#e7f7ef;color:#0f7a42}
-
-/* Hard cards */
-.hardw{display:grid;gap:14px}
-.hard-cards{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media (max-width:760px){.hard-cards{grid-template-columns:1fr}}
-.hcard{position:relative;border:2px solid var(--g);border-radius:16px;background:#fff;padding:14px;cursor:pointer;transform-style:preserve-3d;transition:transform .15s ease,box-shadow .2s ease,border-color .2s;box-shadow:0 8px 18px rgba(0,0,0,.05);overflow:hidden}
-.hcard:hover{box-shadow:0 12px 26px rgba(0,0,0,.08)}
-.hcard.is{border-color:var(--o);background:linear-gradient(180deg,#fff 0,#fff9f3 100%);box-shadow:0 12px 26px rgba(232,93,4,.18)}
-.hhead{display:flex;gap:10px;align-items:center;letter-spacing:-.02em}
-.hicon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#fff6f1;border:2px solid #ffd5c2}
-.hhead,.hhead *{font-weight:500 !important}
-
-/* Goal UI */
-.goalw{display:grid;gap:12px}
-.goal-top{display:grid;gap:8px;grid-template-columns:1.05fr .95fr}
-@media (max-width:780px){.goal-top{grid-template-columns:1fr}}
-.goal-card{border:2px solid var(--g);border-radius:16px;padding:10px;background:#fff;overflow:hidden}
-.goal-fig{position:relative;height:260px;border:2px solid var(--g);border-radius:16px;padding:8px;background:#fff;overflow:hidden}
-@media (max-width:480px){.goal-fig{height:220px}}
-.goal-range .val{display:flex;align-items:baseline;gap:8px;font-size:clamp(18px,4.6vw,28px);font-weight:800;letter-spacing:-.03em;white-space:nowrap}
-.goal-range .sub{color:#666;margin-top:2px}
-#goalRange{width:100%;height:38px;background:transparent;accent-color:var(--o);--track:#e9e9e9;--fill-start:var(--r);--fill-end:var(--o)}
-#goalRange:focus{outline:none}
-#goalRange::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--fill-start) 0 var(--pct),var(--track) var(--pct) 100%)}
-#goalRange::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--o);box-shadow:0 4px 12px rgba(232,93,4,.25);margin-top:-7px;transition:transform .12s ease}
-#goalRange::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--o)}
-
-/* Goal silhouettes */
-.goal-stack{position:relative;width:100%;height:100%}
-.goal-stack img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(1);transition:opacity .28s ease,transform .28s ease;filter:drop-shadow(0 8px 22px rgba(0,0,0,.08))}
-.goal-stack .tape{display:none!important}
-
-/* Loading/result/sale */
-.loader2{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 8px 12px}
-.loader2 .ring{--p:0%;width:88px;height:88px;border-radius:50%;background:conic-gradient(var(--o) var(--p),#eee 0);position:relative;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.loader2 .ring::after{content:"";position:absolute;inset:10px;background:#fff;border-radius:50%}
-.loader2 .pct{position:absolute;inset:0;display:grid;place-items:center;font-weight:800}
-.loader2 .lmsg{margin-top:14px;font-weight:700;font-size:1.05rem}
-.counter{font-size:clamp(26px,6vw,48px);line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
-.sale-hero{margin:0 0 12px;border-radius:16px;overflow:hidden}
-.sale-hero img{width:100%;display:block;border-radius:16px;object-fit:cover}
-
-/* DEAL (таймер/бейдж) */
-.deal{margin:8px 0}
-.deal-row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.deal-badge{display:inline-block;padding:8px 12px;border-radius:999px;border:2px solid #ffd5c2;background:#fff7ef;font-weight:800;white-space:nowrap}
-.deal-timer{font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.5px;border:2px solid var(--g);background:#fff;border-radius:12px;padding:6px 10px;min-width:72px;text-align:center}
-
-/* кейс-виджет */
-.case{border:2px solid var(--g);border-radius:16px;padding:12px;background:#fff;display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;margin:10px 0}
-.case img{width:96px;height:96px;object-fit:cover;border-radius:12px;background:#f6f6f6;cursor:zoom-in}
-.case h3{margin:0 0 4px;font-size:1.05rem}
-.case p{margin:0;color:#555}
-.case.hide{display:none}
-
-/* лайтбокс */
-#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-#lightbox.show{display:flex}
-#lightbox img{max-width:96vw;max-height:90vh;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-#lightbox .cap{color:#fff;margin-top:10px;text-align:center;font-size:1rem;opacity:.9}
-#lightbox .x{position:absolute;top:10px;right:14px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff;font-size:26px;cursor:pointer}
-#lightbox .x:active{transform:scale(.96)}
-
-/* Promo interstitials */
-.promo{display:grid;gap:10px}
-.promo-hero{margin:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
-.promo-hero img,.promo-hero video{width:100%;display:block;border-radius:16px;object-fit:cover}
-
-/* Goal badge styles */
-.goal-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:700;font-size:.85rem}
-.goal-soft{background:#e9f9f0;color:#0f7a42}
-.goal-mid{background:#fff3cc;color:#9a6b00}
-.goal-hard{background:#ffe9e6;color:#a11000}
-
-/* === Player tabs (trial) === */
-.p-tabs{display:flex;gap:8px;margin:6px 0 8px}
-.p-btn{border:2px solid var(--g);background:#fff;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer}
-.p-btn.is{border-color:#ffd5c2;background:#fff7ef}
-.player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden}
-.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* === Program slide === */
+.prog-wrap{display:grid;gap:12px}
+.prog-head{position:relative;border:2px solid var(--g);border-radius:16px;padding:14px 12px;background:
+  radial-gradient(120% 80% at 0% 0%, rgba(255,240,230,.9), transparent 50%),
+  radial-gradient(120% 80% at 100% 100%, rgba(255,247,236,.9), transparent 55%),
+  linear-gradient(180deg,#fff,#fff);overflow:hidden}
+.prog-head::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
+  background:conic-gradient(from 0deg, #FFBA08, #E85D04);opacity:.15;filter:blur(6px)}
+.p-title{margin:.2rem 0 6px;font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-.02em}
+.p-sub{margin:0;color:#555}
+.p-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.p-chip{border:2px solid #ffd5c2;background:#fff7ef;border-radius:999px;padding:6px 10px;font-weight:700;font-size:.88rem}
+.p-chip.emph{border-color:#cfeede;background:#e9f9f0}
+.prog-hero{margin:0 0 6px;border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.06)}
+.prog-hero img{width:100%;display:block;border-radius:16px;object-fit:cover}
+.prog-card{border:0;border-radius:0;padding:0;background:transparent;box-shadow:none}
+.prog-card h3{margin:.2rem 0 .6rem}
+.prog-list{padding-left:18px;margin:.2rem 0}
 </style>
 </head>
 <body>
-  <div class="app"><div class="card">
-    <!-- Header with discount (скрыт на первом экране) -->
-    <div id="progress" class="hide">
-      <div class="discbox" id="discBox">
-        <span class="title">Ваша скидка</span>
-        <span class="value" id="discVal">0%</span>
-        <span class="disc-tip" tabindex="0">i<span class="tt">Растёт с каждым вопросом!</span></span>
-      </div>
-      <div class="plogo"><img src="logo.png" alt="ШАГАЙ ДОМА"></div>
-    </div>
-
-    <div id="screens"></div>
-  </div></div>
-
-  <!-- Лайтбокс -->
-  <div id="lightbox" aria-hidden="true">
-    <div class="x" id="lbClose" aria-label="Закрыть">×</div>
-    <div style="text-align:center">
-      <img id="lbImg" alt=""/>
-      <div class="cap" id="lbCap"></div>
-    </div>
+<header class="header">
+  <div class="inner">
+    <div class="logo"><span class="dot"></span> ШАГАЙ ДОМА</div>
   </div>
+</header>
 
-<script>
-/* === Полифиллы === */
-(function(){
-  if (!Element.prototype.matches) {
-    Element.prototype.matches =
-      Element.prototype.msMatchesSelector ||
-      Element.prototype.webkitMatchesSelector ||
-      function(s){const m=(this.document||this.ownerDocument).querySelectorAll(s);let i=m.length;while(--i>=0&&m.item(i)!==this){}return i>-1;};
-  }
-  if (!Element.prototype.closest) {
-    Element.prototype.closest=function(s){let el=this;do{if(el&&el.matches&&el.matches(s))return el;el=el.parentElement||el.parentNode;}while(el&&el.nodeType===1);return null;};
-  }
-})();
+<div class="container">
+  <h1>Калькулятор: за сколько недель вы похудеете на шагательных тренировках</h1>
+  <p class="sub">Ответьте на несколько вопросов — мы посчитаем безопасный срок и покажем, с какой программы начать.</p>
 
-/* ===== Helpers ===== */
-var $=function(s){return document.querySelector(s)};
-var $$=function(s,r){return Array.from((r||document).querySelectorAll(s))};
-function vibrate(n){try{if(navigator.vibrate) navigator.vibrate(n||12)}catch(e){}}
-var A=JSON.parse(localStorage.getItem('sdq')||'{}');
-function save(){localStorage.setItem('sdq',JSON.stringify(A))}
-function idxBy(id){ return $$('#screens .screen').findIndex(function(s){return s.dataset.id===id}); }
+  <div class="progress"><i id="progbar" style="width:0%"></i></div>
 
-/* dicts */
-const AGE=['18–29','30–39','40–49','50+'];
-const LIFE=['Сидячая работа','Умеренно активная','Активная'];
-const EXP=['Никогда не занималась','Иногда дома / по видео','Регулярно'];
-const MOT=['Для здоровья','Для внешности','Для энергии и лёгкости','Для уверенности в себе'];
-const HEALTH=['Диабет','Проблемы со щитовидкой','Гипертония','Боль в суставах','Беременность','Нет'];
-const BAD=['Сладкие перекусы','Полуфабрикаты','Недосып','Частый стресс'];
-const GOOD=['1.5–2 л воды','Овощи 400 г/день','Белок и фрукты в каждом приёме пищи','Сон 7-8 часов'];
-const CASES=[
-  {kg:14,name:'Ольги',months:4,img:'olga.png'},
-  {kg:10,name:'Александры',months:4,img:'alexandra.png'},
-  {kg:14,name:'Екатерины',months:6,img:'ekaterina.jpg'},
-  {kg:17.5,name:'Инны',months:5,img:'inna.jpg'},
-  {kg:16,name:'Шагательницы',months:3,img:'noname.jpg'}
-];
-function pickCase(targetKg){var best=null,diff=Infinity;for(const c of CASES){const d=Math.abs((c.kg||0)-targetKg);if(d<diff){diff=d;best=c}}return best}
-
-/* scaffolding */
-const screensRoot=$('#screens');
-function section(id,html){return '<section class="screen'+(id==='intro'?' is':'')+'" data-id="'+id+'">'+html+'</section>'}
-function chips(id,arr){return '<div class="chips" id="'+id+'">'+arr.map(t=>'<button type="button" class="chip" data-v="'+t+'">'+t+'</button>').join('')+'</div>'}
-function opts(id,arr){
-  return '<div class="grid cols2" id="'+id+'">'+arr.map(function(t){
-    let label,key;
-    if(typeof t==='string'){label=t;key=t}
-    else if(Array.isArray(t)){label=t[0];key=t[1]||t[0]}
-    else if(t&&typeof t==='object'){label=t.label||t.value||t.key||'';key=t.key||t.value||t.label||''}
-    else{label=String(t);key=String(t)}
-    return '<label class="opt" data-v="'+String(key)+'"><span>'+String(label)+'</span></label>'
-  }).join('')+'</div>'
-}
-function actions(){return '<div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" data-next type="button">Далее</button></div>'}
-
-/* screens HTML */
-const html=
-section('intro',`
-  <figure class="hero-wrap">
-    <div class="hero-skel" id="heroSkel"></div>
-    <video class="hero-media" autoplay muted playsinline loop preload="metadata" poster="logo.png">
-      <source src="intro.mp4#t=0.1" type="video/mp4"/>
-      <img src="logo.png" alt="ШАГАЙ ДОМА"/>
-    </video>
-  </figure>
-
-  <h1><b>Пройдите квиз, чтобы узнать получится ли у вас похудеть на шагах</b></h1>
-  <p class="hint lead-sub"><b>&hellip;а также получить бесплатную пробную тренировку и скидку 70% на наши абонементы!</b></p>
-
-  <div class="grid">
-    <div>
-      <div class="hint">Как к вам обращаться?</div>
-      <input id="name" class="text" placeholder="Например: Ирина">
-    </div>
-  </div>
+  <div id="screens"></div>
 
   <div class="actions sticky">
-    <button class="btn primary" data-next type="button" id="startBtn" onclick="startQuiz(event)">Поехали →</button>
+    <button class="btn ghost" data-prev>Назад</button>
+    <button class="btn primary wide" id="next">Далее</button>
   </div>
-`)
-+section('age',`<h2>Ваш возраст</h2>${opts('ageOpts',AGE)}${actions()}`)
-+section('promo1',`
-  <div class="promo">
-    <figure class="promo-hero"><img src="2.jpg" alt="ШАГАЙ ДОМА⚡ — больше 1 млн подписчиков" loading="lazy" decoding="async"></figure>
-    <h2>У ШАГАЙ ДОМА⚡ уже больше <b>1&nbsp;миллиона</b> подписчиков во всех соцсетях!</h2>
-    <p class="hint">Присоединяйтесь к самому дружелюбному фитнес-сообществу.</p>
-    ${actions()}
-  </div>
-`)
-+section('body',`
-  <h2>Телосложение сейчас</h2>
-  <div class="grid cols2" id="bodyOpts">
-    ${[{label:'Худощавое',key:'slim',img:'skinny.png',alt:'Худощавое телосложение'},{label:'Среднее',key:'avg',img:'slim.png',alt:'Среднее телосложение'},{label:'Крупное',key:'large',img:'medium.png',alt:'Крупное телосложение'},{label:'Избыточный вес',key:'obese',img:'xl.png',alt:'Избыточный вес'}].map(o=>`<label class="opt opt--img" data-v="${o.key}"><img src="${o.img}" alt="${o.alt}"><span>${o.label}</span></label>`).join('')}
-  </div>${actions()}
-`)
-+section('steps',`
-  <h2>Сколько шагов вы проходите сейчас в день (примерно)?</h2>
-  <input id="steps" type="range" min="0" max="25000" step="250" value="4000">
-  <div class="hint">Сейчас: <b><span id="sv">4000</span> шагов</b></div>
-  <p class="hint"><b>Подсказка:</b> данные можно посмотреть в приложении телефона/браслета</p>
-  ${actions()}
-`)
-+section('promo2',`
-  <div class="promo">
-    <figure class="promo-hero"><img src="otzyv.jpg" alt="Уже больше 10 000 людей в клубе" loading="lazy" decoding="async"></figure>
-    <h2>Уже больше <b>10&nbsp;000</b> людей в клубе ШАГАЙ ДОМА ⚡</h2>
-    <p class="hint">Каждый на своём уровне, но вместе — сильнее.</p>
-    ${actions()}
-  </div>
-`)
-+section('bmi',`
-  <h2>Давайте посчитаем ваш ИМТ</h2>
-  <p class="hint">Укажите ваш рост и вес — можно приблизительно.</p>
-  <div class="grid cols2">
-    <div><div class="hint">Рост, см</div><input id="h" type="number" class="text" placeholder="Например: 165"></div>
-    <div><div class="hint">Вес, кг</div><input id="w" type="number" class="text" placeholder="Например: 72"></div>
-  </div>
-  <div id="bmiI" class="hint"></div>
-  ${actions()}
-`)
-+section('life',`<h2>Образ жизни</h2>${opts('lifeOpts',LIFE)}${actions()}`)
-+section('exp',`<h2>Опыт тренировок</h2>${opts('expOpts',EXP)}${actions()}`)
-+section('promo3',`
-  <div class="promo">
-    <figure class="promo-hero"><img src="walkwalk.jpg" alt="20 миллионов шагов" loading="lazy" decoding="async"></figure>
-    <h2><b>20&nbsp;миллионов</b> шагов каждый день набирают участницы клуба 😍</h2>
-    <p class="hint">Короткие шагательные тренировки — легко вписать в день.</p>
-    ${actions()}
+</div>
+
+<script>
+/* ====== Utils ====== */
+const $=sel=>document.querySelector(sel);
+const $$=(sel,root=document)=>Array.from(root.querySelectorAll(sel));
+function vibrate(ms=10){ if(navigator.vibrate) try{navigator.vibrate(ms)}catch{} }
+function save(){ try{ localStorage.setItem('walk_calc', JSON.stringify(A)) }catch{} }
+function load(){ try{ return JSON.parse(localStorage.getItem('walk_calc')||'{}') }catch{ return {} } }
+
+/* State */
+const A = Object.assign({
+  perweek:null, steps:null, age:null, body:null, life:null, exp:null, mot:[],
+  good:[], bad:[], nutri:null, keep:false
+}, load());
+
+/* Trial video embeds (updated) */
+const TRIAL_EMBEDS = {
+  vk: 'https://vkvideo.ru/video-222534261_456240753?list=ln-cX7y1TY0FmFwqMTUhQ',
+  yt: 'https://youtu.be/Ph7uJ1RAZbU?si=YDp7eR44_xU2KQ8b',
+  rt: 'https://rutube.ru/video/7d2a39deba78c2b57534ab65a6fd89e7/?r=a/'
+};
+  /* ====== Layout ====== */
+function section(id, html){ return `<section class="slide" id="${id}">${html}</section>` }
+
+const html=
++section('intro',`
+  <div class="hero">
+    <div class="card">
+      <div class="inline-opts">
+        <div class="opt is">Квиз с расчётом</div>
+        <div class="opt">Программа старта</div>
+        <div class="opt">Пробная тренировка</div>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="superfit.png" alt="Шагательные тренировки дома">
+    </div>
+    <p class="hint">Отвечайте честно — так рекомендации будут точнее. Средняя длительность: 2–3 минуты.</p>
   </div>
 `)
 +section('goal',`
   <h2>Ваша цель</h2>
-  <div class="goalw">
-    <div class="goal-top">
-      <div class="goal-card">
-        <div class="goal-range">
-          <div class="val"><span class="minus">−</span><span id="goalVal">5.0</span> кг</div>
-          <div class="sub"><span id="goalBadge" class="goal-badge goal-mid">умеренно</span></div>
-        </div>
-        <input id="goalRange" type="range" min="0" max="20" step="0.5" value="5">
-        <div class="hint">Потяните ползунок: 0 — поддерживать форму · 20 — амбициозная цель</div>
-        <label class="goal-switch" style="margin-top:10px"><input id="goalKeep" type="checkbox"><span>Накачать мышцы</span></label>
-      </div>
-      <div class="goal-fig">
-        <div class="goal-stack" id="goalStack">
-          <img src="superfit.png" data-i="0" alt="">
-          <img src="fit.png"      data-i="1" alt="">
-          <img src="skinny.png"   data-i="2" alt="">
-          <img src="slim.png"     data-i="3" alt="">
-          <img src="s.png"        data-i="4" alt="">
-          <img src="m.png"        data-i="5" alt="">
-          <img src="l.png"        data-i="6" alt="">
-          <img src="xl.png"       data-i="7" alt="">
-          <img src="xxl.png"      data-i="8" alt="">
-          <div class="tape" id="goalTape"></div>
-        </div>
-      </div>
+  <p class="sub">Выберите, чего хотите добиться</p>
+  <div class="answer-opts" id="goalChips">
+    <div class="chip" data-v="keep"><span class="dot"></span><span>Поддерживать форму</span></div>
+    <div class="chip" data-v="slim"><span class="dot"></span><span>Похудеть</span></div>
+    <div class="chip" data-v="energy"><span class="dot"></span><span>Больше энергии и лёгкости</span></div>
+  </div>
+  <div id="goalMore" class="hidden">
+    <div class="kg">
+      <input id="goalKg" type="number" inputmode="numeric" min="1" max="40" placeholder="Сколько кг хотите сбросить?">
+      <span class="badge"><span>цель</span><b>-<span id="kgVal">0</span> кг</b></span>
     </div>
-    <p class="goal-note">Цель можно уточнить позже — расчёт адаптируется под ваш темп и самочувствие.</p>
-    ${actions()}
+    <p class="hint">Мы считаем безопасный темп снижения веса — плавно, без «качелей».</p>
   </div>
 `)
-+section('motivation',`<h2>Почему вы хотите заниматься спортом?</h2>${chips('motChips',MOT)}${actions()}`)
 +section('perweek',`
-  <h2>Сколько готовы тренироваться в неделю?</h2>
-  ${chips('pwChips',['2 раза','3 раза','4–5 раз','Каждый день 20–30 мин'])}
-  <div id="aha" class="aha hidden"></div>
-  <figure id="chartFig" class="promo-hero hidden" style="margin-top:8px"><img src="chart.jpg" alt="Пример прогресса активности по неделям"></figure>
-  ${actions()}
+  <h2>Сколько готовы заниматься в неделю?</h2>
+  <p class="sub">Выберите подходящий график</p>
+  <div class="answer-opts grid" id="pwChips">
+    <div class="chip"><span class="dot"></span><span>2&nbsp;тренировки в неделю</span></div>
+    <div class="chip"><span class="dot"></span><span>3&nbsp;тренировки в неделю</span></div>
+    <div class="chip"><span class="dot"></span><span>4&nbsp;тренировки в неделю</span></div>
+    <div class="chip"><span class="dot"></span><span>5&nbsp;тренировок в неделю</span></div>
+  </div>
+  <p class="hint" id="pwAha"></p>
 `)
-+section('promo4',`
-  <div class="promo">
-    <figure class="promo-hero"><img src="doposle.jpg" alt="85% похудели" loading="lazy" decoding="async"></figure>
-    <h2><b>85%</b> женщин в клубе похудели на <b>1–2&nbsp;кг</b> за первую неделю тренировок 🔥</h2>
-    <p class="hint">Стартовать легко — результаты мотивируют продолжать.</p>
-    ${actions()}
++section('age',`
+  <h2>Возраст</h2>
+  <p class="sub">Нужен для корректного темпа</p>
+  <div class="answer-opts" id="ageOpts">
+    <div class="chip"><span class="dot"></span><span>до 30</span></div>
+    <div class="chip"><span class="dot"></span><span>30–39</span></div>
+    <div class="chip"><span class="dot"></span><span>40–49</span></div>
+    <div class="chip"><span class="dot"></span><span>50+</span></div>
   </div>
 `)
-+section('hard',`
-  <h2>Что сейчас даётся тяжелее всего?</h2>
-  <div class="hardw">
-    <div class="hard-cards" id="hardCards">
-      <div class="hcard" data-k="walk"><div class="hhead"><div class="hicon">🚶‍♀️</div><div>Долгая прогулка утомляет</div></div></div>
-      <div class="hcard" data-k="stairs"><div class="hhead"><div class="hicon">🪜</div><div>Каждый пролёт по лестнице — испытание</div></div></div>
-      <div class="hcard" data-k="games"><div class="hhead"><div class="hicon">🎯</div><div>Стыдно включаться в активные игры</div></div></div>
-      <div class="hcard" data-k="jumps"><div class="hhead"><div class="hicon">🦘</div><div>Прыжки</div></div></div>
-      <div class="hcard" data-k="none"><div class="hhead"><div class="hicon">✅</div><div>Ничего из этого</div></div></div>
-    </div>
-    ${actions()}
++section('body',`
+  <h2>Телосложение</h2>
+  <div class="answer-opts" id="bodyOpts">
+    <div class="chip"><img src="m.png" alt=""><span>Среднее</span></div>
+    <div class="chip"><img src="xxl.png" alt=""><span>Полное</span></div>
   </div>
 `)
-+section('health',`<h2>Есть ли состояния, которые важно учитывать?</h2>${chips('healthChips',HEALTH)}<p class="hint">Если есть сомнения — проконсультируйтесь с врачом.</p>${actions()}`)
-+section('nutrition',`<h2>Питание</h2>${opts('nutriOpts',[{label:'Буду питаться по меню-конструктору в клубе',key:'menu'},{label:'Хочу научиться правильно составлять тарелку',key:'plate'},{label:'Нет, пока без питания',key:'no'}])}${actions()}`)
-+section('food',`
-  <h2>Расскажите нам о ваших текущих привычках</h2>
-  <div class="habit">
-    <div class="habit-grid">
-      <div class="col"><h3>Плохие привычки</h3><div class="chips chips--pills" id="bad">${BAD.map(x=>`<button type="button" class="chip" data-kind="bad" data-v="${x}">${x}</button>`).join('')}</div></div>
-      <div class="col"><h3>Хорошие привычки</h3><div class="chips chips--pills" id="good">${GOOD.map(x=>`<button type="button" class="chip" data-kind="good" data-v="${x}">${x}</button>`).join('')}</div></div>
-    </div>
-    <div class="habit-meter hidden" id="hmWrap">
-      <div class="hm-top"><div><span id="hmLabel">Индекс прогресса</span><span class="hm-badge hm-ok" id="hmBadge">нейтрально</span></div><span id="hmScore">0%</span></div>
-      <div class="hm-track" id="hmTrack"><div class="hm-pointer" id="hmPtr"></div></div>
-      <div class="hm-scale"><span>тормозит</span><span>нейтрально</span><span>ускоряет</span></div>
-    </div>
-    <p class="hint">Отметьте только то, что про вас — индикатор появится автоматически ✨</p>
-    <div class="actions sticky"><button class="btn ghost" data-prev type="button">Назад</button><button class="btn primary" id="calc" type="button">Далее →</button></div>
++section('life',`
+  <h2>Ваш образ жизни</h2>
+  <div class="answer-opts" id="lifeOpts">
+    <div class="chip"><span class="dot"></span><span>Сидячая работа</span></div>
+    <div class="chip"><span class="dot"></span><span>Много активности</span></div>
+    <div class="chip"><span class="dot"></span><span>Дом и дети</span></div>
+    <div class="chip"><span class="dot"></span><span>Смена/строительство</span></div>
   </div>
 `)
-/* ==== ЕДИНЫЙ ЭКРАН: «Ура! … + пробная тренировка» ==== */
-+section('trial', `
-  <h2>Ура! Вы ответили на все вопросы 🎉</h2>
-  <p class="hint"><b>Теперь вам доступна пробная тренировка.</b></p>
-
-  <div class="p-tabs" id="trialTabs"></div>
-  <figure class="promo-hero" style="aspect-ratio:16/9">
-    <div id="trialFrame" class="player"></div>
-  </figure>
-
-  <p class="hint"><b id="trialCtaText">
-    Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам 3 раза в неделю.
-  </b></p>
-
-  <div class="actions sticky">
-    <button class="btn ghost" data-prev type="button">Назад</button>
-    <button class="btn primary" id="trialComputeBtn" type="button">Узнать мой прогноз →</button>
++section('exp',`
+  <h2>Опыт в спорте</h2>
+  <div class="answer-opts" id="expOpts">
+    <div class="chip"><span class="dot"></span><span>Никогда не занималась</span></div>
+    <div class="chip"><span class="dot"></span><span>Редко/от случая к случаю</span></div>
+    <div class="chip"><span class="dot"></span><span>Регулярно тренируюсь</span></div>
   </div>
 `)
-+section('loading',`
-  <div class="loader2"><div class="ring" id="lring"><div class="pct" id="lpct">0%</div></div>
-  <div class="lmsg" id="lmsg">Собираем данные…</div><p class="hint" id="lsub">Возраст • ИМТ • Активность • Цель</p></div>
++section('mot',`
+  <h2>Что даётся тяжелее всего?</h2>
+  <div class="answer-opts" id="motChips">
+    <div class="chip"><span class="dot"></span><span>Инертность/нет сил</span></div>
+    <div class="chip"><span class="dot"></span><span>Прыжки и высокие темпы</span></div>
+    <div class="chip"><span class="dot"></span><span>Суставы/колени</span></div>
+    <div class="chip"><span class="dot"></span><span>Одышка</span></div>
+  </div>
+  <p class="hint">Это поможет точно подобрать программу старта.</p>
 `)
-+section('result',`
-  <h2 id="rTitle">Готово!</h2>
-  <div class="counter" id="nums">0 кг за 0 недель</div>
-  <p class="hint" id="rSub"></p>
-  <div id="caseBox" class="case hide"></div>
++section('habits',`
+  <h2>Питание и привычки</h2>
+  <p class="sub">Выбирайте то, что встречается чаще</p>
 
-  <div id="offerInline" class="offer-inline" style="display:block">
-    <p class="hint" style="margin:0 0 8px 0"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-    <div class="deal">
-      <div class="deal-row">
-        <span class="deal-badge">Предложение ограничено</span>
-        <span class="deal-timer" id="inlineTimer">15:00</span>
+  <grid-2>
+    <div class="card">
+      <b>Негативные факторы</b>
+      <div class="answer-opts" id="bad">
+        <div class="chip"><span class="dot"></span><span>Переедаю вечером</span></div>
+        <div class="chip"><span class="dot"></span><span>Мало воды</span></div>
+        <div class="chip"><span class="dot"></span><span>Сладкое/выпечка</span></div>
+        <div class="chip"><span class="dot"></span><span>Фастфуд/перекусы</span></div>
       </div>
     </div>
-    <div class="actions" style="margin-top:10px">
-      <button class="btn primary" id="toCTA" type="button">Перейти к предложению!</button>
+    <div class="card">
+      <b>Полезные привычки</b>
+      <div class="answer-opts" id="good">
+        <div class="chip"><span class="dot"></span><span>Завтрак</span></div>
+        <div class="chip"><span class="dot"></span><span>Овощи и белок</span></div>
+        <div class="chip"><span class="dot"></span><span>Вода 1.5–2 л</span></div>
+        <div class="chip"><span class="dot"></span><span>Шаги 6–8к</span></div>
+      </div>
     </div>
+  </grid-2>
+
+  <hr class="sep"/>
+
+  <b>Питаться проще по…</b>
+  <div class="answer-opts" id="nutriOpts">
+    <div class="chip"><span class="dot"></span><span>Готовому меню</span></div>
+    <div class="chip"><span class="dot"></span><span>Простым правилам</span></div>
   </div>
 
-  <p class="hint" id="rDisc">Прогноз носит ознакомительный характер и не является медицинской рекомендацией.</p>
-  <div class="actions sticky">
-    <button class="btn ghost" data-prev type="button">Назад</button>
+  <div id="hmWrap" class="hidden">
+    <div class="sub" style="display:flex;align-items:center;gap:10px">
+      <span id="hmBadge" class="badge"><span>индекс питания</span> <b id="hmScore">0</b></span>
+      <span id="hmMsg"></span>
+    </div>
+    <div class="progress"><i id="hmTrack" style="width:50%"></i></div>
+  </div>
+`)
++section('trial',`
+  <h2>Пробная тренировка</h2>
+  <p class="sub" id="trialCtaText">Попробуйте программу на себе — без регистрации</p>
+
+  <div class="video-tabs" id="vTabs">
+    <div class="tab is" data-k="vk">VK Видео</div>
+    <div class="tab" data-k="yt">YouTube</div>
+    <div class="tab" data-k="rt">RuTube</div>
+  </div>
+
+  <div class="video-embed" id="vWrap">
+    <div class="ph">Загрузка видео…</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" data-prev>Назад</button>
+    <button class="btn primary" id="toCTA">Посмотреть результат</button>
+  </div>
+`)
+  +section('result',`
+  <h2>Ваш прогноз</h2>
+  <p class="sub">Безопасный темп снижения веса — без жёстких диет и «качелей»</p>
+
+  <div class="hero card" id="resHero">
+    <div class="inline-opts">
+      <span class="badge"><span>темп</span> <b id="paceBadge">–</b></span>
+      <span class="badge"><span>недель</span> <b id="weeksBadge">–</b></span>
+      <span class="badge"><span>график</span> <b id="pwBadge">–</b></span>
+    </div>
+    <p id="resLead"></p>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" id="toPrograms">Посмотреть программу</button>
+    <button class="btn primary" id="toCTA">Перейти к предложению</button>
+  </div>
+`)
++section('program',`
+  <div class="prog-wrap">
+    <div class="prog-head">
+      <div class="p-title" id="progTitle">Мы рекомендуем вам…</div>
+      <p class="p-sub" id="progLead"></p>
+      <div class="p-chips" id="progChips"></div>
+    </div>
+
+    <figure class="prog-hero">
+      <img src="program.png" alt="Рекомендуемая программа в клубе">
+    </figure>
+
+    <div class="prog-card">
+      <h3>Почему это подойдёт именно вам</h3>
+      <ul class="prog-list" id="progList"></ul>
+    </div>
+
+    <div class="actions sticky">
+      <button class="btn ghost" data-prev>Назад</button>
+      <button class="btn primary" id="toSale">К абонементам →</button>
+    </div>
   </div>
 `)
 +section('sale',`
-  <figure class="sale-hero"><img src="final.PNG" alt="Результаты и атмосфера клуба"></figure>
-  <h2 id="sTitle">Присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡</h2>
-  <p class="hint" id="sLead"></p>
-  <p class="hint"><b>Только для вас у нас действует специальное предложение: −70% на все абонементы в клуб!</b></p>
-  <div class="deal">
-    <div class="deal-row">
-      <span class="deal-badge">Предложение ограничено</span>
-      <span class="deal-timer" id="saleTimer">15:00</span>
+  <h2>Абонементы клуба</h2>
+  <p class="sub">Все абонементы включают доступ к 28 программам и новым треням</p>
+
+  <div class="inline-opts">
+    <span class="badge"><span>скидка</span> <b id="saleBadge">–70%</b></span>
+    <span class="badge"><span>таймер</span> <b id="timerBadge">15:00</b></span>
+  </div>
+
+  <div class="hero card">
+    <ul style="margin:8px 0 0 18px">
+      <li>Доступ к 28 программам и 400+ тренировкам</li>
+      <li>Пробные занятия и разогревы</li>
+      <li>Питание: готовые меню и «тарелка где угодно»</li>
+    </ul>
+  </div>
+
+  <grid-2>
+    <div class="card">
+      <b>1 месяц</b>
+      <div class="sub">Стартовый абонемент</div>
+      <h3 id="p1">990 ₽</h3>
+      <button class="btn primary wide">Купить</button>
     </div>
-  </div>
-  <ul>
-    <li>Домашние шагательные тренировки 20–30 минут</li>
-    <li>Готовые планы на неделю</li>
-    <li>Поддержка и мотивация в чате</li>
-    <li>Помощь куратора и сообщество</li>
-  </ul>
+    <div class="card">
+      <b>3 месяца</b>
+      <div class="sub">Самый выгодный</div>
+      <h3 id="p3">2490 ₽</h3>
+      <button class="btn primary wide">Купить</button>
+    </div>
+  </grid-2>
+
   <div class="actions">
-    <a class="btn primary" id="cta" href="https://walk-walk.ru/?utm_source=website&utm_medium=quiz&utm_campaign=trenirovka" target="_blank" rel="noopener">Хочу абонемент со скидкой 70%!</a>
-    <button class="btn ghost" data-prev type="button">Назад</button>
+    <button class="btn ghost" data-prev>Назад</button>
+    <button class="btn primary" id="toPay">Оплатить</button>
   </div>
-`);
-screensRoot.innerHTML=html;
+`)
+;
 
-/* ===== Header (discount only) ===== */
-const progressEl=$('#progress');
-function updateDiscount(){
-  const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','motivation','perweek','hard','health','nutrition','food'];
-  const total=QUESTION_IDS.length;
-  let seen=0;
-  for(const id of QUESTION_IDS){
-    const si=idxBy(id);
-    if(si>=0 && idx>=si) seen++;
-  }
-  const pct=Math.min(70, Math.round((seen/total)*70));
-  const el=$('#discVal'); if(el) el.textContent=pct+'%';
+document.getElementById('screens').innerHTML=html;
+
+/* ====== Flow ====== */
+const slides = $$('#screens .slide');
+let idx = 0;
+function show(i){
+  idx=i;
+  slides.forEach((s,k)=>s.style.display=(i===k)?'grid':'none');
+  $('#progbar').style.width = ((i)/(slides.length-1))*100 + '%';
+  window.scrollTo({top:0, behavior:'smooth'})
 }
-let idx=0;const S=$$('#screens .screen');
-function show(n){
-  S[idx].classList.remove('is');
-  idx=Math.max(0,Math.min(S.length-1,n));
-  S[idx].classList.add('is');
-  /* показываем скидку со второго экрана */
-  progressEl.classList.toggle('hide', idx===0);
-  updateDiscount();
-  const curId=S[idx].dataset.id;
-  if (curId === 'trial') { mountTrialPlayer(); updateTrialCtaText(); }
-  window.scrollTo({top:0,behavior:'smooth'});
+function idxBy(id){ return slides.findIndex(s=>s.id===id) }
+show(0);
+
+/* ====== Inputs & Selections ====== */
+function perweekLabel(){
+  const v=A.perweek; if(!v) return '2–4 раза в неделю';
+  if(Array.isArray(v)){ if(v.length===1) return v[0]; return v.join(', ') }
+  return v;
 }
-updateDiscount();
+function goalKg(){ const el=$('#goalKg'); return el?Number(el.value||0):0 }
 
-/* Navigation + резерв для стартовой кнопки */
-function startQuiz(e){ if(e){e.preventDefault(); e.stopPropagation();} show(1); }
-window.addEventListener('click', function(e){
-  const next = e.target.closest('[data-next]');
-  const prev = e.target.closest('[data-prev]');
-  if (next) { vibrate(); goNext(); }
-  if (prev) { vibrate(); show(idx-1); }
-});
-var sb=$('#startBtn'); if(sb){sb.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); vibrate(); show(1);});}
-
-/* делегированные переходы с результата на sale */
-screensRoot.addEventListener('click', function(e){
-  if (e.target.closest('#toCTA')) { e.preventDefault(); show(idxBy('sale')); }
-});
-
-/* validation */
-function shake(){S[idx].animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});vibrate(25)}
-const need=function(k){return !A[k]};
-function goNext(){
-  const id=S[idx].dataset.id;
-  let warn=false;
-  if(id==='age'&&need('age'))warn=true;
-  if(id==='body'&&need('body'))warn=true;
-  if(id==='bmi'&&(!A.h||!A.w))warn=true;
-  if(id==='life'&&need('life'))warn=true;
-  if(id==='exp'&&need('exp'))warn=true;
-  if(id==='goal'&&(A.goalKg==null)&&!A.keep)warn=true;
-  if(id==='perweek'&&need('perweek'))warn=true;
-  if(warn) shake();
-  show(idx+1);
+function selectList(root,key, single=false){
+  if(!root) return;
+  root.addEventListener('click', e=>{
+    const chip=e.target.closest('.chip'); if(!chip) return;
+    if(single){ $$('.chip',root).forEach(c=>c.classList.remove('is')); chip.classList.add('is'); A[key]=chip.dataset.v||chip.textContent.trim(); }
+    else { chip.classList.toggle('is'); A[key]=$$('.chip.is',root).map(x=>x.dataset.v||x.textContent.trim()) }
+    if(root.id==='goalChips'){
+      A.keep = A.keep || (Array.isArray(A.keep)?A.keep.includes('keep'):false);
+      const t=$$('.chip.is',root).map(c=>c.dataset.v||c.textContent.trim());
+      A.keep = t.includes('keep');
+      $('#goalMore').classList.toggle('hidden', !t.includes('slim'));
+    }
+    if(root.id==='pwChips'){ updateAha() }
+    if(root.id==='bad'||root.id==='good') setTimeout(updMeter,0);
+    save(); vibrate(8);
+  });
 }
-
-/* Inputs */
-var nameI=$('#name'); if(nameI){nameI.oninput=function(e){A.name=e.target.value.trim();save()}}
-const stepsEl=$('#steps'),sv=$('#sv');function updRange(){const min=+stepsEl.min||0,max=+stepsEl.max||100,val=+stepsEl.value||0,p=((val-min)/(max-min))*100;stepsEl.style.setProperty('--pct',p+'%')}
-if(stepsEl){updRange();stepsEl.oninput=function(e){A.steps=+e.target.value;sv.textContent=A.steps;updRange();save();updateAha()}}
-
-/* BMI calc + label */
-['h','w'].forEach(function(id){var el=$('#'+id); if(el){el.addEventListener('input',function(){updBMI();updateGoalPreview()})}});
-function bmiCat(b){if(b<18.5)return{label:'Дефицит массы',cls:'bmi-warn'};if(b<25)return{label:'Норма',cls:'bmi-ok'};if(b<30)return{label:'Избыточная масса',cls:'bmi-warn'};if(b<35)return{label:'Ожирение I ст.',cls:'bmi-bad'};if(b<40)return{label:'Ожирение II ст.',cls:'bmi-bad'};return{label:'Ожирение III ст.',cls:'bmi-bad'}}
-function updBMI(){const h=+$('#h').value,w=+$('#w').value;if(h>0&&w>0){A.h=h;A.w=w;const m=h/100;A.bmi=+(w/(m*m)).toFixed(1);save();const c=bmiCat(A.bmi);$('#bmiI').innerHTML='Ваш ИМТ: <b>'+A.bmi+'</b> <span class="bmi-tag '+c.cls+'">'+c.label+'</span><br><span class="hint bmi-line">ИМТ — индекс массы тела. Помогает определить, есть ли лишний вес. Норма 18,5–24,9.</span>'}else{$('#bmiI').textContent=''}}
-
-/* selectors */
-function selectList(root,key,single){
-  if(!root)return;
-  root.addEventListener('click',function(e){
-    const sel=e.target.closest(single?'.opt':'.chip');if(!sel)return;
-    if(single){$$('.opt',root).forEach(x=>x.classList.remove('is'));sel.classList.add('is');A[key]=sel.dataset.v||sel.textContent}
-    else{sel.classList.toggle('is');A[key]=$$('.chip.is',root).map(x=>x.dataset.v||x.textContent)}
-    save();vibrate(8); if(root.id==='bad'||root.id==='good') setTimeout(updMeter,0); if(root.id==='pwChips') updateAha();
-  })
-}
+selectList($('#goalChips'),'goal',false);
+selectList($('#pwChips'),'perweek',false);
 selectList($('#ageOpts'),'age',true);
 selectList($('#bodyOpts'),'body',true);
 selectList($('#lifeOpts'),'life',true);
 selectList($('#expOpts'),'exp',true);
 selectList($('#motChips'),'mot',false);
-selectList($('#pwChips'),'perweek',false);
-selectList($('#healthChips'),'health',false);
-selectList($('#bad'),'bad',false);
-selectList($('#good'),'good',false);
 selectList($('#nutriOpts'),'nutri',true);
 
-/* habits meter */
-function nutrPreview(){const b=(A.bad||[]).length,g=(A.good||[]).length;let f=1;f+=g*.02;f-=b*.03;return Math.max(.7,Math.min(1.35,f))}
+const kgInput=$('#goalKg'); if(kgInput){
+  kgInput.addEventListener('input',()=>{ $('#kgVal').textContent=kgInput.value||0; save() });
+}
+function updateAha(){
+  const el=$('#pwAha'); if(!el) return;
+  const v=A.perweek||[];
+  let txt='Оптимально 3–4 тренировки в неделю. При 2 — сроки чуть дольше, при 5 — можно чередовать «мягкие» и интенсивные.';
+  if(Array.isArray(v) && v.includes('5 тренировок в неделю')) txt='При 5 тренировках — важен баланс: чередуем «мягкие» и более интенсивные, слушаем тело.';
+  if(Array.isArray(v) && v.includes('2 тренировки в неделю')) txt='При 2 тренировках сроки увеличатся — но прогресс будет, если добавить шаги и питание.';
+  el.textContent=txt;
+}
+updateAha();
+  /* habits meter */
+function nutrPreview(){
+  const b=(A.bad||[]).length, g=(A.good||[]).length;
+  let f=1; f+=g*.02; f-=b*.03;
+  return Math.max(.7,Math.min(1.35,f))
+}
 function updMeter(){
   const b=(A.bad||[]).length,g=(A.good||[]).length, any=b+g>0;
   var wrap=$('#hmWrap'); if(wrap){wrap.classList.toggle('hidden',!any)}
@@ -587,232 +434,275 @@ function updMeter(){
   const f=nutrPreview(),acc=Math.round((f-1)*100);
   const ptr=$('#hmPtr'),track=$('#hmTrack'),score=$('#hmScore'),badge=$('#hmBadge');
   const min=-30,max=35,clamp=Math.max(min,Math.min(max,acc)),p=((clamp-min)/(max-min))*100;
-  track.style.setProperty('--p',p+'%');ptr.style.left=p+'%';
-  score.textContent=(acc>0?'+':'')+acc+'%';
-  let cls='hm-ok',txt='нейтрально',border='#FFBA08';
-  if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border="#E85D04";}
-  else if(acc<-5){cls='hm-bad';txt='тормозит';border="#E85D04";}
-  else if(acc>15){cls='hm-good';txt='суперускорение';border="#12A06A";}
-  else if(acc>5){cls='hm-good';txt='ускоряет';border="#12A06A";}
-  badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
-}
-updMeter();
-
-/* hard cards */
-(function setupHard(){
-  const w=$('#hardCards');if(!w)return;
-  const cs=$$('.hcard',w);
-  if(A.hardKey){var sel=cs.find(c=>c.dataset.k===A.hardKey); if(sel) sel.classList.add('is')}
-  w.addEventListener('click',function(e){
-    const c=e.target.closest('.hcard');if(!c)return;
-    cs.forEach(x=>x.classList.toggle('is',x===c));A.hardKey=c.dataset.k;
-    A.hard={'walk':'Долгая прогулка утомляет','stairs':'Каждый пролёт по лестнице — испытание','games':'Стыдно включаться в активные игры','jumps':'Прыжки','none':'Ничего из этого'}[A.hardKey];
-    save();vibrate(8)
-  })
-})();
-
-/* Goal preview */
-const BMI_ANCHORS=[18.8,20.0,21.8,23.5,26.0,29.0,32.0,35.0,38.0];
-function indexFromBMI(bmi){const B=BMI_ANCHORS,N=B.length-1;if(bmi<=B[0])return 0;if(bmi>=B[N])return N;for(let i=0;i<N;i++){if(bmi>=B[i]&&bmi<=B[i+1]){const t=(bmi-B[i])/(B[i+1]-B[i]);return i+t}}return N}
-function bodyToIndex(bodyKey,N){const frac={slim:3/8,avg:5/8,large:7/8,obese:1.0}[bodyKey]||5/8;return frac*(N-1)}
-function crossfade(imgs,t){const N=imgs.length-1,tt=Math.max(0,Math.min(N,t));const iLo=Math.floor(tt),iHi=Math.ceil(tt),f=tt-iLo;imgs.forEach(img=>{img.style.opacity=0;img.style.transform='scale(1)'});if(iLo===iHi){if(imgs[iLo]) imgs[iLo].style.opacity=1}else{const lo=imgs[iLo],hi=imgs[iHi];if(lo){lo.style.opacity=1-f;lo.style.transform='scale('+(1-0.02*f)+')'}if(hi){hi.style.opacity=f;hi.style.transform='scale('+(1-0.03*(1-f))+')'}}}
-function updateGoalPreview(){
-  const stack=$('#goalStack'); if(!stack) return;
-  const imgs=Array.from(stack.querySelectorAll('img[data-i]')).sort((a,b)=>(+a.dataset.i)-(+b.dataset.i));
-  const N=imgs.length; if(N<1) return;
-  const keepOn=(document.getElementById('goalKeep')&&document.getElementById('goalKeep').checked) || !!A.keep;
-  if(keepOn){imgs.forEach(img=>{img.style.opacity=0;img.style.transform='scale(1)'});(imgs[1]||imgs[0]).style.opacity=1;return}
-  const kg=+A.goalKg||0;const h=(+A.h>0)?A.h/100:null,w=(+A.w>0)?+A.w:null;
-  if(h&&w){const w2=Math.max(0.1,w-kg);const bmi2=w2/(h*h);const t=indexFromBMI(bmi2);crossfade(imgs,t)}
-  else{const start=bodyToIndex(A.body||'avg',N);const t=Math.max(0,start-(kg/4));crossfade(imgs,t)}
-}
-function gBucket(kg){const v=+kg;if(v<=0)return'Накачать мышцы';if(v<=5)return'Сбросить 3–5 кг';if(v<=10)return'Сбросить 5–10 кг';return'Сбросить 10+ кг'}
-function updGoal(){const kg=+A.goalKg||0;$('#goalVal').textContent=kg.toFixed(1);const b=$('#goalBadge');let cls='goal-mid',txt='умеренно';if(kg===0){cls='goal-soft';txt='поддержание'}else if(kg<=5){cls='goal-soft';txt='мягко'}else if(kg<=10){cls='goal-mid';txt='умеренно'}else{cls='goal-hard';txt='интенсивно'}b.className='goal-badge '+cls;b.textContent=txt;const rng=$('#goalRange'),pct=kg/(+rng.max)*100;rng.style.setProperty('--pct',pct+'%');updateGoalPreview()}
-function setGoal(val){const kg=Math.max(0,Math.min(20,+val||0));A.goalKg=kg;A.goal=gBucket(kg);save();updGoal()}
-function toggleKeep(ch){const rng=$('#goalRange');A.keep=!!ch;save();if(ch){rng.disabled=true;setGoal(0)}else{rng.disabled=false;if((+A.goalKg||0)===0)setGoal(5)}updateGoalPreview()}
-const goalR=$('#goalRange'),goalK=$('#goalKeep');if(goalR){goalR.oninput=function(e){setGoal(e.target.value)}}if(goalK){goalK.onchange=function(e){toggleKeep(e.target.checked)}}(function(){const kg=(A.goalKg!=null)?+A.goalKg:5;if(goalR){goalR.value=kg}const keep=(A.keep===true)||kg===0;if(goalK){goalK.checked=keep}toggleKeep(keep);if(!keep) setGoal(kg);updateGoalPreview()})();
-
-/* Aha moment + chart reveal */
-function freqFromPerweek(){const sel=A.perweek||[];let s=0;for(const v of sel){if(/Каждый день/.test(v))s=Math.max(s,7);else if(/4–5/.test(v))s=Math.max(s,5);else if(/3/.test(v))s=Math.max(s,3);else if(/2/.test(v))s=Math.max(s,2)}return s}
-function perweekLabel(){const sel=A.perweek||[];if(sel.some(s=>/Каждый день/.test(s)))return 'каждый день';if(sel.some(s=>/4–5/.test(s)))return '4–5 раз в неделю';if(sel.some(s=>/3 раза/.test(s)))return '3 раза в неделю';if(sel.some(s=>/2 раза/.test(s)))return '2 раза в неделю';return '3 раза в неделю'}
-function updateAha(){
-  const box=$('#aha'); const fig=$('#chartFig');
-  const s=freqFromPerweek();
-  if(!s){
-    if(box){box.classList.add('hidden');box.innerHTML='';}
-    if(fig){fig.classList.add('hidden');}
-    return;
+  if(track) track.style.width=p+'%';
+  if(score) score.textContent = (acc>0?'+':'')+acc+'%';
+  if(badge) badge.style.borderColor = acc>=0?'#cfeede':'#ffd5c2';
+  const msg=$('#hmMsg');
+  if(msg){
+    if(acc>=12) msg.textContent='Питание помогает ускорить прогресс';
+    else if(acc>=0) msg.textContent='Неплохо! Можно усилить за счёт воды и белка';
+    else msg.textContent='Питание замедляет прогресс — но тренировки всё равно дадут результат';
   }
-  const minPerSess=25,eqSteps=3000,base=(+A.steps||4000)*7,addSteps=s*eqSteps;
-  let factor=base>0?(base+addSteps)/base:0; factor=Math.min(2.5,Math.max(1.1,factor));
-  const factorTxt=factor.toLocaleString('ru-RU',{maximumFractionDigits:1}),addTxt=addSteps.toLocaleString('ru-RU');
-  const freqLabel=s===7?'каждый день':'~'+s+' раз(а)';
-  if(box){
-    box.innerHTML='<div><strong>Супер!</strong> Если вы будете тренироваться <b>'+freqLabel+'</b> по <b>'+minPerSess+' минут</b>, активность вырастет <b>примерно в '+factorTxt+' раза</b> (ещё ~<b>'+addTxt+'</b> шагов в неделю).</div><small>Чем выше активность — тем быстрее идёт прогресс.</small>';
-    box.classList.remove('hidden');
+}
+setTimeout(updMeter,0);
+
+/* Trial embed logic */
+function renderTrial(k){
+  const url = TRIAL_EMBEDS[k]||TRIAL_EMBEDS.vk;
+  const host = k==='vk' ? 'vkvideo.ru' : k==='yt' ? 'youtube.com' : 'rutube.ru';
+  let iframe = '';
+  if(k==='vk'){
+    iframe = `<iframe src="${url}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  }else if(k==='yt'){
+    const idMatch = /youtu\.be\/([A-Za-z0-9_-]+)/.exec(url) || /v=([A-Za-z0-9_-]+)/.exec(url);
+    const id = idMatch ? idMatch[1] : '';
+    iframe = `<iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  }else{
+    iframe = `<iframe src="${url}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   }
-  if(fig){fig.classList.remove('hidden');}
+  $('#vWrap').innerHTML = iframe;
 }
-updateAha();
-
-/* Loading + result */
-function runLoading(done){
-  const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');
-  const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];
-  let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
-  const D=1500,t0=performance.now();
-  function tick(n){
-    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);
-    ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
-    const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
-    if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
-    if(p<1)requestAnimationFrame(tick);else setTimeout(function(){try{done()}catch(err){console.error(err);fallbackResult()}},200)
-  }
-  requestAnimationFrame(tick)
-}
-function fallbackResult(){
-  const name=A.name&&A.name.trim()?A.name.trim():'';
-  const kg=goalKg();
-  $('#rTitle').textContent=name+'Ваш прогноз готов ✨';
-  if (A.keep || kg===0) $('#nums').textContent='Чтобы прийти к цели за 4 недели';
-  else $('#nums').textContent='≈ −'+kg+' кг за 8 недель';
-  $('#rSub').textContent='Мы подготовили ориентировочный план по вашим данным.';
-  show(idxBy('result'));
-}
-
-/* Tempo factors */
-function fAge(){const a=A.age||'';if(/50/.test(a))return 0.88;if(/40/.test(a))return 0.94;if(/30/.test(a))return 0.98;return 1.06}
-function fLife(){const l=A.life||'';if(/Сидячая/.test(l))return 0.90;if(/Умеренно/.test(l))return 1.00;return 1.08}
-function fExp(){const e=A.exp||'';if(/Никогда/.test(e))return 0.95;if(/Регулярно/.test(e))return 1.08;return 1.00}
-function fBody(){switch(A.body){case 'slim':return .92;case 'avg':return 1.00;case 'large':return .96;case 'obese':return .92;default:return 1.00}}
-function fSteps(){const now=+A.steps||4000,add=2000,t=now+add;let boost=1+add/10000;if(now<3000)boost+=.08;if(now>9000)boost-=.06;return{f:Math.max(.95,Math.min(1.28,boost)),t}}
-function fNutri(){let f=1;if(A.nutri==='menu')f+=.22;else if(A.nutri==='plate')f+=.12;else f-=.12;f-=((A.bad||[]).length)*.03;f+=Math.min(((A.good||[]).length)*.02,.10);return Math.max(.7,Math.min(1.35,f))}
-function fHealth(){const h=new Set(A.health||[]);let f=1;if(h.has('Диабет')||h.has('Проблемы со щитовидкой')||h.has('Гипертония'))f-=.06;if(h.has('Боль в суставах'))f-=.04;return Math.max(.8,f)}
-function fPain(){switch(A.hardKey){case 'walk':return .94;case 'stairs':return .93;case 'games':return .96;case 'jumps':return .95;case 'none':return 1.02;default:return 1.00}}
-
-/* Rate + duration */
-function rate(){const w=+A.w||0;if(w>=100)return 1.0;let r=.5;const bmi=A.bmi||26;if(bmi>=30)r+=.08;else if(bmi<23)r-=.08;r*=fAge()*fLife()*fExp()*fBody()*fSteps().f*fNutri()*fHealth()*fPain();return Math.max(.25,Math.min(.9,+r.toFixed(2)))}
-function fmtDuration(wks){if(wks<=10){return{start:12,value:wks,unitText:'недель',label:wks+' недель'}}const months=Math.ceil(wks/4);return{start:6,value:months,unitText:'мес.',label:months+' мес.'}}
-function goalKg(){if(A.goalKg!=null)return Math.max(0,Math.min(20,+A.goalKg));const g=A.goal||'';if(g.includes('3–5'))return 4;if(g.includes('5–10'))return 8;if(g.includes('10+'))return 12;return 3}
-
-/* Result */
-function calculate(){
-  const name=A.name&&A.name.trim()?A.name.trim():'Друзья';
-  const keepMode = !!A.keep;
-  const kg=goalKg();
-  const rt=rate();
-  const wks=Math.max(4,Math.min(16,Math.ceil((keepMode?4:kg)/rt)));
-  const dur=fmtDuration(wks);
-  const stepsTarget=fSteps().t;
-
-  $('#rTitle').textContent=name+', ваш прогноз готов ✨';
-
-  if (keepMode || kg===0) {
-    $('#nums').textContent='Чтобы прийти к цели за '+dur.label;
-    $('#rSub').innerHTML='Сделаем акцент на <b>тонусе, выносливости и энергии</b>. С шагательными тренировками вы будете проходить <b>'+stepsTarget.toLocaleString('ru-RU')+'</b> шагов в день.';
-    $('#caseBox').classList.add('hide');
-  } else {
-    animNum(dur.start,dur.value,1400,function(v){$('#nums').textContent='−'+kg+' кг за '+v+' '+dur.unitText});
-    const rtText=rt.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
-    $('#rSub').innerHTML='С тренировками ШАГАЙ ДОМА ⚡️ вы будете проходить <b>'+stepsTarget.toLocaleString('ru-RU')+'</b> шагов каждый день!<br><span class="hint">Ориентировочный темп: <b>~'+rtText+' кг/неделю</b>.</span>';
-    const caseObj=pickCase(Math.round(kg)); renderCaseBox(caseObj);
-  }
-
-  const leadSale=(keepMode||kg===0)
-    ? 'Чтобы прийти к цели по <b>тонусу и выносливости</b> за <b>'+dur.label+'</b> — подключите готовые планы и поддержку.'
-    : 'Чтобы прийти к цели <b>−'+kg+' кг</b> за <b>'+dur.label+'</b> — подключите готовые планы и поддержку.';
-  $('#sTitle').textContent=name+', присоединяйтесь к клубу «ШАГАЙ ДОМА» ⚡';
-  $('#sLead').innerHTML=leadSale;
-
-  $('#offerInline').style.display='block';
-  show(idxBy('result'))
-}
-function animNum(a,b,d,cb){const s=performance.now(),ease=function(t){return 1-Math.pow(1-t,3)};function fr(n){const p=Math.min(1,(n-s)/d);cb(Math.round(a+(b-a)*ease(p)));if(p<1)requestAnimationFrame(fr)}requestAnimationFrame(fr)}
-
-/* Case + lightbox */
-function renderCaseBox(c){
-  const box=document.getElementById('caseBox'); if(!box) return;
-  if(!c){box.classList.add('hide');return}
-  const caption='Как у нашей шагательницы '+c.name+'! Она уже сбросила '+c.kg+' кг за '+c.months+' мес. в клубе.';
-  box.innerHTML='<img src="'+(c.img||'logo.png')+'" alt="'+(c.name||'ШАГАЙ ДОМА')+'" id="caseImg"><div><h3>Как у нашей шагательницы '+c.name+'!</h3><p>Она уже сбросила <b>'+c.kg+'</b> кг за <b>'+c.months+'</b> мес. в клубе.</p></div>';
-  box.classList.remove('hide');
-  var img=box.querySelector('#caseImg'); if(img){img.addEventListener('click',function(){openLightbox(c.img||'logo.png',caption)})}
-}
-const lightbox=$('#lightbox'),lbImg=$('#lbImg'),lbCap=$('#lbCap'),lbClose=$('#lbClose');
-function openLightbox(src,caption){if(!src)return;lbImg.src=src;lbCap.textContent=caption||'';lightbox.classList.add('show');lightbox.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeLightbox(){lightbox.classList.remove('show');lightbox.setAttribute('aria-hidden','true');lbImg.src='';lbCap.textContent='';document.body.style.overflow=''}
-lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
-
-/* ==== Пробная тренировка: несколько источников ==== */
-const TRIAL_EMBEDS = {
-  vk: 'https://vkvideo.ru/video-222534261_456240753?list=ln-cX7y1TY0FmFwqMTUhQ',
-  yt: 'https://youtu.be/Ph7uJ1RAZbU',
-  rt: 'https://rutube.ru/video/7d2a39deba78c2b57534ab65a6fd89e7/'
-};
-const TRIAL_LABELS = { vk:'VK Видео', yt:'YouTube', rt:'RuTube' };
-
-function mountTrialPlayer(){
-  var tabs = document.getElementById('trialTabs');
-  var frame = document.getElementById('trialFrame');
-  if(!tabs || !frame) return;
-
-  var order = ['vk','yt','rt'].filter(function(k){ return !!TRIAL_EMBEDS[k]; });
-
-  tabs.innerHTML = order.map(function(k,i){
-    return '<button type="button" class="p-btn'+(i===0?' is':'')+'" data-k="'+k+'">'+TRIAL_LABELS[k]+'</button>';
-  }).join('');
-
-  function select(key){
-    Array.from(tabs.querySelectorAll('.p-btn')).forEach(function(b){
-      b.classList.toggle('is', b.dataset.k === key);
-    });
-    var url = TRIAL_EMBEDS[key];
-    frame.innerHTML =
-      '<iframe src="'+url+'" title="Пробная тренировка" loading="lazy" '+
-      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '+
-      'allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>';
-  }
-  tabs.addEventListener('click', function(e){
-    var b = e.target.closest('.p-btn'); if(!b) return;
-    select(b.dataset.k);
-  });
-  if(order.length) select(order[0]);
-}
-
-/* Timers (15 минут) */
-function getDeadline(){let t=+localStorage.getItem('sdq_offer_deadline_15')||0;const now=Date.now();if(!t||t<now){t=now+15*60*1000;localStorage.setItem('sdq_offer_deadline_15',String(t))}return t}
-function fmtHMS(ms){let sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60);const s=sec%60;const pad=n=>String(n).padStart(2,'0');return h>0?pad(h)+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s)}
-let __sdqTimerInt=null;
-function startTimers(){if(__sdqTimerInt){clearInterval(__sdqTimerInt);__sdqTimerInt=null}const deadline=getDeadline();const saleTimer=$('#saleTimer');const inlineTimer=$('#inlineTimer');const tick=function(){const rem=deadline-Date.now();const str=fmtHMS(rem);if(saleTimer)saleTimer.textContent=str;if(inlineTimer)inlineTimer.textContent=str;if(rem<=0){clearInterval(__sdqTimerInt);__sdqTimerInt=null}};tick();__sdqTimerInt=setInterval(tick,1000)}
-function layoutSaleOffer(){const saleSection=document.querySelector('section[data-id="sale"]');if(!saleSection)return;const deal=saleSection.querySelector('.deal');const specialP=Array.from(saleSection.querySelectorAll('p.hint')).find(p=>/Только для вас у нас действует специальное предложение/i.test(p.textContent||''));if(deal&&specialP){specialP.after(deal)}}
-
-/* hero skeleton hide */
-var hv=document.querySelector('video.hero-media'),hs=document.getElementById('heroSkel');
-function hideS(){if(hs) hs.classList.add('hide')}
-if(hv){hv.addEventListener('loadeddata',hideS,{once:true});hv.addEventListener('canplay',hideS,{once:true});hv.addEventListener('error',function(){setTimeout(hideS,800)},{once:true})}
-setTimeout(hideS,1500);
-
-/* init */
-(function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide');mountTrialPlayer();hookButtons()}catch(e){console.error(e)}})();
-
-/* Кнопка «Далее» после привычек → сразу на trial */
-function hookButtons(){
-  var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trial'))}}
-  var tbtn=$('#trialComputeBtn'); if(tbtn){tbtn.onclick=function(){show(idxBy('loading'));runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
-}
-
-/* Текст под видео на trial */
+renderTrial('vk');
+$('#vTabs').addEventListener('click', e=>{
+  const t=e.target.closest('.tab'); if(!t) return;
+  $$('.tab','#vTabs').forEach(x=>x.classList.remove('is'));
+  t.classList.add('is');
+  renderTrial(t.dataset.k);
+  vibrate(6);
+});
 function updateTrialCtaText(){
   var el=$('#trialCtaText'); if(!el) return;
   el.innerHTML='<b>Узнайте, на сколько вы похудеете, если будете заниматься по таким тренировкам '+perweekLabel()+'.</b>';
 }
 
-/* after result restart timers */
-const __oldCalc=(typeof calculate==='function')?calculate:null;
-if(__oldCalc){window.calculate=function(){__oldCalc.apply(this,arguments);startTimers()}}
+/* Result calc */
+function calculate(){
+  const kg = goalKg();
+  const base = Math.max(kg/0.5, 4); // ~0.5 кг/неделя безопасно
+  let weeks = base;
+  if(Array.isArray(A.perweek)){
+    if(A.perweek.includes('4 тренировки в неделю')) weeks-=1;
+    if(A.perweek.includes('5 тренировок в неделю')) weeks-=1;
+    if(A.perweek.includes('2 тренировки в неделю')) weeks+=1;
+  }
+  const f = nutrPreview();
+  weeks = Math.max(4, Math.round(weeks / (f>1?1.1:1)));
+  $('#weeksBadge').textContent = weeks.toString();
 
-/* убрать локально «Посмотреть программу» (если где-то осталось) */
-var tp=document.getElementById('toPrograms'); if(tp){var ac=tp.closest('.actions'); if(ac) ac.remove();}
+  let pace = 'плавный';
+  if(weeks<=6) pace='быстрый';
+  if(weeks>=12) pace='плавный, с упором на привычки';
+  $('#paceBadge').textContent = pace;
+
+  $('#pwBadge').textContent = Array.isArray(A.perweek)?A.perweek.join(', '): (A.perweek||'2–4 раза/нед');
+
+  const lead = [];
+  if(kg>0) lead.push(`Двигаемся к цели −${kg} кг без изнурения.`);
+  if(/Сидячая/.test(A.life||'')) lead.push('Будем мягко разгонять обмен и уходить от «сидячих» болей.');
+  if(/Никогда/.test(A.exp||'')) lead.push('Подробные подсказки тренера — начнёте уверенно.');
+  if(A.steps) lead.push(`Ваш уровень шагов учтём — и добавим постепенно (сейчас ~${(+A.steps).toLocaleString('ru-RU')}).`);
+  $('#resLead').textContent = lead.join(' ');
+}
+
+/* === Program recommendation === */
+function chooseProgram(){
+  const bmi = Number(A.bmi||0);
+  const exp = A.exp||'';
+  const life= A.life||'';
+  const hard= A.hardKey||'';
+  const keep = !!A.keep;
+
+  let p={title:'SOFT START',lead:'Мягкий вход в тренировки без прыжков и перегруза.',meta:{workouts:'3 тренировки/нед',duration:'20–25 мин',tempo:'низкий'}};
+  if (/Регулярно/.test(exp) || /Активная/.test(life)) p={title:'BALANCE',lead:'Силовая и шагательная нагрузка в комфортном темпе.',meta:{workouts:'4 тренировки/нед',duration:'25–30 мин',tempo:'средний'}};
+  if (bmi>=30 || /jumps|stairs|walk/.test(hard)) p={title:'SOFT',lead:'Щадящая нагрузка для суставов, без прыжков.',meta:{workouts:'3 тренировки/нед',duration:'15–20 мин',tempo:'низкий'}};
+  if (keep) p={title:'TONUS',lead:'Поддержание тонуса, осанки и энергии.',meta:{workouts:'3–4 тренировки/нед',duration:'20–25 мин',tempo:'средний'}};
+
+  if (/энерг|лёгк/i.test((A.mot||[]).join(' '))) p.meta.steps='добавим 6–8к шагов';
+  return p;
+}
+function buildProgramBullets(p){
+  const B=[], kg=+goalKg()||0;
+  if (A.keep || kg===0) B.push('Делаем акцент на тонус, выносливость и лёгкость в теле.');
+  else B.push('Двигаемся к вашей цели −'+kg+' кг без рывков и изнурения.');
+  if (/Сидячая/.test(A.life||'')) B.push('Мягко разгоняем обмен и уходим от «сидячих» болей.');
+  if (/Никогда/.test(A.exp||'')) B.push('Подробные подсказки тренера — начнёте уверенно.');
+  if (A.perweek) B.push('Оптимальный график: '+(Array.isArray(A.perweek)?A.perweek.join(', '):A.perweek)+'.');
+  if (A.steps) B.push('Подхватим ваш уровень шагов и увеличим постепенно (сейчас ~'+(+A.steps).toLocaleString('ru-RU')+').');
+  return B.slice(0,7);
+}
+function renderProgram(){
+  const p=chooseProgram();
+  const title = `У нас 28 программ, но вам лучше начать с «${p.title}». Входит в любой абонемент!`;
+  const leadParts=[p.lead];
+  if(/Активная/.test(A.life||'')||/Регулярно/.test(A.exp||'')) leadParts.push('Подойдёт, если любите чуть выше темп.');
+  if(/Сидячая/.test(A.life||'')) leadParts.push('Если много сидите — вернём подвижность мягко.');
+
+  const chips=[];
+  if (p.meta?.workouts) chips.push(p.meta.workouts);
+  if (p.meta?.duration) chips.push(p.meta.duration);
+  if (p.meta?.steps)    chips.push(p.meta.steps);
+  if (p.meta?.tempo)    chips.push(p.meta.tempo);
+  const chipsHtml = chips.map(t=>`<span class="p-chip${/высокий|средний/i.test(t)?' emph':''}">${t}</span>`).join('');
+
+  const tEl=document.getElementById('progTitle');
+  const lEl=document.getElementById('progLead');
+  const cEl=document.getElementById('progChips');
+  const ul =document.getElementById('progList');
+
+  if (tEl) tEl.textContent = title;
+  if (lEl) lEl.textContent = leadParts.join(' ');
+  if (cEl) cEl.innerHTML   = chipsHtml;
+
+  if (ul){
+    ul.innerHTML='';
+    buildProgramBullets(p).forEach(b=>{
+      const li=document.createElement('li');
+      li.textContent=b;
+      ul.appendChild(li);
+    });
+  }
+}
+  /* ===== Timers (15 минут) ===== */
+let SALE_END = null, TID=null;
+function startTimers(){
+  if(SALE_END && SALE_END > Date.now()) return;
+  SALE_END = Date.now() + 15*60*1000;
+  tick();
+  if(TID) clearInterval(TID);
+  TID=setInterval(tick,1000);
+}
+function tick(){
+  const left = Math.max(0, SALE_END - Date.now());
+  const mm = String(Math.floor(left/60000)).padStart(2,'0');
+  const ss = String(Math.floor((left%60000)/1000)).padStart(2,'0');
+  $('#timerBadge').textContent = `${mm}:${ss}`;
+  if(left===0 && TID){ clearInterval(TID); }
+}
+function layoutSaleOffer(){
+  // Здесь можно динамически менять цены/скидки
+  $('#saleBadge').textContent='–70%';
+  $('#p1').textContent='990 ₽';
+  $('#p3').textContent='2490 ₽';
+}
+
+/* ===== Navigation & Events ===== */
+const screensRoot = $('#screens');
+const nextBtn = $('#next');
+
+function next(){
+  if(idx < slides.length-1){
+    show(idx+1);
+  }
+}
+nextBtn.addEventListener('click', next);
+
+screensRoot.addEventListener('click', function(e){
+  // prev
+  if(e.target.closest('[data-prev]')){ e.preventDefault(); if(idx>0) show(idx-1); }
+
+  // RESULT → Program
+  if (e.target.closest('#toCTA')) { e.preventDefault(); try{renderProgram()}catch(_){} show(idxBy('program')); }
+
+  // Program → Sale
+  if (e.target.closest('#toSale')) { e.preventDefault(); show(idxBy('sale')); try{layoutSaleOffer(); startTimers();}catch(_){ } }
+
+  // to Pay (stub)
+  if(e.target.closest('#toPay')){ e.preventDefault(); alert('Переход к оплате…'); }
+});
+
+/* ===== Progress ===== */
+function setProgress(){
+  const visible = slides.findIndex(s=>s.style.display!=='none');
+  const p = Math.max(0, visible) / (slides.length-1) * 100;
+  $('#progbar').style.width = p + '%';
+}
+setInterval(setProgress,300);
+
+/* Recalc on entering result */
+const __show=show;
+show=function(i){ __show(i); if(slides[i].id==='result'){ calculate(); updateTrialCtaText(); } };
+
+/* ====== Prefill from saved ====== */
+(function hydrate(){
+  if(A.goal==='slim'){ $('#goalMore').classList.remove('hidden'); }
+  if(A.perweek){ (Array.isArray(A.perweek)?A.perweek:[A.perweek]).forEach(v=>{
+    $$('#pwChips .chip').forEach(c=>{ if(c.textContent.trim()===v) c.classList.add('is') })
+  })}
+  if(A.age){ $$('#ageOpts .chip').forEach(c=>{ if(c.textContent.trim()===A.age) c.classList.add('is') }) }
+  if(A.body){ $$('#bodyOpts .chip').forEach(c=>{ if(c.textContent.trim()===A.body) c.classList.add('is') }) }
+  if(A.life){ $$('#lifeOpts .chip').forEach(c=>{ if(c.textContent.trim()===A.life) c.classList.add('is') }) }
+  if(A.exp){ $$('#expOpts .chip').forEach(c=>{ if(c.textContent.trim()===A.exp) c.classList.add('is') }) }
+  if(A.mot){ $$('#motChips .chip').forEach(c=>{ if((A.mot||[]).includes(c.textContent.trim())) c.classList.add('is') }) }
+  if(A.good){ $$('#good .chip').forEach(c=>{ if((A.good||[]).includes(c.textContent.trim())) c.classList.add('is') }) }
+  if(A.bad){ $$('#bad .chip').forEach(c=>{ if((A.bad||[]).includes(c.textContent.trim())) c.classList.add('is') }) }
+  if(A.nutri){ $$('#nutriOpts .chip').forEach(c=>{ if(c.textContent.trim()===A.nutri) c.classList.add('is') }) }
+  if($('#goalKg') && A.goal==='slim'){ $('#goalKg').value = A.goalKg||''; $('#kgVal').textContent = A.goalKg||0 }
+  setTimeout(updMeter,0);
+})();
+  /* ====== Screen-specific hooks ====== */
+function wire(){
+  // goal
+  const kg=$('#goalKg');
+  if(kg) kg.addEventListener('input', ()=>{ A.goalKg=kg.value; save() });
+
+  // simple selects
+  function bind(root,key,single){
+    if(!root) return;
+    root.addEventListener('click', e=>{
+      const chip=e.target.closest('.chip'); if(!chip) return;
+      if(single){ $$('.chip',root).forEach(c=>c.classList.remove('is')); chip.classList.add('is'); A[key]=chip.textContent.trim() }
+      else{ chip.classList.toggle('is'); A[key]=$$('.chip.is',root).map(x=>x.textContent.trim()) }
+      save(); vibrate(8);
+      if(root.id==='bad'||root.id==='good') setTimeout(updMeter,0);
+      if(root.id==='pwChips') updateAha();
+    });
+  }
+  bind($('#ageOpts'),'age',true);
+  bind($('#bodyOpts'),'body',true);
+  bind($('#lifeOpts'),'life',true);
+  bind($('#expOpts'),'exp',true);
+  bind($('#motChips'),'mot',false);
+  bind($('#pwChips'),'perweek',false);
+  bind($('#healthChips'),'health',false);
+  bind($('#bad'),'bad',false);
+  bind($('#good'),'good',false);
+  bind($('#nutriOpts'),'nutri',true);
+}
+wire();
+
+/* Quality-of-life */
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft' && idx>0) show(idx-1);
+});
+
+/* ===== Helpers for texts ===== */
+function perweekShort(){
+  if(!A.perweek) return '2–4 р/нед';
+  if(Array.isArray(A.perweek)){
+    if(A.perweek.length===1) return A.perweek[0].replace('тренировок ','р/').replace('тренировки ','р/');
+    return A.perweek.length+' р/нед';
+  }
+  return A.perweek.replace('тренировок ','р/').replace('тренировки ','р/');
+}
+
+/* Additional texts */
+function updateResultLead(){
+  const lead = [];
+  const kg=+goalKg()||0;
+  if(kg>0) lead.push(`Идём к цели −${kg} кг, шаг за шагом.`);
+  if(/Сидячая/.test(A.life||'')) lead.push('Добавим «мягкие» разогревы для спины и плеч.');
+  if(/Никогда/.test(A.exp||'')) lead.push('Начнёте с простых связок без прыжков.');
+  $('#resLead').textContent = lead.join(' ');
+  }
+  /* After trial → result we also start timers on sale later */
+function goToSale(){
+  show(idxBy('sale'));
+  layoutSaleOffer();
+  startTimers();
+}
+
+/* ====== End ====== */
 </script>
 </body>
 </html>
