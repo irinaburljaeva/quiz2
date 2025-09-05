@@ -870,69 +870,8 @@ function hookButtons(){
   var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trial'))}}
   var tbtn=$('#trialComputeBtn'); if(tbtn){tbtn.onclick=function(){show(idxBy('loading'));runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
 }
-// 1) Вставить (новое)
-function getEmbedURL(key, url){
-  if (key === 'vk') {
-    const m = url.match(/video-?(-?\d+)_(\d+)/);
-    if (m) return https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2;
-    return url;
-  }
-  if (key === 'yt') {
-    const m = url.match(/youtu\.be\/([A-Za-z0-9_-]+)/) || url.match(/[?&]v=([A-Za-z0-9_-]+)/);
-    const id = m ? m[1] : '';
-    return https://www.youtube.com/embed/${id}?rel=0&modestbranding=1;
-  }
-  if (key === 'rt') {
-    const m = url.match(/rutube\.ru\/video\/([a-f0-9-]+)/i);
-    if (m) return https://rutube.ru/play/embed/${m[1]};
-    return url.replace('/video/','/play/embed/');
-  }
-  return url;
-}
 
-// 2) Заменить ЭТУ функцию на новую
-function mountTrialPlayer(){
-  const tabs  = document.getElementById('trialTabs');
-  const frame = document.getElementById('trialFrame');
-  if(!tabs || !frame) return;
 
-  const TRIAL_LABELS = { vk:'VK Видео', yt:'YouTube', rt:'RuTube' };
-  const order = ['vk','yt','rt'].filter(k => !!TRIAL_EMBEDS[k]);
-
-  tabs.innerHTML = order.map((k,i)=>
-    <button type="button" class="p-btn${i===0?' is':''}" data-k="${k}">${TRIAL_LABELS[k]}</button>
-  ).join('');
-
-  let ext = document.getElementById('trialExt');
-  if(!ext){
-    ext = document.createElement('p');
-    ext.className = 'hint';
-    ext.id = 'trialExt';
-    ext.innerHTML = <a id="trialOpen" href="#" target="_blank" rel="noopener">
-      Если плеер не загрузился, открыть видео в новой вкладке
-    </a>;
-    frame.parentNode.insertAdjacentElement('afterend', ext);
-  }
-  const extLink = document.getElementById('trialOpen');
-
-  function select(key){
-    Array.from(tabs.querySelectorAll('.p-btn')).forEach(b => b.classList.toggle('is', b.dataset.k===key));
-    const raw = TRIAL_EMBEDS[key];
-    const src = getEmbedURL(key, raw);
-    frame.innerHTML =
-      <iframe src="${src}" title="Пробная тренировка" loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>;
-    if (extLink) extLink.href = raw;
-  }
-
-  tabs.addEventListener('click', e=>{
-    const b = e.target.closest('.p-btn'); if(!b) return;
-    select(b.dataset.k);
-  });
-
-  if (order.length) select(order[0]);
-}
 /* Текст под видео на trial */
 function updateTrialCtaText(){
   var el=$('#trialCtaText'); if(!el) return;
