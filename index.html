@@ -692,11 +692,11 @@ function runLoading(done){
   let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
   const D=1500,t0=performance.now();
   function tick(n){
-    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-t,p=3),pct=Math.round(5+95*ease);
+    const p=Math.min(1,(n-t0)/D); const ease=1-Math.pow(1-p,3); const pct=Math.round(5+95*ease);
     ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
     const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
     if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
-    if(p<1)requestAnimationFrame(tick);else setTimeout(function(){try{done()}catch(err){console.error(err);fallbackResult()}},200)
+    if(p<1){ requestAnimationFrame(tick);} else { setTimeout (()+>{ try{done();}catch(err){console.error(err);fallbackResult();}},200);}
   }
   requestAnimationFrame(tick)
 }
