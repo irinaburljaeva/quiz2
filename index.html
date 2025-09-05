@@ -230,6 +230,7 @@ h2{font-size:clamp(20px,5vw,30px);line-height:1.18;margin:6px 0 12px}
     Element.prototype.closest=function(s){let el=this;do{if(el&&el.matches&&el.matches(s))return el;el=el.parentElement||el.parentNode;}while(el&&el.nodeType===1);return null;};
   }
 })();
+
 /* ===== Helpers ===== */
 var $=function(s){return document.querySelector(s)};
 var $$=function(s,r){return Array.from((r||document).querySelectorAll(s))};
@@ -394,7 +395,7 @@ section('intro',`
     ${actions()}
   </div>
 `)
-  +section('hard',`
++section('hard',`
   <h2>Что сейчас даётся тяжелее всего?</h2>
   <div class="hardw">
     <div class="hard-cards" id="hardCards">
@@ -515,7 +516,8 @@ section('intro',`
   </div>
 `);
 screensRoot.innerHTML=html;
-  /* ===== Header (discount only) ===== */
+
+/* ===== Header (discount only) ===== */
 const progressEl=$('#progress');
 function updateDiscount(){
   const QUESTION_IDS=['age','body','steps','bmi','life','exp','goal','motivation','perweek','hard','health','nutrition','food'];
@@ -605,7 +607,8 @@ selectList($('#healthChips'),'health',false);
 selectList($('#bad'),'bad',false);
 selectList($('#good'),'good',false);
 selectList($('#nutriOpts'),'nutri',true);
-  /* habits meter */
+
+/* habits meter */
 function nutrPreview(){const b=(A.bad||[]).length,g=(A.good||[]).length;let f=1;f+=g*.02;f-=b*.03;return Math.max(.7,Math.min(1.35,f))}
 function updMeter(){
   const b=(A.bad||[]).length,g=(A.good||[]).length, any=b+g>0;
@@ -618,7 +621,7 @@ function updMeter(){
   score.textContent=(acc>0?'+':'')+acc+'%';
   let cls='hm-ok',txt='нейтрально',border='#FFBA08';
   if(acc<=-15){cls='hm-bad';txt='сильно тормозит';border="#E85D04";}
-  else if(acc<-5){cls='hm-bad';txt='тормозит';border="#E85D04";}
+  else if(acc<-5){cls='hm-bад';txt='тормозит';border="#E85D04";}
   else if(acc>15){cls='hm-good';txt='суперускорение';border="#12A06A";}
   else if(acc>5){cls='hm-good';txt='ускоряет';border="#12A06A";}
   badge.className='hm-badge '+cls;badge.textContent=txt;ptr.style.borderColor=border;
@@ -681,14 +684,15 @@ function updateAha(){
   if(fig){fig.classList.remove('hidden');}
 }
 updateAha();
-  /* Loading + result */
+
+/* Loading + result */
 function runLoading(done){
   const ring=$('#lring'),lpct=$('#lpct'),lmsg=$('#lmsg'),lsub=$('#lsub');
   const stepsTxt=['Учитываем ваш возраст','Смотрим телосложение и ИМТ','Проверяем активность и опыт','Добавляем шаги и питание','Готовим персональный прогноз…'];
   let si=0;lmsg.textContent=stepsTxt[0];lsub.textContent='Возраст • ИМТ • Активность • Цель';
   const D=1500,t0=performance.now();
   function tick(n){
-    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-p,3),pct=Math.round(5+95*ease);
+    const p=Math.min(1,(n-t0)/D),ease=1-Math.pow(1-t,p=3),pct=Math.round(5+95*ease);
     ring.style.setProperty('--p',pct+'%');lpct.textContent=pct+'%';
     const i=Math.min(stepsTxt.length-1,Math.floor(p*stepsTxt.length));
     if(i!==si){si=i;lmsg.textContent=stepsTxt[si]}
@@ -769,7 +773,7 @@ function openLightbox(src,caption){if(!src)return;lbImg.src=src;lbCap.textConten
 function closeLightbox(){lightbox.classList.remove('show');lightbox.setAttribute('aria-hidden','true');lbImg.src='';lbCap.textContent='';document.body.style.overflow=''}
 lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox()});lbClose.addEventListener('click',closeLightbox);
 
-/* ==== Пробная тренировка: несколько источников (обновлённые ссылки) ==== */
+/* ==== Пробная тренировка: обновлённые ссылки и эмбед ==== */
 const TRIAL_EMBEDS = {
   vk: 'https://vkvideo.ru/video-222534261_456240753?list=ln-cX7y1TY0FmFwqMTUhQ',
   yt: 'https://youtu.be/Ph7uJ1RAZbU?si=YDp7eR44_xU2KQ8b',
@@ -777,6 +781,25 @@ const TRIAL_EMBEDS = {
 };
 const TRIAL_LABELS = { vk:'VK Видео', yt:'YouTube', rt:'RuTube' };
 
+/* Преобразуем обычные ссылки в корректные embed-URL */
+function getEmbedURL(key, url){
+  if (key === 'vk') {
+    const m = url.match(/video-?(-?\d+)_(\d+)/);
+    if (m) return `https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2`;
+    return url;
+  }
+  if (key === 'yt') {
+    const m = url.match(/youtu\.be\/([A-Za-z0-9_-]+)/) || url.match(/[?&]v=([A-Za-z0-9_-]+)/);
+    const id = m ? m[1] : '';
+    return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+  }
+  if (key === 'rt') {
+    const m = url.match(/rutube\.ru\/video\/([a-f0-9-]+)/i);
+    if (m) return `https://rutube.ru/play/embed/${m[1]}`;
+    return url.replace('/video/','/play/embed/');
+  }
+  return url;
+}
 function mountTrialPlayer(){
   var tabs = document.getElementById('trialTabs');
   var frame = document.getElementById('trialFrame');
@@ -788,15 +811,28 @@ function mountTrialPlayer(){
     return '<button type="button" class="p-btn'+(i===0?' is':'')+'" data-k="'+k+'">'+TRIAL_LABELS[k]+'</button>';
   }).join('');
 
+  // запасная ссылка под плеером (если iframe блокируется)
+  var ext = document.getElementById('trialExt');
+  if(!ext){
+    ext = document.createElement('p');
+    ext.className = 'hint';
+    ext.id = 'trialExt';
+    ext.innerHTML = '<a id="trialOpen" href="#" target="_blank" rel="noopener">Если плеер не загрузился, открыть видео в новой вкладке</a>';
+    frame.parentNode.insertAdjacentElement('afterend', ext);
+  }
+  var extLink = document.getElementById('trialOpen');
+
   function select(key){
     Array.from(tabs.querySelectorAll('.p-btn')).forEach(function(b){
       b.classList.toggle('is', b.dataset.k === key);
     });
-    var url = TRIAL_EMBEDS[key];
+    var raw = TRIAL_EMBEDS[key];
+    var src = getEmbedURL(key, raw);
     frame.innerHTML =
-      '<iframe src="'+url+'" title="Пробная тренировка" loading="lazy" '+
+      '<iframe src="'+src+'" title="Пробная тренировка" loading="lazy" '+
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '+
       'allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>';
+    if (extLink) extLink.href = raw;
   }
   tabs.addEventListener('click', function(e){
     var b = e.target.closest('.p-btn'); if(!b) return;
@@ -804,7 +840,8 @@ function mountTrialPlayer(){
   });
   if(order.length) select(order[0]);
 }
-  /* === Program recommendation (новое) === */
+
+/* === Program recommendation === */
 function chooseProgram(){
   const bmi = Number(A.bmi||0);
   const exp = A.exp||'';
@@ -865,12 +902,11 @@ setTimeout(hideS,1500);
 /* init */
 (function(){try{layoutSaleOffer();startTimers();updateDiscount();progressEl.classList.add('hide');mountTrialPlayer();hookButtons()}catch(e){console.error(e)}})();
 
-/* Кнопка «Далее» после привычек → сразу на trial, затем расчёт → result */
+/* Кнопка «Далее» после привычек → trial, затем расчёт → result */
 function hookButtons(){
   var calcB=$('#calc'); if(calcB){calcB.onclick=function(){show(idxBy('trial'))}}
   var tbtn=$('#trialComputeBtn'); if(tbtn){tbtn.onclick=function(){show(idxBy('loading'));runLoading(function(){try{calculate()}catch(e){console.error(e);fallbackResult()}})}}
 }
-
 
 /* Текст под видео на trial */
 function updateTrialCtaText(){
